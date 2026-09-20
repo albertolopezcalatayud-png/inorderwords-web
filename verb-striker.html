@@ -1,0 +1,736 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>VERB STRIKER: GALAXY SHOWDOWN</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@700&display=swap" rel="stylesheet">
+<style>
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-pink: #ff0055;
+            --neon-purple: #b000ff;
+            --neon-yellow: #ffe600;
+            --neon-green: #00ff66;
+            --bg-dark: #050612;
+            --panel-bg: rgba(10, 14, 35, 0.90);
+            --panel-border: var(--neon-blue);
+            --text-main: #ffffff;
+            --text-sub: #a5b4fc;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Rajdhani', sans-serif; }
+        html, body { width: 100vw; height: 100vh; overflow: hidden; background-color: var(--bg-dark); color: var(--text-main); }
+        #starfield { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+
+        .app-viewport {
+            position: relative; z-index: 2; width: 100vw; height: 100vh;
+            padding: 24px; display: grid; grid-template-columns: 2.3fr 1fr; gap: 24px;
+        }
+
+        .panel-box {
+            background: var(--panel-bg); border: 3px solid var(--panel-border);
+            border-radius: 16px; padding: 24px;
+            box-shadow: 0 0 35px rgba(0, 243, 255, 0.2), inset 0 0 20px rgba(0, 243, 255, 0.1);
+            backdrop-filter: blur(10px); display: flex; flex-direction: column;
+            justify-content: space-between; position: relative;
+        }
+
+        .header-bar { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid rgba(0, 243, 255, 0.3); padding-bottom: 10px; }
+        h1 { font-family: 'Orbitron', sans-serif; font-size: 2rem; color: var(--neon-yellow); text-shadow: 0 0 12px var(--neon-yellow); }
+        .ai-status-pill { background: rgba(176, 0, 255, 0.3); border: 2px solid var(--neon-purple); color: #e2aeff; font-family: 'Orbitron'; padding: 6px 14px; border-radius: 20px; font-size: 0.95rem; font-weight: 800; }
+
+        .hud-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 10px 0; }
+        .hud-card { background: rgba(0, 0, 0, 0.7); border: 2px solid rgba(255, 255, 255, 0.15); border-left: 5px solid var(--neon-blue); padding: 8px 12px; border-radius: 8px; }
+        .hud-card label { display: block; font-size: 0.85rem; color: var(--text-sub); font-family: 'Orbitron'; font-weight: 700; }
+        .hud-card span { font-size: 1.8rem; font-weight: 800; font-family: 'Orbitron'; }
+
+        .energy-timer-wrapper { width: 100%; height: 14px; background: #000; border: 2px solid var(--neon-blue); border-radius: 7px; padding: 2px; margin-bottom: 10px; }
+        .energy-timer-fill { height: 100%; width: 100%; background: linear-gradient(90deg, var(--neon-green), var(--neon-yellow), var(--neon-pink)); border-radius: 4px; transition: width 0.1s linear; }
+
+        .battle-display { background: radial-gradient(circle, rgba(0,243,255,0.15) 0%, rgba(0,0,0,0.85) 100%); border: 2px dashed rgba(0, 243, 255, 0.4); border-radius: 12px; padding: 18px; text-align: center; margin-bottom: 10px; }
+        .target-word { font-family: 'Orbitron', sans-serif; font-size: 3.2rem; font-weight: 900; color: #fff; text-shadow: 0 0 18px var(--neon-blue); margin-bottom: 4px; }
+        .infinitive-hint { font-size: 1.4rem; font-weight: 700; color: var(--text-sub); }
+        .infinitive-hint strong { color: var(--neon-yellow); font-size: 1.6rem; }
+
+        .action-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 10px; }
+        .input-group label { display: block; font-family: 'Orbitron'; font-size: 1rem; font-weight: 800; color: var(--neon-blue); margin-bottom: 4px; }
+        .input-wrapper { position: relative; }
+        .input-group input { width: 100%; background: rgba(0, 0, 0, 0.85); border: 2px solid rgba(0, 243, 255, 0.4); border-radius: 8px; padding: 12px 40px 12px 14px; color: #fff; font-size: 1.4rem; font-weight: 700; outline: none; }
+        .voice-btn { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 1.2rem; cursor: pointer; opacity: 0.7; }
+        .voice-btn:hover { opacity: 1; }
+
+        .controls-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; }
+        .sci-btn { background: linear-gradient(135deg, var(--neon-blue), #0066ff); border: none; color: #000; font-family: 'Orbitron'; font-weight: 900; padding: 14px; border-radius: 8px; cursor: pointer; font-size: 1.1rem; transition: all 0.2s; box-shadow: 0 0 14px rgba(0, 243, 255, 0.3); }
+        .sci-btn:hover { transform: scale(1.02); filter: brightness(1.2); }
+        .sci-btn-amber { background: linear-gradient(135deg, var(--neon-yellow), #ff9900); }
+        .sci-btn-red { background: linear-gradient(135deg, var(--neon-pink), #990033); color: #fff; }
+        .sci-btn-purple { background: linear-gradient(135deg, var(--neon-purple), #660099); color: #fff; }
+
+        .status-msg { padding: 8px; border-radius: 6px; text-align: center; font-family: 'Orbitron'; font-size: 1.1rem; font-weight: 800; display: none; margin-top: 8px; }
+        .status-msg.correct { background: rgba(0, 255, 102, 0.25); border: 2px solid var(--neon-green); color: var(--neon-green); }
+        .status-msg.incorrect { background: rgba(255, 0, 85, 0.25); border: 2px solid var(--neon-pink); color: var(--neon-pink); }
+
+        .leaderboard-title { font-family: 'Orbitron'; font-size: 1.2rem; color: var(--neon-yellow); margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; }
+        .leaderboard-subtitle { font-size: 0.78rem; color: var(--text-sub); margin-bottom: 10px; line-height: 1.4; }
+        .course-tabs { display: flex; gap: 4px; margin-bottom: 10px; overflow-x: auto; }
+        .tab-chip { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.25); color: var(--text-sub); padding: 6px 10px; font-size: 0.85rem; font-weight: 700; border-radius: 6px; cursor: pointer; white-space: nowrap; }
+        .tab-chip.active { background: var(--neon-blue); color: #000; }
+
+        .ranking-list { list-style: none; overflow-y: auto; max-height: calc(100vh - 260px); }
+        .ranking-item { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255,255,255,0.12); padding: 10px 12px; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; font-size: 1rem; font-weight: 700; }
+        .ranking-item.me { border-color: var(--neon-yellow); box-shadow: 0 0 10px rgba(255,230,0,0.25); }
+
+        .modal-screen { position: absolute; inset: 0; background: rgba(5, 6, 18, 0.96); z-index: 20; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 16px; padding: 24px; text-align: center; }
+        .modal-screen input, .modal-screen select { width: 85%; max-width: 420px; padding: 14px; margin-bottom: 12px; background: #000; border: 2px solid var(--neon-blue); color: #fff; border-radius: 8px; outline: none; font-family: 'Orbitron'; font-size: 1.1rem; }
+        canvas#confetti { position: fixed; inset: 0; pointer-events: none; z-index: 99; }
+
+        .store-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 85%; max-width: 450px; margin: 15px 0; }
+        .store-item { background: rgba(0,0,0,0.8); border: 2px solid var(--neon-blue); padding: 12px; border-radius: 8px; cursor: pointer; }
+        .store-item:hover { border-color: var(--neon-yellow); }
+
+        .sentence-box { background: rgba(0,0,0,0.9); border: 2px solid var(--neon-yellow); padding: 15px; border-radius: 10px; margin-top: 10px; display: none; }
+        .sentence-box p { font-size: 1.3rem; margin-bottom: 8px; }
+        .sentence-box input { width: 60%; padding: 8px; background: #000; border: 1px solid var(--neon-yellow); color: #fff; font-family: 'Orbitron'; font-size: 1.1rem; }
+
+        @media (max-width: 900px) { .app-viewport { grid-template-columns: 1fr; overflow-y: auto; height: auto; } body { overflow-y: auto; } }
+
+        .ow-home-fab{
+          position:fixed; top:14px; left:14px; z-index:9999;
+          display:flex; align-items:center; gap:7px;
+          background:rgba(10,14,35,0.92);
+          border:1px solid rgba(0,243,255,0.4); border-radius:999px;
+          padding:9px 14px 9px 11px; text-decoration:none;
+          color:#fff; font-family:'Rajdhani',sans-serif; font-weight:700; font-size:12.5px;
+          box-shadow:0 4px 14px rgba(0,0,0,0.45); transition:all .15s ease;
+        }
+        .ow-home-fab:hover{border-color:var(--neon-yellow); background:rgba(255,230,0,0.16);}
+        .ow-home-fab .ic{font-size:15px; line-height:1;}
+        @media (max-width:420px){
+          .ow-home-fab{top:10px; left:10px; padding:8px 12px 8px 10px; font-size:0;}
+          .ow-home-fab .ic{font-size:16px;}
+          .ow-home-fab .lbl{display:none;}
+        }
+    </style>
+<a class="ow-home-fab" href="https://inorderwords.netlify.app/" title="Volver a la pagina principal"><span class="ic">🏠</span><span class="lbl">Inicio</span></a>
+<canvas id="starfield"></canvas>
+<canvas id="confetti"></canvas>
+
+<div class="app-viewport">
+    <div class="panel-box">
+        <div id="player-modal" class="modal-screen">
+            <h2 style="font-family:'Orbitron'; color: var(--neon-yellow); font-size: 2.2rem; margin-bottom: 6px;">VERB STRIKER</h2>
+            <p style="color: var(--text-sub); margin-bottom: 18px; font-size: 1.1rem;">PILOT CONFIGURATION</p>
+            <input type="text" id="player-name" placeholder="CALLSIGN / NAME" required>
+            <select id="player-course">
+                <option value="1º ESO">GRADE 7 (1º ESO)</option>
+                <option value="2º ESO">GRADE 8 (2º ESO)</option>
+                <option value="3º ESO">GRADE 9 (3º ESO)</option>
+                <option value="4º ESO">GRADE 10 (4º ESO)</option>
+            </select>
+            <select id="phonetic-group">
+                <option value="ALL">ALL PHONETIC GROUPS (FULL DATABASE)</option>
+                <option value="OUGHT">-OUGHT / -AUGHT (buy, catch...)</option>
+                <option value="EW_OWN">-EW / -OWN (fly, know...)</option>
+                <option value="INVARIANT">INVARIABLE (cost, read...)</option>
+                <option value="I_A_U">I - A - U (begin, drink, run...)</option>
+                <option value="EN_PARTICIPLE">-EN PARTICIPLE (break, speak...)</option>
+                <option value="D_TO_T">-D TO -T CHANGE (send, build...)</option>
+                <option value="vowel_change">VOWEL CHANGE (find, win...)</option>
+            </select>
+
+            <div style="display:flex; gap:10px; width:85%; max-width:420px; margin-top:5px;">
+                <button class="sci-btn" onclick="startGame(false)" style="flex:2;">LAUNCH</button>
+                <button class="sci-btn sci-btn-purple" onclick="startGame(true)" id="btn-revenge" style="flex:1;">🔥 REVENGE</button>
+                <button class="sci-btn sci-btn-amber" onclick="openStore()" style="flex:1;">🛒 STORE</button>
+            </div>
+        </div>
+
+        <div id="store-modal" class="modal-screen" style="display:none;">
+            <h2 style="font-family:'Orbitron'; color: var(--neon-yellow); font-size: 2rem;">ARMORY STORE</h2>
+            <p style="color:var(--text-sub)">SPEND YOUR SPACE COINS (🪙 <span id="store-coins">0</span>)</p>
+            <div class="store-grid">
+                <div class="store-item" onclick="buyItem('shield', 50)">
+                    <h4>🛡️ SHIELD +1</h4>
+                    <p style="font-size:0.8rem; color:var(--text-sub)">Extra life for mission</p>
+                    <strong style="color:var(--neon-yellow)">50 COINS</strong>
+                </div>
+                <div class="store-item" onclick="buyItem('theme_purple', 100)">
+                    <h4>🎨 PURPLE NEON</h4>
+                    <p style="font-size:0.8rem; color:var(--text-sub)">HUD Skin</p>
+                    <strong style="color:var(--neon-yellow)">100 COINS</strong>
+                </div>
+            </div>
+            <button class="sci-btn sci-btn-red" onclick="closeStore()" style="width: 85%; max-width: 420px;">BACK</button>
+        </div>
+
+        <div id="report-modal" class="modal-screen" style="display:none;">
+            <h2 style="font-family:'Orbitron'; color: var(--neon-pink); font-size: 2.2rem;">MISSION DEBRIEF</h2>
+            <p id="report-score" style="margin: 10px 0; font-size: 1.3rem; font-family:'Orbitron'; color: var(--neon-yellow);"></p>
+            <div id="report-errors" style="width:85%; max-height: 180px; overflow-y:auto; background: #000; padding:14px; border-radius:8px; border:2px solid var(--neon-blue); margin-bottom:15px; font-size:1rem; text-align:left;"></div>
+            <div style="display:flex; gap:10px; width:85%; max-width:420px;">
+                <button class="sci-btn" onclick="closeReport()" style="flex:1;">RETRY MISSION</button>
+                <button class="sci-btn sci-btn-purple" onclick="sendToMissionLog()" style="flex:1;">📡 MISSION LOG</button>
+            </div>
+        </div>
+
+        <div class="header-bar">
+            <h1>VERB STRIKER</h1>
+            <span class="ai-status-pill" id="ai-status">⚡ LEVEL: NORMAL</span>
+        </div>
+
+        <div class="hud-stats">
+            <div class="hud-card" style="border-left-color: var(--neon-yellow);">
+                <label>SCORE</label>
+                <span id="score" style="color: var(--neon-yellow);">0</span>
+            </div>
+            <div class="hud-card" style="border-left-color: var(--neon-green);">
+                <label>COMBO</label>
+                <span id="streak" style="color: var(--neon-green);">0 🔥</span>
+            </div>
+            <div class="hud-card" style="border-left-color: var(--neon-pink);">
+                <label>SHIELD</label>
+                <span id="lives">⚡⚡⚡</span>
+            </div>
+            <div class="hud-card" style="border-left-color: var(--neon-blue);">
+                <label>COINS</label>
+                <span id="coins" style="color: var(--neon-blue);">🪙 0</span>
+            </div>
+        </div>
+
+        <div class="energy-timer-wrapper">
+            <div class="energy-timer-fill" id="timer-bar"></div>
+        </div>
+
+        <div class="battle-display">
+            <div class="target-word" id="target-es">LOADING...</div>
+            <div class="infinitive-hint">
+                INFINITIVE: <strong id="target-inf">-</strong>
+                <button onclick="speakVerb()" style="background:none; border:none; cursor:pointer; font-size:1.6rem; margin-left:8px;" title="Listen Audio">🔊</button>
+            </div>
+        </div>
+
+        <div id="sentence-box" class="sentence-box">
+            <p id="sentence-text">Complete context...</p>
+            <input type="text" id="sentence-input" autocomplete="off" placeholder="Missing verb...">
+            <button class="sci-btn" onclick="checkSentenceBonus()" style="padding:6px 12px; font-size:0.9rem;">FIRE</button>
+        </div>
+
+        <form id="verb-form" onsubmit="checkAnswer(event)">
+            <div class="action-inputs">
+                <div class="input-group">
+                    <label>PAST SIMPLE</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="input-past" autocomplete="off" required>
+                        <button type="button" class="voice-btn" onclick="listenVoice('input-past')">🎙️</button>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>PAST PARTICIPLE</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="input-part" autocomplete="off" required>
+                        <button type="button" class="voice-btn" onclick="listenVoice('input-part')">🎙️</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls-grid">
+                <button type="submit" class="sci-btn">STRIKE! (ENTER)</button>
+                <button type="button" class="sci-btn sci-btn-amber" onclick="getHint()">💡 HINT</button>
+                <button type="button" class="sci-btn sci-btn-red" onclick="endGame()">ABORT</button>
+            </div>
+        </form>
+
+        <div id="feedback" class="status-msg"></div>
+    </div>
+
+    <div class="panel-box">
+        <div class="leaderboard-title">
+            <span>🏆 HALL OF FAME</span>
+            <button onclick="openTeacherPanel()" style="background:none; border:1px solid var(--text-sub); color:var(--text-sub); border-radius:4px; padding:4px 8px; cursor:pointer; font-size:0.8rem; font-weight:700;">🔒 TEACHER</button>
+        </div>
+        <div class="leaderboard-subtitle">Saved on THIS device/browser only. On a shared classroom computer everyone's runs stack up here; on personal phones/laptops each pilot sees their own scores.</div>
+
+        <div class="course-tabs">
+            <button class="tab-chip active" onclick="filterLeaderboard('TODOS', this)">ALL</button>
+            <button class="tab-chip" onclick="filterLeaderboard('1º ESO', this)">1º ESO</button>
+            <button class="tab-chip" onclick="filterLeaderboard('2º ESO', this)">2º ESO</button>
+            <button class="tab-chip" onclick="filterLeaderboard('3º ESO', this)">3º ESO</button>
+            <button class="tab-chip" onclick="filterLeaderboard('4º ESO', this)">4º ESO</button>
+        </div>
+
+        <ul class="ranking-list" id="leaderboard">
+            <li class="ranking-item"><span>Scanning data...</span></li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    // STARFIELD
+    const starCanvas = document.getElementById('starfield');
+    const starCtx = starCanvas.getContext('2d');
+    let stars = [];
+
+    function resizeStarfield() {
+        starCanvas.width = window.innerWidth; starCanvas.height = window.innerHeight;
+        stars = Array.from({length: 150}, () => ({
+            x: Math.random() * starCanvas.width, y: Math.random() * starCanvas.height,
+            size: Math.random() * 2.2, speed: Math.random() * 0.6 + 0.2
+        }));
+    }
+    window.addEventListener('resize', resizeStarfield); resizeStarfield();
+
+    function animateStars() {
+        starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height); starCtx.fillStyle = '#ffffff';
+        stars.forEach(star => {
+            star.y += star.speed; if(star.y > starCanvas.height) star.y = 0;
+            starCtx.beginPath(); starCtx.arc(star.x, star.y, star.size, 0, Math.PI * 2); starCtx.fill();
+        });
+        requestAnimationFrame(animateStars);
+    }
+    animateStars();
+
+    // COMPLETE IRREGULAR VERBS DATABASE
+    const verbsDB = [
+        // --- GRUPO -OUGHT / -AUGHT ---
+        { inf: "bring", past: ["brought"], part: ["brought"], es: "traer", group: "OUGHT", sentence: "She ____ extra fuel to the station.", sentenceAns: "brought" },
+        { inf: "buy", past: ["bought"], part: ["bought"], es: "comprar", group: "OUGHT", sentence: "I ____ a new starship last week.", sentenceAns: "bought" },
+        { inf: "catch", past: ["caught"], part: ["caught"], es: "atrapar", group: "OUGHT", sentence: "We ____ the distress signal.", sentenceAns: "caught" },
+        { inf: "fight", past: ["fought"], part: ["fought"], es: "luchar", group: "OUGHT", sentence: "They ____ bravely in space.", sentenceAns: "fought" },
+        { inf: "teach", past: ["taught"], part: ["taught"], es: "enseñar", group: "OUGHT", sentence: "He ____ us how to fly.", sentenceAns: "taught" },
+        { inf: "think", past: ["thought"], part: ["thought"], es: "pensar", group: "OUGHT", sentence: "I ____ about the trajectory.", sentenceAns: "thought" },
+
+        // --- GRUPO -EW / -OWN (-AWN) ---
+        { inf: "blow", past: ["blew"], part: ["blown"], es: "soplar", group: "EW_OWN", sentence: "The solar wind ____ hard.", sentenceAns: "blew" },
+        { inf: "draw", past: ["drew"], part: ["drawn"], es: "dibujar", group: "EW_OWN", sentence: "She ____ a map of Mars.", sentenceAns: "drew" },
+        { inf: "fly", past: ["flew"], part: ["flown"], es: "volar", group: "EW_OWN", sentence: "The pilot ____ through the asteroid belt.", sentenceAns: "flew" },
+        { inf: "grow", past: ["grew"], part: ["grown"], es: "crecer", group: "EW_OWN", sentence: "Our fleet ____ in size.", sentenceAns: "grew" },
+        { inf: "know", past: ["knew"], part: ["known"], es: "saber / conocer", group: "EW_OWN", sentence: "He ____ the emergency codes.", sentenceAns: "knew" },
+        { inf: "throw", past: ["threw"], part: ["thrown"], es: "lanzar", group: "EW_OWN", sentence: "They ____ the probe into orbit.", sentenceAns: "threw" },
+
+        // --- GRUPO INVARIABLE ---
+        { inf: "cost", past: ["cost"], part: ["cost"], es: "costar", group: "INVARIANT", sentence: "The shield ____ 50 credits.", sentenceAns: "cost" },
+        { inf: "cut", past: ["cut"], part: ["cut"], es: "cortar", group: "INVARIANT", sentence: "I ____ the power line.", sentenceAns: "cut" },
+        { inf: "hit", past: ["hit"], part: ["hit"], es: "golpear", group: "INVARIANT", sentence: "A meteor ____ the engine.", sentenceAns: "hit" },
+        { inf: "hurt", past: ["hurt"], part: ["hurt"], es: "doler / herir", group: "INVARIANT", sentence: "Nobody was ____ in the landing.", sentenceAns: "hurt" },
+        { inf: "let", past: ["let"], part: ["let"], es: "permitir / dejar", group: "INVARIANT", sentence: "They ____ us dock at the base.", sentenceAns: "let" },
+        { inf: "put", past: ["put"], part: ["put"], es: "poner", group: "INVARIANT", sentence: "She ____ the battery inside.", sentenceAns: "put" },
+        { inf: "read", past: ["read"], part: ["read"], es: "leer", group: "INVARIANT", sentence: "I ____ the mission parameters.", sentenceAns: "read" },
+        { inf: "set", past: ["set"], part: ["set"], es: "establecer", group: "INVARIANT", sentence: "We ____ the coordinates.", sentenceAns: "set" },
+        { inf: "shut", past: ["shut"], part: ["shut"], es: "cerrar", group: "INVARIANT", sentence: "Please ____ the airlock door.", sentenceAns: "shut" },
+        { inf: "spread", past: ["spread"], part: ["spread"], es: "extender", group: "INVARIANT", sentence: "The signal ____ rapidly.", sentenceAns: "spread" },
+
+        // --- GRUPO I - A - U ---
+        { inf: "begin", past: ["began"], part: ["begun"], es: "empezar", group: "I_A_U", sentence: "The countdown ____ at dawn.", sentenceAns: "began" },
+        { inf: "drink", past: ["drank"], part: ["drunk"], es: "beber", group: "I_A_U", sentence: "The crew ____ purified water.", sentenceAns: "drank" },
+        { inf: "ring", past: ["rang"], part: ["rung"], es: "sonar / llamar", group: "I_A_U", sentence: "The proximity alarm ____ loudly.", sentenceAns: "rang" },
+        { inf: "run", past: ["ran"], part: ["run"], es: "correr", group: "I_A_U", sentence: "The rover ____ out of battery.", sentenceAns: "ran" },
+        { inf: "sing", past: ["sang"], part: ["sung"], es: "cantar", group: "I_A_U", sentence: "They ____ victory songs.", sentenceAns: "sang" },
+        { inf: "sink", past: ["sank"], part: ["sunk"], es: "hundir", group: "I_A_U", sentence: "The satellite ____ into Jupiter.", sentenceAns: "sank" },
+        { inf: "swim", past: ["swam"], part: ["swum"], es: "nadar", group: "I_A_U", sentence: "We ____ in zero gravity pools.", sentenceAns: "swam" },
+
+        // --- GRUPO PARTICIPIO EN -EN ---
+        { inf: "bite", past: ["bit"], part: ["bitten"], es: "morder", group: "EN_PARTICIPLE", sentence: "An alien creature ____ the cable.", sentenceAns: "bit" },
+        { inf: "break", past: ["broke"], part: ["broken"], es: "romper", group: "EN_PARTICIPLE", sentence: "He ____ the main radar.", sentenceAns: "broke" },
+        { inf: "choose", past: ["chose"], part: ["chosen"], es: "elegir", group: "EN_PARTICIPLE", sentence: "They ____ a safer route.", sentenceAns: "chose" },
+        { inf: "drive", past: ["drove"], part: ["driven"], es: "conducir", group: "EN_PARTICIPLE", sentence: "She ____ the lunar vehicle.", sentenceAns: "drove" },
+        { inf: "eat", past: ["ate"], part: ["eaten"], es: "comer", group: "EN_PARTICIPLE", sentence: "We ____ synthetic food.", sentenceAns: "ate" },
+        { inf: "fall", past: ["fell"], part: ["fallen"], es: "caer", group: "EN_PARTICIPLE", sentence: "The meteoroid ____ on the moon.", sentenceAns: "fell" },
+        { inf: "forget", past: ["forgot"], part: ["forgotten"], es: "olvidar", group: "EN_PARTICIPLE", sentence: "I ____ my helmet key.", sentenceAns: "forgot" },
+        { inf: "freeze", past: ["froze"], part: ["frozen"], es: "congelar", group: "EN_PARTICIPLE", sentence: "Water ____ instantly in space.", sentenceAns: "froze" },
+        { inf: "give", past: ["gave"], part: ["given"], es: "dar", group: "EN_PARTICIPLE", sentence: "The commander ____ clear orders.", sentenceAns: "gave" },
+        { inf: "hide", past: ["hid"], part: ["hidden"], es: "esconder", group: "EN_PARTICIPLE", sentence: "They ____ behind the nebula.", sentenceAns: "hid" },
+        { inf: "ride", past: ["rode"], part: ["ridden"], es: "montar", group: "EN_PARTICIPLE", sentence: "He ____ the shuttle.", sentenceAns: "rode" },
+        { inf: "rise", past: ["rose"], part: ["risen"], es: "subir / levantarse", group: "EN_PARTICIPLE", sentence: "The sun ____ over Earth.", sentenceAns: "rose" },
+        { inf: "see", past: ["saw"], part: ["seen"], es: "ver", group: "EN_PARTICIPLE", sentence: "I ____ a bright comet.", sentenceAns: "saw" },
+        { inf: "speak", past: ["spoke"], part: ["spoken"], es: "hablar", group: "EN_PARTICIPLE", sentence: "She ____ with Mission Control.", sentenceAns: "spoke" },
+        { inf: "steal", past: ["stole"], part: ["stolen"], es: "robar", group: "EN_PARTICIPLE", sentence: "Pirates ____ the cargo.", sentenceAns: "stole" },
+        { inf: "take", past: ["took"], part: ["taken"], es: "tomar / llevar", group: "EN_PARTICIPLE", sentence: "He ____ control of the ship.", sentenceAns: "took" },
+        { inf: "wake", past: ["woke"], part: ["woken"], es: "despertar", group: "EN_PARTICIPLE", sentence: "I ____ up in cryo-sleep.", sentenceAns: "woke" },
+        { inf: "write", past: ["wrote"], part: ["written"], es: "escribir", group: "EN_PARTICIPLE", sentence: "She ____ a log entry.", sentenceAns: "wrote" },
+
+        // --- GRUPO CAMBIO DE -D A -T ---
+        { inf: "bend", past: ["bent"], part: ["bent"], es: "doblar", group: "D_TO_T", sentence: "The heavy crash ____ the wing.", sentenceAns: "bent" },
+        { inf: "build", past: ["built"], part: ["built"], es: "construir", group: "D_TO_T", sentence: "Engineers ____ the space station.", sentenceAns: "built" },
+        { inf: "lend", past: ["lent"], part: ["lent"], es: "prestar", group: "D_TO_T", sentence: "He ____ me his laser scanner.", sentenceAns: "lent" },
+        { inf: "send", past: ["sent"], part: ["sent"], es: "enviar", group: "D_TO_T", sentence: "We ____ a probe to Saturn.", sentenceAns: "sent" },
+        { inf: "spend", past: ["spent"], part: ["spent"], es: "gastar / pasar tiempo", group: "D_TO_T", sentence: "They ____ three years in deep space.", sentenceAns: "spent" },
+
+        // --- GRUPO CAMBIO VOCÁLICO / OTROS FRECUENTES ---
+        { inf: "be", past: ["was", "were"], part: ["been"], es: "ser / estar", group: "vowel_change", sentence: "They ____ on the space station.", sentenceAns: "were" },
+        { inf: "become", past: ["became"], part: ["become"], es: "llegar a ser", group: "vowel_change", sentence: "He ____ a decorated captain.", sentenceAns: "became" },
+        { inf: "come", past: ["came"], part: ["come"], es: "venir", group: "vowel_change", sentence: "Reinforcements ____ in time.", sentenceAns: "came" },
+        { inf: "do", past: ["did"], part: ["done"], es: "hacer", group: "vowel_change", sentence: "We ____ our best.", sentenceAns: "did" },
+        { inf: "feel", past: ["felt"], part: ["felt"], es: "sentir", group: "vowel_change", sentence: "I ____ a sudden vibration.", sentenceAns: "felt" },
+        { inf: "find", past: ["found"], part: ["found"], es: "encontrar", group: "vowel_change", sentence: "They ____ ice on Mars.", sentenceAns: "found" },
+        { inf: "get", past: ["got"], part: ["got", "gotten"], es: "conseguir / obtener", group: "vowel_change", sentence: "She ____ the clearance code.", sentenceAns: "got" },
+        { inf: "go", past: ["went"], part: ["gone"], es: "ir", group: "vowel_change", sentence: "The team ____ to the dark side of the moon.", sentenceAns: "went" },
+        { inf: "have", past: ["had"], part: ["had"], es: "tener", group: "vowel_change", sentence: "We ____ a fuel leak.", sentenceAns: "had" },
+        { inf: "hear", past: ["heard"], part: ["heard"], es: "oír", group: "vowel_change", sentence: "I ____ an explosion.", sentenceAns: "heard" },
+        { inf: "keep", past: ["kept"], part: ["kept"], es: "guardar / mantener", group: "vowel_change", sentence: "He ____ the door locked.", sentenceAns: "kept" },
+        { inf: "leave", past: ["left"], part: ["left"], es: "dejar / salir", group: "vowel_change", sentence: "The rocket ____ orbit.", sentenceAns: "left" },
+        { inf: "lose", past: ["lost"], part: ["lost"], es: "perder", group: "vowel_change", sentence: "We ____ gravity for a moment.", sentenceAns: "lost" },
+        { inf: "make", past: ["made"], part: ["made"], es: "hacer / fabricar", group: "vowel_change", sentence: "They ____ a new module.", sentenceAns: "made" },
+        { inf: "meet", past: ["met"], part: ["met"], es: "conocer / reunirse", group: "vowel_change", sentence: "I ____ the alien ambassador.", sentenceAns: "met" },
+        { inf: "pay", past: ["paid"], part: ["paid"], es: "pagar", group: "vowel_change", sentence: "He ____ for the supplies.", sentenceAns: "paid" },
+        { inf: "say", past: ["said"], part: ["said"], es: "decir", group: "vowel_change", sentence: "The pilot ____ everything was OK.", sentenceAns: "said" },
+        { inf: "sell", past: ["sold"], part: ["sold"], es: "vender", group: "vowel_change", sentence: "They ____ spare engine parts.", sentenceAns: "sold" },
+        { inf: "sit", past: ["sat"], part: ["sat"], es: "sentarse", group: "vowel_change", sentence: "She ____ in the captain's chair.", sentenceAns: "sat" },
+        { inf: "sleep", past: ["slept"], part: ["slept"], es: "dormir", group: "vowel_change", sentence: "We ____ for eight hours.", sentenceAns: "slept" },
+        { inf: "stand", past: ["stood"], part: ["stood"], es: "estar de pie", group: "vowel_change", sentence: "The astronaut ____ on Titan.", sentenceAns: "stood" },
+        { inf: "tell", past: ["told"], part: ["told"], es: "contar / decir", group: "vowel_change", sentence: "He ____ us the navigation plan.", sentenceAns: "told" },
+        { inf: "understand", past: ["understood"], part: ["understood"], es: "entender", group: "vowel_change", sentence: "They ____ the instructions.", sentenceAns: "understood" },
+        { inf: "win", past: ["won"], part: ["won"], es: "ganar", group: "vowel_change", sentence: "Our squad ____ the trophy.", sentenceAns: "won" }
+    ];
+
+    let currentPool = [], currentVerb = null, score = 0, streak = 0, lives = 3, coins = 0;
+    let playerName = "", playerCourse = "", rawLeaderboardData = [];
+    let failedVerbs = [], totalAttempts = 0, totalSuccess = 0;
+    let wordStartTime = 0, timerInterval = null, timeLimitSeconds = 45;
+
+    const LEADERBOARD_KEY = 'verbStrikerLeaderboard';
+    const TEACHER_PIN = "1234";
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(freq, type, duration) {
+        if(audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+        osc.type = type; osc.frequency.value = freq; osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(); gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration); osc.stop(audioCtx.currentTime + duration);
+    }
+
+    window.onload = function() {
+        coins = parseInt(localStorage.getItem('verbCoins') || '0');
+        updateCoinDisplay();
+        loadLeaderboard();
+        checkRevengeButton();
+    };
+
+    function updateCoinDisplay() {
+        document.getElementById('coins').innerText = `🪙 ${coins}`;
+        document.getElementById('store-coins').innerText = coins;
+        localStorage.setItem('verbCoins', coins);
+    }
+
+    function checkRevengeButton() {
+        const storedErrors = JSON.parse(localStorage.getItem('verbFailedStorage') || '[]');
+        document.getElementById('btn-revenge').style.display = storedErrors.length > 0 ? 'inline-block' : 'none';
+    }
+
+    function startGame(isRevenge = false) {
+        const nameInput = document.getElementById('player-name').value.trim();
+        if(!nameInput) return alert("Enter your Pilot Callsign!");
+
+        playerName = nameInput; playerCourse = document.getElementById('player-course').value;
+        const selectedGroup = document.getElementById('phonetic-group').value;
+
+        document.getElementById('player-modal').style.display = 'none';
+        score = 0; streak = 0; lives = 3; failedVerbs = []; totalAttempts = 0; totalSuccess = 0; timeLimitSeconds = 45;
+
+        if(isRevenge) {
+            const storedErrors = JSON.parse(localStorage.getItem('verbFailedStorage') || '[]');
+            currentPool = verbsDB.filter(v => storedErrors.includes(v.inf));
+        } else {
+            currentPool = selectedGroup === 'ALL' ? [...verbsDB] : verbsDB.filter(v => v.group === selectedGroup);
+        }
+
+        currentPool.sort(() => Math.random() - 0.5);
+        nextVerb();
+    }
+
+    function startTimer() {
+        clearInterval(timerInterval);
+        let timeLeft = timeLimitSeconds;
+        const timerBar = document.getElementById('timer-bar');
+        timerBar.style.width = '100%';
+
+        timerInterval = setInterval(() => {
+            timeLeft -= 0.1;
+            timerBar.style.width = `${Math.max(0, (timeLeft / timeLimitSeconds) * 100)}%`;
+            if(timeLeft <= 0) { clearInterval(timerInterval); handleTimeout(); }
+        }, 100);
+    }
+
+    function handleTimeout() {
+        totalAttempts++; streak = 0; lives--;
+        playSound(120, 'sawtooth', 0.4);
+        recordFailure(currentVerb.inf);
+
+        const fb = document.getElementById('feedback');
+        fb.style.display = 'block'; fb.className = 'status-msg incorrect'; fb.innerText = '⏱️ TIME EXPIRED!';
+        setTimeout(nextVerb, 1500);
+        updateStats();
+    }
+
+    function recordFailure(verbInf) {
+        if(!failedVerbs.includes(verbInf)) failedVerbs.push(verbInf);
+        let stored = JSON.parse(localStorage.getItem('verbFailedStorage') || '[]');
+        if(!stored.includes(verbInf)) stored.push(verbInf);
+        localStorage.setItem('verbFailedStorage', JSON.stringify(stored));
+        checkRevengeButton();
+    }
+
+    function speakVerb() {
+        if(!currentVerb) return;
+        const msg = new SpeechSynthesisUtterance(currentVerb.inf);
+        msg.lang = 'en-GB'; window.speechSynthesis.speak(msg);
+    }
+
+    function listenVoice(inputId) {
+        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+            return alert("Voice recognition not supported in this browser.");
+        }
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'en-US';
+        recognition.start();
+
+        recognition.onresult = function(event) {
+            document.getElementById(inputId).value = event.results[0][0].transcript.toLowerCase().trim();
+        };
+    }
+
+    function updateStats() {
+        document.getElementById('score').innerText = score;
+        document.getElementById('streak').innerText = streak;
+        document.getElementById('lives').innerText = '⚡'.repeat(lives);
+        updateCoinDisplay();
+    }
+
+    function nextVerb() {
+        clearInterval(timerInterval);
+        document.getElementById('sentence-box').style.display = 'none';
+        document.getElementById('verb-form').style.display = 'block';
+
+        if(currentPool.length === 0 || lives <= 0) { endGame(); return; }
+
+        currentVerb = currentPool.pop();
+        document.getElementById('target-es').innerText = currentVerb.es.toUpperCase();
+        document.getElementById('target-inf').innerText = currentVerb.inf.toUpperCase();
+        document.getElementById('input-past').value = '';
+        document.getElementById('input-part').value = '';
+        document.getElementById('feedback').style.display = 'none';
+        document.getElementById('input-past').focus();
+
+        wordStartTime = Date.now();
+        startTimer();
+        updateStats();
+    }
+
+    function checkAnswer(e) {
+        e.preventDefault();
+        clearInterval(timerInterval);
+        totalAttempts++;
+
+        const p = document.getElementById('input-past').value.trim().toLowerCase();
+        const pt = document.getElementById('input-part').value.trim().toLowerCase();
+
+        if(currentVerb.past.includes(p) && currentVerb.part.includes(pt)) {
+            totalSuccess++;
+            const pointsGained = 5 + (streak * 1);
+            score += pointsGained; streak++; coins += 5;
+
+            let stored = JSON.parse(localStorage.getItem('verbFailedStorage') || '[]');
+            localStorage.setItem('verbFailedStorage', JSON.stringify(stored.filter(v => v !== currentVerb.inf)));
+
+            playSound(600, 'square', 0.15);
+            if(streak % 5 === 0) triggerConfetti();
+
+            if(Math.random() > 0.4 && currentVerb.sentence) {
+                triggerSentenceBonus();
+            } else {
+                const fb = document.getElementById('feedback');
+                fb.style.display = 'block'; fb.className = 'status-msg correct';
+                fb.innerText = `HIT! +${pointsGained} PTS`;
+                setTimeout(nextVerb, 800);
+            }
+        } else {
+            streak = 0; lives--;
+            playSound(150, 'sawtooth', 0.3);
+            recordFailure(currentVerb.inf);
+
+            const fb = document.getElementById('feedback');
+            fb.style.display = 'block'; fb.className = 'status-msg incorrect';
+            fb.innerHTML = `MISSED! ${currentVerb.past[0].toUpperCase()} / ${currentVerb.part[0].toUpperCase()}`;
+            currentPool.unshift(currentVerb);
+            setTimeout(nextVerb, 2000);
+        }
+        updateStats();
+    }
+
+    function triggerSentenceBonus() {
+        document.getElementById('verb-form').style.display = 'none';
+        const box = document.getElementById('sentence-box');
+        box.style.display = 'block';
+        document.getElementById('sentence-text').innerText = currentVerb.sentence;
+        document.getElementById('sentence-input').value = '';
+        document.getElementById('sentence-input').focus();
+    }
+
+    function checkSentenceBonus() {
+        const ans = document.getElementById('sentence-input').value.trim().toLowerCase();
+        if(ans === currentVerb.sentenceAns.toLowerCase()) {
+            score += 10; coins += 5;
+            playSound(800, 'square', 0.2);
+            alert("BONUS COMPLETE! +10 PTS");
+        } else {
+            alert(`MISSED! Correct: ${currentVerb.sentenceAns}`);
+        }
+        nextVerb();
+    }
+
+    function getHint() {
+        if(!currentVerb) return;
+        document.getElementById('input-past').value = currentVerb.past[0].substring(0, 1);
+        document.getElementById('input-part').value = currentVerb.part[0].substring(0, 1);
+    }
+
+    function openStore() {
+        document.getElementById('player-modal').style.display = 'none';
+        document.getElementById('store-modal').style.display = 'flex';
+    }
+
+    function closeStore() {
+        document.getElementById('store-modal').style.display = 'none';
+        document.getElementById('player-modal').style.display = 'flex';
+    }
+
+    function buyItem(item, price) {
+        if(coins < price) return alert("Not enough Space Coins!");
+        coins -= price;
+        updateCoinDisplay();
+
+        if(item === 'shield') { lives += 1; alert("Extra Shield Purchased!"); }
+        if(item === 'theme_purple') {
+            document.documentElement.style.setProperty('--panel-border', '#b000ff');
+            alert("Purple Neon Theme Applied!");
+        }
+    }
+
+    function endGame() {
+        clearInterval(timerInterval);
+        saveScoreLocally();
+        showReport();
+    }
+
+    function showReport() {
+        const reportModal = document.getElementById('report-modal');
+        const precision = totalAttempts > 0 ? Math.round((totalSuccess / totalAttempts) * 100) : 0;
+        document.getElementById('report-score').innerText = `SCORE: ${score} | ACCURACY: ${precision}%`;
+
+        const reportErrors = document.getElementById('report-errors');
+        if(failedVerbs.length === 0) {
+            reportErrors.innerHTML = '<p style="color:var(--neon-green)">PERFECT RUN! ZERO ERRORS DETECTED.</p>';
+        } else {
+            let html = '<strong>TARGETS FOR REVENGE MODE:</strong><br>';
+            failedVerbs.forEach(v => { html += `• ${v.toUpperCase()}<br>`; });
+            reportErrors.innerHTML = html;
+        }
+        reportModal.style.display = 'flex';
+    }
+
+    function closeReport() {
+        document.getElementById('report-modal').style.display = 'none';
+        document.getElementById('player-modal').style.display = 'flex';
+        checkRevengeButton();
+    }
+
+    const MISSION_LOG_URL = 'https://inorderwords.netlify.app/mission-log.html';
+    function sendToMissionLog() {
+        const payload = { kind:'game', tool:'Verb Striker', name: playerName, course: playerCourse, score: score, date: new Date().toISOString() };
+        const encoded = encodeURIComponent(btoa(JSON.stringify(payload)));
+        window.open(`${MISSION_LOG_URL}?import=${encoded}`, '_blank', 'noopener');
+    }
+
+    function saveScoreLocally() {
+        if(score <= 0) return;
+        const precision = totalAttempts > 0 ? Math.round((totalSuccess / totalAttempts) * 100) : 0;
+        let stored = JSON.parse(localStorage.getItem(LEADERBOARD_KEY) || '[]');
+        stored.push({
+            nombre: playerName,
+            curso: playerCourse,
+            puntuacion: score,
+            precision: precision,
+            fecha: new Date().toISOString()
+        });
+        const bestByKey = {};
+        stored.forEach(entry => {
+            const key = entry.nombre.toLowerCase() + '|' + entry.curso;
+            if(!bestByKey[key] || entry.puntuacion > bestByKey[key].puntuacion) bestByKey[key] = entry;
+        });
+        stored = Object.values(bestByKey).sort((a, b) => b.puntuacion - a.puntuacion).slice(0, 100);
+        localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(stored));
+        rawLeaderboardData = stored;
+        const activeTab = document.querySelector('.tab-chip.active');
+        renderLeaderboard(activeTab ? activeTab.textContent.trim() === 'ALL' ? 'TODOS' : activeTab.textContent.trim() : 'TODOS');
+    }
+
+    function loadLeaderboard() {
+        rawLeaderboardData = JSON.parse(localStorage.getItem(LEADERBOARD_KEY) || '[]')
+            .sort((a, b) => b.puntuacion - a.puntuacion);
+        renderLeaderboard('TODOS');
+    }
+
+    function filterLeaderboard(course, btn) {
+        document.querySelectorAll('.tab-chip').forEach(b => b.classList.remove('active'));
+        if(btn) btn.classList.add('active');
+        renderLeaderboard(course);
+    }
+
+    function renderLeaderboard(course) {
+        const list = document.getElementById('leaderboard'); list.innerHTML = '';
+        let filtered = course === 'TODOS' ? rawLeaderboardData : rawLeaderboardData.filter(i => i.curso === course);
+
+        if(!filtered || filtered.length === 0) { list.innerHTML = '<li class="ranking-item"><span>NO RECORDS YET — be the first pilot!</span></li>'; return; }
+        filtered.forEach((item, index) => {
+            const isMe = playerName && item.nombre.toLowerCase() === playerName.toLowerCase() && item.curso === playerCourse;
+            list.innerHTML += `<li class="ranking-item${isMe ? ' me' : ''}"><span>${index + 1}. ${item.nombre.toUpperCase()} (${item.curso})</span><strong>${item.puntuacion} PTS</strong></li>`;
+        });
+    }
+
+    function openTeacherPanel() {
+        if(prompt("TEACHER PIN:") === TEACHER_PIN) exportToCSV();
+    }
+
+    async function exportToCSV() {
+        let csvContent = "Rank,Name,Grade,Score,Accuracy,Date\n";
+        rawLeaderboardData.forEach((row, index) => { csvContent += `${index + 1},"${row.nombre}","${row.curso}",${row.puntuacion},${row.precision || ''},${row.fecha || ''}\n`; });
+        const filename = `Grades_${new Date().toISOString().slice(0,10)}.csv`;
+
+        const downloads = (window.claude && window.claude.use) ? await window.claude.use("downloads") : null;
+        if(!downloads) {
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = filename;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            return;
+        }
+        try {
+            await downloads.save({ filename, data: csvContent });
+        } catch(err) {
+            if(err && err.code === 'declined') return;
+            alert("Couldn't save the file: " + (err && err.message ? err.message : 'unknown error'));
+        }
+    }
+
+    function triggerConfetti() {
+        const canvas = document.getElementById('confetti'), ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particles = Array.from({length: 40}, () => ({
+            x: Math.random() * canvas.width, y: 0, r: Math.random() * 6 + 2, d: Math.random() * 10,
+            color: `hsl(${Math.random() * 360}, 100%, 50%)`
+        })), angle = 0;
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fillStyle = p.color; ctx.fill();
+                p.y += Math.cos(angle + p.d) + 1 + p.r / 2; p.x += Math.sin(angle) * 2;
+            });
+            angle += 0.01;
+            if (particles.some(p => p.y < canvas.height)) requestAnimationFrame(draw);
+            else ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        draw();
+    }
+</script>
+
+</body></html>
