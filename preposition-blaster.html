@@ -1,0 +1,408 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>PREPOSITION BLASTER</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --neon-blue: #00f3ff; --neon-pink: #ff0055; --neon-purple: #b000ff;
+        --neon-yellow: #ffe600; --neon-green: #00ff66;
+        --bg-dark: #050612; --panel-bg: rgba(10, 14, 35, 0.90); --panel-border: var(--neon-blue);
+        --text-main: #ffffff; --text-sub: #a5b4fc;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Rajdhani', sans-serif; }
+    html, body { width: 100vw; height: 100vh; overflow: hidden; background-color: var(--bg-dark); color: var(--text-main); }
+    #starfield { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+
+    .app-viewport { position: relative; z-index: 2; width: 100vw; height: 100vh; padding: 24px; display: grid; grid-template-columns: 2.3fr 1fr; gap: 24px; }
+    .panel-box {
+        background: var(--panel-bg); border: 3px solid var(--panel-border); border-radius: 16px; padding: 24px;
+        box-shadow: 0 0 35px rgba(0, 243, 255, 0.2), inset 0 0 20px rgba(0, 243, 255, 0.1);
+        backdrop-filter: blur(10px); display: flex; flex-direction: column; justify-content: space-between; position: relative;
+    }
+    .header-bar { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid rgba(0, 243, 255, 0.3); padding-bottom: 10px; }
+    h1 { font-family: 'Orbitron', sans-serif; font-size: 2rem; color: var(--neon-yellow); text-shadow: 0 0 12px var(--neon-yellow); }
+    .ai-status-pill { background: rgba(176, 0, 255, 0.3); border: 2px solid var(--neon-purple); color: #e2aeff; font-family: 'Orbitron'; padding: 6px 14px; border-radius: 20px; font-size: 0.95rem; font-weight: 800; }
+
+    .hud-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 10px 0; }
+    .hud-card { background: rgba(0, 0, 0, 0.7); border: 2px solid rgba(255, 255, 255, 0.15); border-left: 5px solid var(--neon-blue); padding: 8px 12px; border-radius: 8px; }
+    .hud-card label { display: block; font-size: 0.85rem; color: var(--text-sub); font-family: 'Orbitron'; font-weight: 700; }
+    .hud-card span { font-size: 1.8rem; font-weight: 800; font-family: 'Orbitron'; }
+
+    .energy-timer-wrapper { width: 100%; height: 14px; background: #000; border: 2px solid var(--neon-blue); border-radius: 7px; padding: 2px; margin-bottom: 14px; }
+    .energy-timer-fill { height: 100%; width: 100%; background: linear-gradient(90deg, var(--neon-green), var(--neon-yellow), var(--neon-pink)); border-radius: 4px; transition: width 0.1s linear; }
+
+    .battle-display { background: radial-gradient(circle, rgba(0,243,255,0.15) 0%, rgba(0,0,0,0.85) 100%); border: 2px dashed rgba(0, 243, 255, 0.4); border-radius: 12px; padding: 22px; text-align: center; margin-bottom: 16px; }
+    .sentence { font-family: 'Orbitron', sans-serif; font-size: 1.7rem; font-weight: 800; color: #fff; line-height: 1.5; }
+    .sentence .blank { display:inline-block; min-width:64px; border-bottom:3px solid var(--neon-yellow); color: var(--neon-yellow); }
+    .es-hint { margin-top:10px; font-size: 1rem; font-weight: 700; color: var(--text-sub); }
+
+    .asteroid-field { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .asteroid {
+        background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.12), rgba(0,0,0,0.4) 70%);
+        border: 3px solid var(--neon-blue); border-radius: 50%; aspect-ratio:1/1;
+        display:flex; align-items:center; justify-content:center; cursor:pointer;
+        font-family:'Orbitron'; font-weight:900; font-size:1.3rem; color:#fff;
+        box-shadow: 0 0 18px rgba(0,243,255,0.25); transition: transform .12s ease, border-color .12s ease;
+    }
+    .asteroid:hover{ transform: scale(1.06); border-color: var(--neon-yellow); }
+    .asteroid.correct-flash{ border-color: var(--neon-green); box-shadow:0 0 30px rgba(0,255,102,0.6); }
+    .asteroid.wrong-flash{ border-color: var(--neon-pink); box-shadow:0 0 30px rgba(255,0,85,0.6); }
+
+    .controls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top:16px; }
+    .sci-btn { background: linear-gradient(135deg, var(--neon-blue), #0066ff); border: none; color: #000; font-family: 'Orbitron'; font-weight: 900; padding: 14px; border-radius: 8px; cursor: pointer; font-size: 1.1rem; transition: all 0.2s; box-shadow: 0 0 14px rgba(0, 243, 255, 0.3); }
+    .sci-btn:hover { transform: scale(1.02); filter: brightness(1.2); }
+    .sci-btn-amber { background: linear-gradient(135deg, var(--neon-yellow), #ff9900); }
+    .sci-btn-red { background: linear-gradient(135deg, var(--neon-pink), #990033); color: #fff; }
+
+    .status-msg { padding: 8px; border-radius: 6px; text-align: center; font-family: 'Orbitron'; font-size: 1.1rem; font-weight: 800; display: none; margin-top: 10px; }
+    .status-msg.correct { background: rgba(0, 255, 102, 0.25); border: 2px solid var(--neon-green); color: var(--neon-green); }
+    .status-msg.incorrect { background: rgba(255, 0, 85, 0.25); border: 2px solid var(--neon-pink); color: var(--neon-pink); }
+
+    .leaderboard-title { font-family: 'Orbitron'; font-size: 1.2rem; color: var(--neon-yellow); margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; }
+    .leaderboard-subtitle { font-size: 0.78rem; color: var(--text-sub); margin-bottom: 10px; line-height: 1.4; }
+    .course-tabs { display: flex; gap: 4px; margin-bottom: 10px; overflow-x: auto; }
+    .tab-chip { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.25); color: var(--text-sub); padding: 6px 9px; font-size: 0.78rem; font-weight: 700; border-radius: 6px; cursor: pointer; white-space: nowrap; }
+    .tab-chip.active { background: var(--neon-blue); color: #000; }
+    .ranking-list { list-style: none; overflow-y: auto; max-height: calc(100vh - 260px); }
+    .ranking-item { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255,255,255,0.12); padding: 10px 12px; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; font-size: 1rem; font-weight: 700; }
+    .ranking-item.me { border-color: var(--neon-yellow); box-shadow: 0 0 10px rgba(255,230,0,0.25); }
+
+    .modal-screen { position: absolute; inset: 0; background: rgba(5, 6, 18, 0.96); z-index: 20; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 16px; padding: 24px; text-align: center; }
+    .modal-screen input, .modal-screen select { width: 85%; max-width: 420px; padding: 14px; margin-bottom: 12px; background: #000; border: 2px solid var(--neon-blue); color: #fff; border-radius: 8px; outline: none; font-family: 'Orbitron'; font-size: 1.1rem; }
+    canvas#confetti { position: fixed; inset: 0; pointer-events: none; z-index: 99; }
+
+    @media (max-width: 900px) { .app-viewport { grid-template-columns: 1fr; overflow-y: auto; height: auto; } body { overflow-y: auto; } .asteroid-field{grid-template-columns:repeat(2,1fr);} }
+
+    .ow-home-fab{
+      position:fixed; top:14px; left:14px; z-index:9999;
+      display:flex; align-items:center; gap:7px;
+      background:rgba(10,14,35,0.92);
+      border:1px solid rgba(0,243,255,0.4); border-radius:999px;
+      padding:9px 14px 9px 11px; text-decoration:none;
+      color:#fff; font-family:'Rajdhani',sans-serif; font-weight:700; font-size:12.5px;
+      box-shadow:0 4px 14px rgba(0,0,0,0.45); transition:all .15s ease;
+    }
+    .ow-home-fab:hover{border-color:var(--neon-yellow); background:rgba(255,230,0,0.16);}
+    .ow-home-fab .ic{font-size:15px; line-height:1;}
+    @media (max-width:420px){
+      .ow-home-fab{top:10px; left:10px; padding:8px 12px 8px 10px; font-size:0;}
+      .ow-home-fab .ic{font-size:16px;}
+      .ow-home-fab .lbl{display:none;}
+    }
+</style>
+<a class="ow-home-fab" href="https://inorderwords.netlify.app/" title="Volver a la pagina principal"><span class="ic">🏠</span><span class="lbl">Inicio</span></a>
+<canvas id="starfield"></canvas>
+<canvas id="confetti"></canvas>
+
+<div class="app-viewport">
+    <div class="panel-box">
+        <div id="player-modal" class="modal-screen">
+            <h2 style="font-family:'Orbitron'; color: var(--neon-yellow); font-size: 2rem; margin-bottom: 6px;">PREPOSITION BLASTER</h2>
+            <p style="color: var(--text-sub); margin-bottom: 18px; font-size: 1.05rem;">PILOT CONFIGURATION</p>
+            <input type="text" id="player-name" placeholder="CALLSIGN / NAME" required>
+            <select id="player-course">
+                <option value="1º ESO">1º ESO</option>
+                <option value="2º ESO">2º ESO</option>
+                <option value="3º ESO">3º ESO</option>
+                <option value="4º ESO">4º ESO</option>
+                <option value="1º Bach">1º Bach</option>
+                <option value="2º Bach">2º Bach</option>
+            </select>
+            <select id="level-group">
+                <option value="ALL">ALL DIFFICULTY LEVELS</option>
+                <option value="1">1º ESO — TIME &amp; PLACE (in/on/at)</option>
+                <option value="2">2º ESO — TIME &amp; PLACE (harder)</option>
+                <option value="3">3º ESO — VERB + PREPOSITION</option>
+                <option value="4">4º ESO — ADJECTIVE + PREPOSITION</option>
+                <option value="5">1º Bach — PHRASAL COLLOCATIONS</option>
+                <option value="6">2º Bach — PAU/EBAU LEVEL</option>
+            </select>
+            <div style="display:flex; gap:10px; width:85%; max-width:420px; margin-top:5px;">
+                <button class="sci-btn" onclick="startGame()" style="flex:1;">LAUNCH</button>
+            </div>
+        </div>
+
+        <div id="report-modal" class="modal-screen" style="display:none;">
+            <h2 style="font-family:'Orbitron'; color: var(--neon-pink); font-size: 2.2rem;">MISSION DEBRIEF</h2>
+            <p id="report-score" style="margin: 10px 0; font-size: 1.3rem; font-family:'Orbitron'; color: var(--neon-yellow);"></p>
+            <div id="report-errors" style="width:85%; max-height: 180px; overflow-y:auto; background: #000; padding:14px; border-radius:8px; border:2px solid var(--neon-blue); margin-bottom:15px; font-size:1rem; text-align:left;"></div>
+            <div style="display:flex; gap:10px; width:85%; max-width:420px;">
+                <button class="sci-btn" onclick="closeReport()" style="flex:1;">RETRY MISSION</button>
+                <button class="sci-btn" style="flex:1; background:linear-gradient(135deg,var(--neon-purple),#660099); color:#fff;" onclick="sendToMissionLog()">📡 MISSION LOG</button>
+            </div>
+        </div>
+
+        <div class="header-bar">
+            <h1>🎯 BLASTER</h1>
+            <span class="ai-status-pill" id="level-pill">LEVEL: ALL</span>
+        </div>
+
+        <div class="hud-stats">
+            <div class="hud-card" style="border-left-color: var(--neon-yellow);"><label>SCORE</label><span id="score" style="color: var(--neon-yellow);">0</span></div>
+            <div class="hud-card" style="border-left-color: var(--neon-green);"><label>COMBO</label><span id="streak" style="color: var(--neon-green);">0 🔥</span></div>
+            <div class="hud-card" style="border-left-color: var(--neon-pink);"><label>SHIELD</label><span id="lives">⚡⚡⚡</span></div>
+            <div class="hud-card" style="border-left-color: var(--neon-blue);"><label>ROUND</label><span id="round" style="color: var(--neon-blue);">0/0</span></div>
+        </div>
+
+        <div class="energy-timer-wrapper"><div class="energy-timer-fill" id="timer-bar"></div></div>
+
+        <div class="battle-display">
+            <div class="sentence" id="sentence">LOADING MISSION DATA...</div>
+            <div class="es-hint" id="es-hint"></div>
+        </div>
+
+        <div class="asteroid-field" id="asteroid-field"></div>
+
+        <div id="feedback" class="status-msg"></div>
+        <div class="controls-grid">
+            <button type="button" class="sci-btn sci-btn-amber" onclick="getHint()">💡 HINT</button>
+            <button type="button" class="sci-btn sci-btn-red" onclick="endGame()">ABORT</button>
+        </div>
+    </div>
+
+    <div class="panel-box">
+        <div class="leaderboard-title"><span>🏆 HALL OF FAME</span></div>
+        <div class="leaderboard-subtitle">Saved on this device/browser only. On a shared classroom computer everyone's runs stack up here; on personal phones/laptops each pilot sees their own scores.</div>
+        <div class="course-tabs" id="course-tabs"></div>
+        <ul class="ranking-list" id="leaderboard"><li class="ranking-item"><span>Scanning data...</span></li></ul>
+    </div>
+</div>
+
+<script>
+    const starCanvas = document.getElementById('starfield');
+    const starCtx = starCanvas.getContext('2d');
+    let stars = [];
+    function resizeStarfield() {
+        starCanvas.width = window.innerWidth; starCanvas.height = window.innerHeight;
+        stars = Array.from({length: 150}, () => ({ x: Math.random()*starCanvas.width, y: Math.random()*starCanvas.height, size: Math.random()*2.2, speed: Math.random()*0.6+0.2 }));
+    }
+    window.addEventListener('resize', resizeStarfield); resizeStarfield();
+    function animateStars() {
+        starCtx.clearRect(0,0,starCanvas.width,starCanvas.height); starCtx.fillStyle = '#ffffff';
+        stars.forEach(s => { s.y += s.speed; if(s.y > starCanvas.height) s.y = 0; starCtx.beginPath(); starCtx.arc(s.x,s.y,s.size,0,Math.PI*2); starCtx.fill(); });
+        requestAnimationFrame(animateStars);
+    }
+    animateStars();
+
+    const PREP_DB = [
+        { level:1, sentence:"I usually get up ___ 7 o'clock.", answer:"at", options:["at","on","in","for"], es:"Exact time → AT" },
+        { level:1, sentence:"My birthday is ___ July.", answer:"in", options:["in","on","at","by"], es:"Month/year → IN" },
+        { level:1, sentence:"We have English ___ Mondays.", answer:"on", options:["on","in","at","with"], es:"Day of the week → ON" },
+        { level:1, sentence:"The keys are ___ the table.", answer:"on", options:["on","in","at","under"], es:"Surface → ON" },
+        { level:1, sentence:"There's some milk ___ the fridge.", answer:"in", options:["in","on","at","to"], es:"Inside → IN" },
+        { level:1, sentence:"She is ___ home right now.", answer:"at", options:["at","in","on","for"], es:"AT HOME is a fixed expression" },
+        { level:2, sentence:"The shop closes ___ midnight.", answer:"at", options:["at","in","on","from"], es:"Exact time → AT" },
+        { level:2, sentence:"I was born ___ 2011.", answer:"in", options:["in","on","at","since"], es:"Year → IN" },
+        { level:2, sentence:"We'll finish the project ___ Friday.", answer:"by", options:["by","until","at","in"], es:"'At the latest' → BY" },
+        { level:2, sentence:"The cat is hiding ___ the sofa.", answer:"under", options:["under","on","in","over"], es:"Underneath → UNDER" },
+        { level:2, sentence:"He lives ___ the corner of the street.", answer:"at", options:["at","in","on","by"], es:"Specific point → AT" },
+        { level:2, sentence:"I'll see you ___ the morning.", answer:"in", options:["in","on","at","by"], es:"Part of the day → IN" },
+        { level:3, sentence:"Can you listen ___ me for a second?", answer:"to", options:["to","at","for","with"], es:"listen TO" },
+        { level:3, sentence:"I'm waiting ___ the bus.", answer:"for", options:["for","to","at","of"], es:"wait FOR" },
+        { level:3, sentence:"She arrived ___ the airport at 6.", answer:"at", options:["at","to","in","on"], es:"arrive AT (a specific place)" },
+        { level:3, sentence:"We arrived ___ Madrid last night.", answer:"in", options:["in","at","to","on"], es:"arrive IN (a city/country)" },
+        { level:3, sentence:"Look ___ that amazing sunset!", answer:"at", options:["at","to","for","with"], es:"look AT" },
+        { level:3, sentence:"This song reminds me ___ my holidays.", answer:"of", options:["of","from","to","about"], es:"remind someone OF" },
+        { level:4, sentence:"I'm really interested ___ astronomy.", answer:"in", options:["in","on","for","at"], es:"interested IN" },
+        { level:4, sentence:"She's very good ___ maths.", answer:"at", options:["at","in","for","with"], es:"good AT" },
+        { level:4, sentence:"He's afraid ___ spiders.", answer:"of", options:["of","from","for","about"], es:"afraid OF" },
+        { level:4, sentence:"This result depends ___ the weather.", answer:"on", options:["on","of","from","in"], es:"depend ON" },
+        { level:4, sentence:"My sister is married ___ a pilot.", answer:"to", options:["to","with","for","of"], es:"married TO" },
+        { level:4, sentence:"Are you satisfied ___ your exam mark?", answer:"with", options:["with","of","for","about"], es:"satisfied WITH" },
+        { level:5, sentence:"The teacher insisted ___ finishing on time.", answer:"on", options:["on","in","for","about"], es:"insist ON" },
+        { level:5, sentence:"You should apologise ___ being late.", answer:"for", options:["for","of","about","with"], es:"apologise FOR" },
+        { level:5, sentence:"They congratulated her ___ passing the exam.", answer:"on", options:["on","for","of","about"], es:"congratulate someone ON" },
+        { level:5, sentence:"He's accustomed ___ early starts.", answer:"to", options:["to","with","for","of"], es:"accustomed TO" },
+        { level:5, sentence:"Nothing can prevent us ___ trying.", answer:"from", options:["from","of","to","for"], es:"prevent someone FROM" },
+        { level:5, sentence:"This plan benefits ___ everyone in the team.", answer:"from", options:["from","of","for","to"], es:"benefit FROM" },
+        { level:6, sentence:"She succeeded ___ convincing the committee.", answer:"in", options:["in","on","at","for"], es:"succeed IN" },
+        { level:6, sentence:"He is responsible ___ the whole department.", answer:"for", options:["for","of","to","with"], es:"responsible FOR" },
+        { level:6, sentence:"Are you capable ___ finishing this alone?", answer:"of", options:["of","for","to","with"], es:"capable OF" },
+        { level:6, sentence:"The company competes ___ several rivals.", answer:"with", options:["with","against","for","to"], es:"compete WITH (rivals)" },
+        { level:6, sentence:"I strongly disapprove ___ that decision.", answer:"of", options:["of","for","with","on"], es:"disapprove OF" },
+        { level:6, sentence:"The results differ ___ what we expected.", answer:"from", options:["from","of","to","with"], es:"differ FROM" },
+    ];
+
+    const LEADERBOARD_KEY = 'prepBlasterLeaderboard';
+    let currentPool = [], currentItem = null, score = 0, streak = 0, lives = 3;
+    let playerName = "", playerCourse = "", rawLeaderboardData = [];
+    let missedItems = [], roundIndex = 0, totalRounds = 0;
+    let timerInterval = null, timeLimitSeconds = 20;
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(freq, type, duration) {
+        if(audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+        osc.type = type; osc.frequency.value = freq; osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(); gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration); osc.stop(audioCtx.currentTime + duration);
+    }
+
+    window.onload = function() { renderCourseTabs(); loadLeaderboard(); };
+
+    function renderCourseTabs(){
+        const courses = ['TODOS','1º ESO','2º ESO','3º ESO','4º ESO','1º Bach','2º Bach'];
+        document.getElementById('course-tabs').innerHTML = courses.map((c,i) =>
+            `<button class="tab-chip${i===0?' active':''}" data-c="${c}">${c === 'TODOS' ? 'ALL' : c}</button>`).join('');
+        document.querySelectorAll('.tab-chip').forEach(btn => btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-chip').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderLeaderboard(btn.dataset.c);
+        }));
+    }
+
+    function startGame() {
+        const nameInput = document.getElementById('player-name').value.trim();
+        if(!nameInput) return alert("Enter your Pilot Callsign!");
+        playerName = nameInput; playerCourse = document.getElementById('player-course').value;
+        const lvl = document.getElementById('level-group').value;
+
+        document.getElementById('player-modal').style.display = 'none';
+        score = 0; streak = 0; lives = 3; missedItems = []; roundIndex = 0;
+
+        currentPool = lvl === 'ALL' ? [...PREP_DB] : PREP_DB.filter(p => String(p.level) === lvl);
+        currentPool.sort(() => Math.random() - 0.5);
+        totalRounds = currentPool.length;
+        document.getElementById('level-pill').textContent = 'LEVEL: ' + (lvl === 'ALL' ? 'ALL' : playerCourse.toUpperCase());
+        nextRound();
+    }
+
+    function startTimer() {
+        clearInterval(timerInterval);
+        let timeLeft = timeLimitSeconds;
+        const bar = document.getElementById('timer-bar');
+        bar.style.width = '100%';
+        timerInterval = setInterval(() => {
+            timeLeft -= 0.1;
+            bar.style.width = `${Math.max(0, (timeLeft/timeLimitSeconds)*100)}%`;
+            if(timeLeft <= 0) { clearInterval(timerInterval); resolveRound(null); }
+        }, 100);
+    }
+
+    function nextRound() {
+        clearInterval(timerInterval);
+        if(currentPool.length === 0 || lives <= 0) { endGame(); return; }
+        currentItem = currentPool.pop();
+        roundIndex++;
+        document.getElementById('round').textContent = `${roundIndex}/${totalRounds}`;
+        document.getElementById('sentence').innerHTML = currentItem.sentence.replace('___', '<span class="blank">____</span>');
+        document.getElementById('es-hint').textContent = currentItem.es;
+        document.getElementById('feedback').style.display = 'none';
+
+        const opts = [...currentItem.options];
+        const field = document.getElementById('asteroid-field');
+        field.innerHTML = opts.map(o => `<div class="asteroid" data-opt="${o}">${o}</div>`).join('');
+        field.querySelectorAll('.asteroid').forEach(a => a.addEventListener('click', () => resolveRound(a.dataset.opt, a)));
+
+        startTimer();
+        updateStats();
+    }
+
+    function resolveRound(chosen, el) {
+        clearInterval(timerInterval);
+        const fb = document.getElementById('feedback');
+        if(chosen === currentItem.answer) {
+            if(el) el.classList.add('correct-flash');
+            const pts = 5 + streak;
+            score += pts; streak++;
+            playSound(600, 'square', 0.15);
+            if(streak % 5 === 0) triggerConfetti();
+            fb.style.display = 'block'; fb.className = 'status-msg correct'; fb.innerText = `HIT! +${pts} PTS`;
+        } else {
+            if(el) el.classList.add('wrong-flash');
+            streak = 0; lives--;
+            missedItems.push(currentItem.sentence.replace('___', currentItem.answer.toUpperCase()));
+            playSound(150, 'sawtooth', 0.3);
+            fb.style.display = 'block'; fb.className = 'status-msg incorrect';
+            fb.innerText = chosen === null ? `TIME UP! Correct: ${currentItem.answer.toUpperCase()}` : `MISSED! Correct: ${currentItem.answer.toUpperCase()}`;
+        }
+        updateStats();
+        setTimeout(nextRound, 1100);
+    }
+
+    function getHint() {
+        if(!currentItem) return;
+        document.getElementById('es-hint').textContent = currentItem.es + ` (starts with "${currentItem.answer[0]}")`;
+    }
+
+    function updateStats() {
+        document.getElementById('score').innerText = score;
+        document.getElementById('streak').innerText = streak;
+        document.getElementById('lives').innerText = '⚡'.repeat(Math.max(0, lives));
+    }
+
+    function endGame() {
+        clearInterval(timerInterval);
+        saveScoreLocally();
+        showReport();
+    }
+
+    function showReport() {
+        const modal = document.getElementById('report-modal');
+        document.getElementById('report-score').innerText = `SCORE: ${score}`;
+        const box = document.getElementById('report-errors');
+        if(missedItems.length === 0) {
+            box.innerHTML = '<p style="color:var(--neon-green)">PERFECT RUN! ZERO ERRORS DETECTED.</p>';
+        } else {
+            let html = '<strong>REVIEW THESE:</strong><br>';
+            missedItems.forEach(m => { html += `• ${m}<br>`; });
+            box.innerHTML = html;
+        }
+        modal.style.display = 'flex';
+    }
+
+    function closeReport() {
+        document.getElementById('report-modal').style.display = 'none';
+        document.getElementById('player-modal').style.display = 'flex';
+    }
+
+    const MISSION_LOG_URL = 'https://inorderwords.netlify.app/mission-log.html';
+    function sendToMissionLog() {
+        const payload = { kind:'game', tool:'Preposition Blaster', name: playerName, course: playerCourse, score: score, date: new Date().toISOString() };
+        const encoded = encodeURIComponent(btoa(JSON.stringify(payload)));
+        window.open(`${MISSION_LOG_URL}?import=${encoded}`, '_blank', 'noopener');
+    }
+
+    function saveScoreLocally() {
+        if(score <= 0) return;
+        let stored = JSON.parse(localStorage.getItem(LEADERBOARD_KEY) || '[]');
+        stored.push({ nombre: playerName, curso: playerCourse, puntuacion: score, fecha: new Date().toISOString() });
+        const bestByKey = {};
+        stored.forEach(entry => {
+            const key = entry.nombre.toLowerCase() + '|' + entry.curso;
+            if(!bestByKey[key] || entry.puntuacion > bestByKey[key].puntuacion) bestByKey[key] = entry;
+        });
+        stored = Object.values(bestByKey).sort((a,b) => b.puntuacion - a.puntuacion).slice(0, 100);
+        localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(stored));
+        rawLeaderboardData = stored;
+        const activeTab = document.querySelector('.tab-chip.active');
+        renderLeaderboard(activeTab ? activeTab.dataset.c : 'TODOS');
+    }
+
+    function loadLeaderboard() {
+        rawLeaderboardData = JSON.parse(localStorage.getItem(LEADERBOARD_KEY) || '[]').sort((a,b) => b.puntuacion - a.puntuacion);
+        renderLeaderboard('TODOS');
+    }
+
+    function renderLeaderboard(course) {
+        const list = document.getElementById('leaderboard'); list.innerHTML = '';
+        let filtered = course === 'TODOS' ? rawLeaderboardData : rawLeaderboardData.filter(i => i.curso === course);
+        if(!filtered || filtered.length === 0) { list.innerHTML = '<li class="ranking-item"><span>NO RECORDS YET</span></li>'; return; }
+        filtered.forEach((item, index) => {
+            const isMe = playerName && item.nombre.toLowerCase() === playerName.toLowerCase() && item.curso === playerCourse;
+            list.innerHTML += `<li class="ranking-item${isMe?' me':''}"><span>${index+1}. ${item.nombre.toUpperCase()} (${item.curso})</span><strong>${item.puntuacion} PTS</strong></li>`;
+        });
+    }
+
+    function triggerConfetti() {
+        const canvas = document.getElementById('confetti'), ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particles = Array.from({length: 40}, () => ({ x: Math.random()*canvas.width, y:0, r: Math.random()*6+2, d: Math.random()*10, color:`hsl(${Math.random()*360},100%,50%)` })), angle = 0;
+        function draw() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            particles.forEach(p => { ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle=p.color; ctx.fill(); p.y += Math.cos(angle+p.d)+1+p.r/2; p.x += Math.sin(angle)*2; });
+            angle += 0.01;
+            if (particles.some(p => p.y < canvas.height)) requestAnimationFrame(draw); else ctx.clearRect(0,0,canvas.width,canvas.height);
+        }
+        draw();
+    }
+</script>
+</body></html>
