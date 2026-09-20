@@ -1,0 +1,1695 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<style>
+.ow-home-fab{
+  position:fixed; top:14px; left:14px; z-index:999999;
+  display:flex; align-items:center; gap:7px;
+  background:rgba(20,20,25,0.88);
+  border:1px solid rgba(255,255,255,0.18); border-radius:999px;
+  padding:9px 14px 9px 11px; text-decoration:none;
+  color:#fff; font-family:-apple-system,BlinkMacSystemFont,sans-serif; font-weight:700; font-size:12.5px;
+  box-shadow:0 4px 14px rgba(0,0,0,0.4); transition:all .15s ease;
+  backdrop-filter: blur(6px);
+}
+.ow-home-fab:hover{border-color:#ffcc66; background:rgba(255,204,102,0.22);}
+.ow-home-fab .ic{font-size:15px; line-height:1;}
+@media (max-width:420px){
+  .ow-home-fab{top:10px; left:10px; padding:8px 12px 8px 10px; font-size:0;}
+  .ow-home-fab .ic{font-size:16px;}
+  .ow-home-fab .lbl{display:none;}
+}
+</style>
+<a class="ow-home-fab" href="https://inorderwords.netlify.app/" title="Volver a la pagina principal"><span class="ic">🏠</span><span class="lbl">Inicio</span></a>
+
+<title>Phonetics Lab</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Manrope:wght@400;500;600;800&family=JetBrains+Mono:wght@400;600;700&display=swap">
+<style>
+  :root{
+    --bg:#0b0e1a;
+    --panel:#12172c;
+    --panel-2:#161c36;
+    --line:rgba(255,255,255,0.09);
+    --line-strong:rgba(255,255,255,0.18);
+    --text:#f4f2ec;
+    --text-sub:#9aa1ba;
+    --accent:#2dd4bf;
+    --accent-soft:rgba(45,212,191,0.14);
+    --amber:#ffcc66;
+    --amber-soft:rgba(255,204,102,0.14);
+    --good:#52e79b;
+    --good-soft:rgba(82,231,155,0.14);
+    --bad:#ff6b7a;
+    --bad-soft:rgba(255,107,122,0.14);
+    --violet:#b39dff;
+    /* mouth-diagram-only palette: real skin/tongue/lip tones, kept separate from
+       the teal UI accent so the diagram reads as an actual face, not a UI icon */
+    --mouth-skin:#e0ab7e;
+    --mouth-skin-line:#8a5a35;
+    --mouth-skin-shade:#c9925f;
+    --mouth-lip:#b85c62;
+    --mouth-tooth:#fdfcf6;
+    --mouth-tongue:#e37b82;
+    --mouth-tongue-line:#9c3f47;
+    --mouth-tongue-shade:#cf6169;
+    --mouth-palate:#c98a86;
+    --mouth-hair:#2b1c14;
+    --mouth-cavity:#3a1418;
+    --mouth-label-bg:#132a30;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);}
+  body{
+    color:var(--text);
+    font-family:'Manrope',sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    padding-inline:20px;
+    padding-block:0;
+    overflow-x:hidden;
+  }
+  a{color:inherit;}
+  button{font-family:inherit;}
+  .wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding-block:44px 60px;}
+
+  /* ---------- ambient waveform ---------- */
+  #wave{position:fixed;inset:0;z-index:0;opacity:0.5;pointer-events:none;}
+
+  /* ---------- hero ---------- */
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
+    letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);
+    background:rgba(255,255,255,0.03);border:1px solid var(--line);
+    border-radius:999px;padding:6px 14px 6px 10px;
+  }
+  .eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);flex:none;}
+  h1.title{
+    font-family:'Unbounded',sans-serif;font-weight:900;
+    font-size:clamp(30px,6.4vw,72px);line-height:1.02;letter-spacing:-0.01em;
+    margin:20px 0 14px;max-width:14ch;
+    background:linear-gradient(120deg,#fff 25%,var(--accent) 65%,var(--violet) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    text-wrap:balance;
+  }
+  .tagline{font-size:17px;color:var(--text-sub);max-width:56ch;margin:0 0 26px;}
+  .tagline b{color:var(--text);font-weight:800;}
+  .hero-controls{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-bottom:8px;}
+  .accent-toggle{
+    display:inline-flex;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:3px;gap:2px;
+  }
+  .accent-toggle button{
+    border:none;background:transparent;color:var(--text-sub);font-weight:700;font-size:13px;
+    padding:7px 16px;border-radius:999px;cursor:pointer;transition:background .2s,color .2s;
+  }
+  .accent-toggle button.active{background:var(--accent);color:#04211c;}
+  .rate-control{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-sub);font-family:'JetBrains Mono',monospace;}
+  .rate-control input{accent-color:var(--accent);}
+  #voiceWarn{
+    display:none;margin-top:14px;padding:12px 16px;border-radius:12px;
+    background:var(--bad-soft);border:1px solid rgba(255,107,122,0.35);color:#ffd7db;font-size:13.5px;
+  }
+  #voiceWarn.show{display:block;}
+
+  /* ---------- tabs ---------- */
+  .tabs{
+    display:flex;gap:8px;flex-wrap:wrap;margin:34px 0 26px;
+    border-bottom:1px solid var(--line);padding-bottom:0;
+  }
+  .tab{
+    font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:700;letter-spacing:0.04em;
+    color:var(--text-sub);background:transparent;border:none;cursor:pointer;
+    padding:12px 6px;position:relative;text-transform:uppercase;
+  }
+  .tab .n{color:var(--accent);margin-right:6px;}
+  .tab::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:transparent;border-radius:2px;}
+  .tab.active{color:var(--text);}
+  .tab.active::after{background:var(--accent);}
+  .tab:hover{color:var(--text);}
+
+  .panel{display:none;animation:fade .25s ease;}
+  .panel.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+  .panel-head{margin-bottom:20px;}
+  .panel-head h2{font-family:'Unbounded',sans-serif;font-size:22px;margin:0 0 8px;font-weight:700;text-wrap:balance;}
+  .panel-head p{color:var(--text-sub);font-size:14.5px;max-width:62ch;margin:0;}
+
+  /* ---------- sound chart ---------- */
+  .chart-toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:18px;}
+  .chip-toggle{
+    display:inline-flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);
+    border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;color:var(--text-sub);
+    user-select:none;
+  }
+  .chip-toggle input{accent-color:var(--amber);}
+  .chip-toggle.on{color:var(--text);border-color:var(--amber);}
+  .group-label{
+    font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:0.14em;
+    text-transform:uppercase;color:var(--text-sub);margin:26px 0 12px;
+  }
+  .sound-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:10px;}
+  .sound-tile{
+    background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 12px;
+    cursor:pointer;text-align:left;color:var(--text);display:flex;flex-direction:column;gap:6px;
+    transition:border-color .15s,transform .15s,background .15s;position:relative;
+  }
+  .sound-tile:hover{border-color:var(--line-strong);transform:translateY(-2px);}
+  .sound-tile:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  .sound-tile.tricky{border-color:rgba(255,180,84,0.4);}
+  .sound-tile .ipa{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--accent);}
+  .sound-tile .word{font-size:13px;color:var(--text-sub);}
+  .sound-tile .flag{
+    position:absolute;top:10px;right:10px;font-size:9.5px;font-family:'JetBrains Mono',monospace;font-weight:700;
+    color:var(--amber);letter-spacing:0.06em;
+  }
+  .sound-tile .hint{font-size:11.5px;color:var(--text-sub);opacity:0.85;line-height:1.35;display:none;}
+  .sound-tile.tricky .hint{display:block;}
+
+  /* ---------- game shell (pairs / stress / ed) ---------- */
+  .game{
+    background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:28px 26px;
+  }
+  .score-row{display:flex;flex-wrap:wrap;gap:22px;margin-bottom:22px;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text-sub);}
+  .score-row .stat b{display:block;font-family:'Unbounded',sans-serif;font-size:22px;color:var(--text);font-weight:700;}
+  .score-row .stat{letter-spacing:0.08em;text-transform:uppercase;}
+  .prompt-card{
+    background:var(--panel-2);border:1px solid var(--line);border-radius:16px;
+    padding:30px 24px;text-align:center;margin-bottom:22px;
+  }
+  .focus-tag{
+    display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
+    letter-spacing:0.1em;text-transform:uppercase;color:var(--violet);background:rgba(179,157,255,0.12);
+    border-radius:999px;padding:5px 12px;margin-bottom:16px;
+  }
+  .play-btn{
+    display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#04211c;border:none;
+    border-radius:999px;padding:14px 26px;font-size:15px;font-weight:800;cursor:pointer;
+    transition:transform .15s,box-shadow .15s;box-shadow:0 0 0 rgba(45,212,191,0);
+  }
+  .play-btn:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(45,212,191,0.25);}
+  .play-btn:active{transform:translateY(0);}
+  .play-btn svg{width:16px;height:16px;flex:none;}
+  .choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;}
+  .choices.stress{grid-template-columns:repeat(auto-fit,minmax(200px,1fr));}
+  .choice-btn{
+    background:var(--panel);border:1.5px solid var(--line);border-radius:14px;padding:16px;
+    color:var(--text);cursor:pointer;font-size:16px;font-weight:700;transition:border-color .15s,background .15s,transform .1s;
+    font-family:'Manrope',sans-serif;
+  }
+  .choice-btn .syl{font-family:'JetBrains Mono',monospace;font-size:15px;letter-spacing:0.01em;}
+  .choice-btn .syl b{color:var(--amber);font-weight:800;}
+  .choice-btn:hover:not(:disabled){border-color:var(--line-strong);transform:translateY(-1px);}
+  .choice-btn:disabled{cursor:default;}
+  .choice-btn.correct{border-color:var(--good);background:var(--good-soft);}
+  .choice-btn.wrong{border-color:var(--bad);background:var(--bad-soft);}
+  .feedback{min-height:22px;margin-top:16px;font-size:13.5px;font-weight:700;text-align:center;}
+  .feedback.good{color:var(--good);}
+  .feedback.bad{color:var(--bad);}
+  .next-row{display:flex;justify-content:center;margin-top:18px;}
+  .ghost-btn{
+    background:transparent;border:1px solid var(--line);color:var(--text-sub);border-radius:999px;
+    padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer;
+  }
+  .ghost-btn:hover{border-color:var(--line-strong);color:var(--text);}
+
+  /* ---------- tricky sounds tab ---------- */
+  .tricky-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;}
+  .tricky-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;}
+  .tricky-card h3{font-family:'Unbounded',sans-serif;font-size:16px;margin:0 0 8px;display:flex;align-items:center;gap:8px;}
+  .tricky-card h3 .ipa{color:var(--accent);font-family:'JetBrains Mono',monospace;}
+  .tricky-card p{font-size:13.5px;color:var(--text-sub);margin:0 0 14px;}
+  .tricky-words{display:flex;flex-wrap:wrap;gap:8px;}
+  .word-chip{
+    display:inline-flex;align-items:center;gap:6px;background:var(--panel-2);border:1px solid var(--line);
+    border-radius:999px;padding:7px 12px 7px 8px;font-size:13px;font-weight:700;cursor:pointer;color:var(--text);
+  }
+  .word-chip:hover{border-color:var(--accent);}
+  .word-chip svg{width:12px;height:12px;color:var(--accent);flex:none;}
+
+  /* ---------- sound detail panel ---------- */
+  .detail-panel{
+    margin-top:22px;background:var(--panel);border:1px solid var(--line);border-radius:20px;
+    padding:26px;display:none;
+  }
+  .detail-panel.show{display:grid;grid-template-columns:260px 1fr;gap:24px;}
+  .detail-panel .mouth{background:var(--panel-2);border-radius:14px;padding:14px;align-self:start;}
+  .detail-panel .mouth svg{width:100%;height:auto;display:block;}
+  .mouth-term{font-size:10.5px;color:var(--accent);text-align:center;margin-top:10px;font-family:'JetBrains Mono',monospace;letter-spacing:0.03em;text-transform:uppercase;}
+  .mouth-caption{font-size:12.5px;color:var(--text);text-align:center;margin-top:4px;line-height:1.4;}
+  .mouth-legend{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px;font-size:9.5px;color:var(--text-sub);font-family:'JetBrains Mono',monospace;letter-spacing:0.02em;}
+  .mouth-legend span{display:inline-flex;align-items:center;gap:5px;}
+  .mouth-legend i{width:9px;height:9px;border-radius:3px;display:inline-block;flex:none;}
+  .detail-head{display:flex;align-items:baseline;gap:10px;margin-bottom:6px;flex-wrap:wrap;}
+  .detail-head .ipa{font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:700;color:var(--accent);}
+  .detail-head .word{font-size:16px;color:var(--text-sub);}
+  .detail-desc{font-size:13.5px;color:var(--text-sub);margin:8px 0 16px;max-width:56ch;}
+  .detail-links{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px;}
+  .detail-links a{
+    display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--violet);
+    background:rgba(179,157,255,0.1);border:1px solid rgba(179,157,255,0.3);border-radius:999px;padding:7px 13px;
+    text-decoration:none;
+  }
+  .detail-links a:hover{border-color:var(--violet);}
+
+  /* ---------- record & compare mic widget ---------- */
+  .mic-widget{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:4px;}
+  .mic-btn{
+    display:inline-flex;align-items:center;gap:8px;background:var(--panel-2);border:1px solid var(--line);
+    color:var(--text);border-radius:999px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;
+  }
+  .mic-btn:hover{border-color:var(--line-strong);}
+  .mic-btn.recording{border-color:var(--bad);color:var(--bad);background:var(--bad-soft);}
+  .mic-btn svg{width:14px;height:14px;flex:none;}
+  .mic-status{font-size:12px;color:var(--text-sub);font-family:'JetBrains Mono',monospace;}
+  .mic-playback-btn{display:none;}
+  .mic-playback-btn.show{display:inline-flex;}
+  .mic-note{font-size:11.5px;color:var(--text-sub);opacity:0.8;margin-top:10px;}
+
+  /* ---------- diagnostic ---------- */
+  .diag-intro{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:34px 26px;text-align:center;}
+  .diag-intro h3{font-family:'Unbounded',sans-serif;font-size:19px;margin:0 0 10px;}
+  .diag-intro p{color:var(--text-sub);font-size:14px;max-width:52ch;margin:0 auto 22px;}
+  .big-btn{
+    background:var(--accent);color:#04211c;border:none;border-radius:999px;padding:15px 32px;
+    font-size:15px;font-weight:800;cursor:pointer;transition:transform .15s;
+  }
+  .big-btn:hover{transform:translateY(-1px);}
+  .diag-progress{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-sub);text-align:center;margin-bottom:14px;letter-spacing:0.06em;}
+  .diag-results{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:30px 26px;}
+  .diag-results h3{font-family:'Unbounded',sans-serif;font-size:19px;margin:0 0 18px;text-align:center;}
+  .weak-row{
+    display:flex;align-items:center;gap:14px;background:var(--panel-2);
+    border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin-bottom:10px;
+  }
+  .weak-row .focus{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--amber);min-width:90px;}
+  .weak-row .bar-wrap{flex:1;height:8px;background:rgba(255,255,255,0.06);border-radius:999px;overflow:hidden;}
+  .weak-row .bar{height:100%;background:var(--bad);border-radius:999px;}
+  .weak-row .pct{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-sub);min-width:34px;text-align:right;}
+
+  /* ---------- rhythm ---------- */
+  .rhythm-card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px 26px;margin-bottom:14px;}
+  .rhythm-sentence{font-family:'Unbounded',sans-serif;font-size:19px;font-weight:700;line-height:1.7;margin:10px 0 14px;text-wrap:balance;}
+  .rhythm-sentence .w{padding:1px 3px;border-radius:4px;transition:background .15s,color .15s;}
+  .rhythm-sentence .w.stressed{color:var(--amber);}
+  .rhythm-sentence .w.playing{background:var(--accent-soft);color:var(--accent);}
+  .rhythm-note{font-size:13px;color:var(--text-sub);margin-bottom:16px;}
+  .rhythm-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
+  .small-btn{
+    display:inline-flex;align-items:center;gap:8px;background:var(--panel-2);border:1px solid var(--line);
+    color:var(--text);border-radius:999px;padding:9px 16px;font-size:12.5px;font-weight:700;cursor:pointer;
+  }
+  .small-btn:hover{border-color:var(--line-strong);}
+  .small-btn svg{width:13px;height:13px;flex:none;}
+  .rhythm-nav{display:flex;justify-content:space-between;margin-top:18px;}
+
+  /* ---------- connected speech ---------- */
+  .connected-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;}
+  .filter-chip{
+    background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:8px 15px;font-size:12.5px;
+    font-weight:700;color:var(--text-sub);cursor:pointer;
+  }
+  .filter-chip.active{color:#04211c;background:var(--accent);border-color:var(--accent);}
+  .connected-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;}
+  .connected-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 20px;}
+  .connected-card .cat{
+    font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+    color:var(--violet);margin-bottom:10px;display:block;
+  }
+  .connected-card .phrase{font-size:16px;font-weight:700;margin-bottom:4px;}
+  .connected-card .respell{
+    font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent);margin-bottom:10px;display:block;
+  }
+  .connected-card p{font-size:13px;color:var(--text-sub);margin:0 0 14px;}
+
+  /* ---------- review ---------- */
+  .review-empty{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:36px 26px;text-align:center;color:var(--text-sub);font-size:14px;}
+  .review-summary{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;}
+  .review-pill{
+    background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:8px 15px;font-size:12.5px;
+    font-weight:700;color:var(--text-sub);font-family:'JetBrains Mono',monospace;
+  }
+  .review-pill b{color:var(--amber);}
+
+  /* ---------- weak badge on tabs ---------- */
+  .tab .weak-count{
+    display:inline-block;background:var(--bad);color:#fff;font-size:9.5px;font-weight:800;border-radius:999px;
+    padding:1px 6px;margin-left:5px;vertical-align:middle;
+  }
+
+  footer{margin-top:50px;padding-top:22px;border-top:1px solid var(--line);color:var(--text-sub);font-size:12.5px;text-align:center;}
+
+  @media (max-width:640px){
+    .detail-panel.show{grid-template-columns:1fr;}
+    .detail-panel .mouth{max-width:260px;margin:0 auto;}
+    .wrap{padding-block:32px 44px;}
+    .game{padding:22px 16px;}
+    .prompt-card{padding:22px 16px;}
+  }
+</style>
+
+<canvas id="wave"></canvas>
+<div class="wrap">
+
+  <span class="eyebrow"><span class="dot"></span>SOUND LAB · PRONUNCIATION</span>
+  <h1 class="title">PHONETICS&nbsp;LAB</h1>
+  <p class="tagline">Train your ear <b>and</b> your mouth. Explore the sounds of English, spot the pairs Spanish speakers mix up, and drill stress and endings — all with real spoken audio.</p>
+
+  <div class="hero-controls">
+    <div class="accent-toggle" role="group" aria-label="Accent">
+      <button type="button" data-accent="GB" class="active">🇬🇧 UK</button>
+      <button type="button" data-accent="US">🇺🇸 US</button>
+    </div>
+    <label class="rate-control">Speed
+      <input type="range" id="rateSlider" min="0.6" max="1.1" step="0.05" value="0.88">
+    </label>
+  </div>
+  <div id="voiceWarn">Your browser can't play spoken audio right now, so buttons will just show the text. Everything still works — try Chrome or Edge on a computer for full sound.</div>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-tab="chart" role="tab"><span class="n">01</span>Sound Chart</button>
+    <button class="tab" data-tab="diagnostic" role="tab"><span class="n">02</span>Diagnostic</button>
+    <button class="tab" data-tab="pairs" role="tab"><span class="n">03</span>Minimal Pairs</button>
+    <button class="tab" data-tab="stress" role="tab"><span class="n">04</span>Word Stress</button>
+    <button class="tab" data-tab="ed" role="tab"><span class="n">05</span>-ed Endings</button>
+    <button class="tab" data-tab="rhythm" role="tab"><span class="n">06</span>Sentence Rhythm</button>
+    <button class="tab" data-tab="connected" role="tab"><span class="n">07</span>Connected Speech</button>
+    <button class="tab" data-tab="tricky" role="tab"><span class="n">08</span>Tricky Sounds</button>
+    <button class="tab" data-tab="review" role="tab"><span class="n">09</span>Review<span class="weak-count" id="reviewBadge" style="display:none;"></span></button>
+  </nav>
+
+  <!-- 01 SOUND CHART -->
+  <section class="panel active" id="panel-chart">
+    <div class="panel-head">
+      <h2>The sounds of English</h2>
+      <p>Click any tile to hear it in a real word. Sounds marked <span style="color:var(--amber);font-weight:800;">★ TRICKY</span> don't exist in Spanish, or are easy to confuse with a Spanish sound.</p>
+    </div>
+    <div class="chart-toolbar">
+      <label class="chip-toggle" id="trickyToggleWrap">
+        <input type="checkbox" id="trickyOnly"> Show tricky sounds only
+      </label>
+    </div>
+    <div class="group-label">Vowels</div>
+    <div class="sound-grid" id="vowelGrid"></div>
+    <div class="group-label">Consonants</div>
+    <div class="sound-grid" id="consGrid"></div>
+
+    <div class="detail-panel" id="soundDetail">
+      <div class="mouth">
+        <div id="mouthSvgWrap"></div>
+        <div class="mouth-term" id="mouthTerm"></div>
+        <div class="mouth-caption" id="mouthCaption"></div>
+        <div class="mouth-legend">
+          <span><i style="background:var(--mouth-tongue)"></i>tongue</span>
+          <span><i style="background:var(--amber)"></i>where it touches</span>
+        </div>
+      </div>
+      <div>
+        <div class="detail-head">
+          <span class="ipa" id="detailIpa">/ /</span>
+          <span class="word" id="detailWord">word</span>
+        </div>
+        <p class="detail-desc" id="detailDesc"></p>
+        <div class="detail-links" id="detailLinks"></div>
+        <div class="mic-widget" id="detailMic"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DIAGNOSTIC -->
+  <section class="panel" id="panel-diagnostic">
+    <div class="panel-head">
+      <h2>Quick Diagnostic</h2>
+      <p>12 minimal-pair questions covering the contrasts that trip up Spanish speakers most. Two minutes, then we tell you exactly what to practise.</p>
+    </div>
+    <div id="diagIntro" class="diag-intro">
+      <h3>Find your weak spots</h3>
+      <p>You'll hear one word at a time and pick which of two options it was. At the end you get a personal top-3 list, and every game on this page starts paying extra attention to it.</p>
+      <button class="big-btn" id="diagStart" type="button">Start diagnostic →</button>
+    </div>
+    <div id="diagQuiz" style="display:none;">
+      <div class="diag-progress" id="diagProgress">QUESTION 1 / 12</div>
+      <div class="game">
+        <div class="prompt-card">
+          <div class="focus-tag" id="diagFocus">ɪ vs iː</div><br>
+          <button class="play-btn" id="diagPlay" type="button">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 9v6h4l5 5V4L9 9H5z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            Play word
+          </button>
+        </div>
+        <div class="choices" id="diagChoices"></div>
+        <div class="feedback" id="diagFeedback"></div>
+      </div>
+    </div>
+    <div id="diagResults" class="diag-results" style="display:none;">
+      <h3>Your top weak spots</h3>
+      <div id="diagWeakList"></div>
+      <div class="next-row"><button class="ghost-btn" id="diagRetake" type="button">Retake diagnostic</button></div>
+    </div>
+  </section>
+
+  <!-- 02 MINIMAL PAIRS -->
+  <section class="panel" id="panel-pairs">
+    <div class="panel-head">
+      <h2>Minimal pairs challenge</h2>
+      <p>One word plays. Two look almost the same in Spanish ears — pick the one you actually heard.</p>
+    </div>
+    <div class="game">
+      <div class="score-row">
+        <div class="stat">Score<b id="pairsScore">0/0</b></div>
+        <div class="stat">Streak<b id="pairsStreak">0</b></div>
+        <div class="stat">Best streak<b id="pairsBest">0</b></div>
+      </div>
+      <div class="prompt-card">
+        <div class="focus-tag" id="pairsFocus">ɪ vs iː</div><br>
+        <button class="play-btn" id="pairsPlay" type="button">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M5 9v6h4l5 5V4L9 9H5z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          Play word
+        </button>
+        <div class="mic-widget" id="pairsMic" style="justify-content:center;margin-top:16px;"></div>
+      </div>
+      <div class="choices" id="pairsChoices"></div>
+      <div class="feedback" id="pairsFeedback"></div>
+      <div class="next-row"><button class="ghost-btn" id="pairsNext" type="button">Next word →</button></div>
+    </div>
+  </section>
+
+  <!-- 03 WORD STRESS -->
+  <section class="panel" id="panel-stress">
+    <div class="panel-head">
+      <h2>Word stress trainer</h2>
+      <p>English words have one strong syllable. Listen, then pick the pattern that matches what you heard.</p>
+    </div>
+    <div class="game">
+      <div class="score-row">
+        <div class="stat">Score<b id="stressScore">0/0</b></div>
+        <div class="stat">Streak<b id="stressStreak">0</b></div>
+        <div class="stat">Best streak<b id="stressBest">0</b></div>
+      </div>
+      <div class="prompt-card">
+        <div class="focus-tag" id="stressFocus">noun</div><br>
+        <button class="play-btn" id="stressPlay" type="button">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M5 9v6h4l5 5V4L9 9H5z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          Play word
+        </button>
+        <div class="mic-widget" id="stressMic" style="justify-content:center;margin-top:16px;"></div>
+      </div>
+      <div class="choices stress" id="stressChoices"></div>
+      <div class="feedback" id="stressFeedback"></div>
+      <div class="next-row"><button class="ghost-btn" id="stressNext" type="button">Next word →</button></div>
+    </div>
+  </section>
+
+  <!-- 04 -ED ENDINGS -->
+  <section class="panel" id="panel-ed">
+    <div class="panel-head">
+      <h2>-ed ending sorter</h2>
+      <p>Every regular past tense ends in <b>-ed</b> — but it's pronounced three different ways. Listen and choose the right one.</p>
+    </div>
+    <div class="game">
+      <div class="score-row">
+        <div class="stat">Score<b id="edScore">0/0</b></div>
+        <div class="stat">Streak<b id="edStreak">0</b></div>
+        <div class="stat">Best streak<b id="edBest">0</b></div>
+      </div>
+      <div class="prompt-card">
+        <div class="focus-tag">regular past tense</div><br>
+        <button class="play-btn" id="edPlay" type="button">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M5 9v6h4l5 5V4L9 9H5z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          Play verb
+        </button>
+        <div class="mic-widget" id="edMic" style="justify-content:center;margin-top:16px;"></div>
+      </div>
+      <div class="choices" id="edChoices"></div>
+      <div class="feedback" id="edFeedback"></div>
+      <div class="next-row"><button class="ghost-btn" id="edNext" type="button">Next word →</button></div>
+    </div>
+  </section>
+
+  <!-- SENTENCE RHYTHM -->
+  <section class="panel" id="panel-rhythm">
+    <div class="panel-head">
+      <h2>Sentence rhythm &amp; word stress</h2>
+      <p>English is <b>stress-timed</b>: content words (the meaning) stand out, function words (the grammar) shrink into a quick <span style="color:var(--accent);">/ə/</span>. Spanish gives every syllable roughly equal weight — that's the accent giveaway. Play a sentence and watch the stressed words light up.</p>
+    </div>
+    <div class="rhythm-card">
+      <div class="diag-progress" id="rhythmProgress">SENTENCE 1 / 10</div>
+      <div class="rhythm-sentence" id="rhythmSentence"></div>
+      <div class="rhythm-note" id="rhythmNote"></div>
+      <div class="rhythm-actions">
+        <button class="play-btn" id="rhythmPlay" type="button">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M5 9v6h4l5 5V4L9 9H5z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          Play sentence
+        </button>
+        <button class="small-btn" id="rhythmReveal" type="button">Show stressed words</button>
+      </div>
+      <div class="mic-widget" id="rhythmMic" style="margin-top:16px;"></div>
+      <div class="rhythm-nav">
+        <button class="ghost-btn" id="rhythmPrev" type="button">← Previous</button>
+        <button class="ghost-btn" id="rhythmNext" type="button">Next sentence →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONNECTED SPEECH -->
+  <section class="panel" id="panel-connected">
+    <div class="panel-head">
+      <h2>Connected speech</h2>
+      <p>Native speakers don't say words one by one — they link, drop and blend them. This is why fluent English sounds so different from the textbook. Filter by feature and listen to the real phrase.</p>
+    </div>
+    <div class="connected-filters" id="connectedFilters"></div>
+    <div class="connected-grid" id="connectedGrid"></div>
+  </section>
+
+  <!-- 05 TRICKY SOUNDS -->
+  <section class="panel" id="panel-tricky">
+    <div class="panel-head">
+      <h2>Sounds that trip up Spanish speakers</h2>
+      <p>The contrasts that cause the most misunderstandings — with the reason why, in plain English.</p>
+    </div>
+    <div class="tricky-grid" id="trickyCards"></div>
+  </section>
+
+  <!-- REVIEW -->
+  <section class="panel" id="panel-review">
+    <div class="panel-head">
+      <h2>Review your weak points</h2>
+      <p>Every wrong answer anywhere on this page gets logged here. Practise your worst contrasts in one mixed session, spaced-repetition style.</p>
+    </div>
+    <div id="reviewBody"></div>
+  </section>
+
+  <footer>Phonetics Lab · part of Inorderwords · pronunciations are generated by your browser's text-to-speech and are a practice aid, not a perfect recording.</footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ================= DATA ================= */
+  var VOWELS = [
+    {ipa:'ɪ', word:'sit', hint:'Short and relaxed — looser than Spanish /i/. Compare: ship vs sheep.', tricky:true, x:22,y:18},
+    {ipa:'iː', word:'seat', hint:'Long and tense, corners of the mouth pulled back.', tricky:true, x:10,y:6},
+    {ipa:'e', word:'bed', hint:'Close to Spanish e, just a touch more open.', x:24,y:42},
+    {ipa:'æ', word:'cat', hint:"Doesn't exist in Spanish — jaw drops, wide smile shape.", tricky:true, x:26,y:86},
+    {ipa:'ʌ', word:'cup', hint:"Doesn't exist in Spanish — a short, central, lazy 'uh'.", tricky:true, x:48,y:56},
+    {ipa:'ɑː', word:'car', hint:'Long and open at the back of the mouth.', x:74,y:92},
+    {ipa:'ɒ', word:'hot', hint:'Short and rounded — shorter than Spanish o.', rounded:true, x:76,y:80},
+    {ipa:'ɔː', word:'saw', hint:'Long, rounded, lips pushed forward.', rounded:true, x:72,y:54},
+    {ipa:'ʊ', word:'put', hint:'Short and relaxed — looser than Spanish /u/. Compare: full vs fool.', tricky:true, rounded:true, x:82,y:22},
+    {ipa:'uː', word:'too', hint:'Long, tense, lips tightly rounded.', rounded:true, x:90,y:8},
+    {ipa:'ɜː', word:'bird', hint:"Doesn't exist in Spanish — central vowel, lips completely still.", tricky:true, x:50,y:44},
+    {ipa:'ə', word:'about', hint:"The 'schwa' — English's most common sound, always unstressed.", tricky:true, x:50,y:50},
+    {ipa:'eɪ', word:'day', hint:'Glide from e towards ɪ.', x:24,y:30},
+    {ipa:'aɪ', word:'my', hint:'Glide from a towards ɪ.', x:40,y:88},
+    {ipa:'ɔɪ', word:'boy', hint:'Glide from ɔ towards ɪ.', rounded:true, x:70,y:54},
+    {ipa:'əʊ', word:'go', hint:'Glide from ə towards ʊ (written oʊ in US English).', x:52,y:48},
+    {ipa:'aʊ', word:'now', hint:'Glide from a towards ʊ.', x:42,y:88},
+    {ipa:'ɪə', word:'here', hint:'Glide from ɪ towards ə.', x:26,y:20},
+    {ipa:'eə', word:'hair', hint:'Glide from e towards ə.', x:26,y:40},
+    {ipa:'ʊə', word:'tour', hint:'Glide from ʊ towards ə.', rounded:true, x:80,y:24}
+  ];
+  var CONSONANTS = [
+    {ipa:'p', word:'pen', place:5, manner:'stop', voiced:false},
+    {ipa:'b', word:'bad', place:5, manner:'stop', voiced:true},
+    {ipa:'t', word:'tea', place:35, manner:'stop', voiced:false},
+    {ipa:'d', word:'dog', place:35, manner:'stop', voiced:true},
+    {ipa:'k', word:'cat', place:78, manner:'stop', voiced:false},
+    {ipa:'g', word:'go', place:78, manner:'stop', voiced:true},
+    {ipa:'tʃ', word:'chair', hint:'Compare with ʃ: chip vs ship.', place:45, manner:'affricate', voiced:false},
+    {ipa:'dʒ', word:'jam', hint:'Compare with j: jet vs yet.', place:45, manner:'affricate', voiced:true},
+    {ipa:'f', word:'fish', place:15, manner:'fricative', voiced:false},
+    {ipa:'v', word:'van', hint:'Top teeth on bottom lip. Spanish v and b sound the same — English keeps them apart.', tricky:true, place:15, manner:'fricative', voiced:true},
+    {ipa:'θ', word:'think', hint:"Doesn't exist in standard Spanish — tongue between the teeth, no voice.", tricky:true, place:26, manner:'fricative', voiced:false},
+    {ipa:'ð', word:'this', hint:'Like the d in Spanish "nada" — tongue between the teeth, with voice.', tricky:true, place:26, manner:'fricative', voiced:true},
+    {ipa:'s', word:'sun', place:35, manner:'fricative', voiced:false},
+    {ipa:'z', word:'zoo', hint:'A buzzing s — rare in Spanish, common in English.', tricky:true, place:35, manner:'fricative', voiced:true},
+    {ipa:'ʃ', word:'she', place:46, manner:'fricative', voiced:false},
+    {ipa:'ʒ', word:'measure', hint:"Doesn't exist in Spanish — like French j or the s in 'vision'.", tricky:true, place:46, manner:'fricative', voiced:true},
+    {ipa:'h', word:'hot', hint:'Always breathe it out — the Spanish h is silent, the English one is not.', tricky:true, place:96, manner:'fricative', voiced:false},
+    {ipa:'m', word:'man', place:5, manner:'nasal', voiced:true},
+    {ipa:'n', word:'no', place:35, manner:'nasal', voiced:true},
+    {ipa:'ŋ', word:'sing', hint:'One single sound, not n+g — like the n in Spanish "banco".', tricky:true, place:78, manner:'nasal', voiced:true},
+    {ipa:'l', word:'leg', place:35, manner:'lateral', voiced:true},
+    {ipa:'r', word:'red', hint:"No tap of the tongue — it never touches the roof of the mouth.", tricky:true, place:40, manner:'approximant', voiced:true},
+    {ipa:'j', word:'yes', place:55, manner:'approximant', voiced:true},
+    {ipa:'w', word:'we', place:8, manner:'approximant', voiced:true, rounded:true}
+  ];
+  var PAIRS = [
+    {a:'ship',b:'sheep',focus:'ɪ vs iː'}, {a:'bit',b:'beat',focus:'ɪ vs iː'},
+    {a:'full',b:'fool',focus:'ʊ vs uː'}, {a:'pull',b:'pool',focus:'ʊ vs uː'},
+    {a:'hat',b:'hut',focus:'æ vs ʌ'}, {a:'cat',b:'cut',focus:'æ vs ʌ'},
+    {a:'bad',b:'bed',focus:'æ vs e'}, {a:'cot',b:'caught',focus:'ɒ vs ɔː'},
+    {a:'luck',b:'lock',focus:'ʌ vs ɒ'}, {a:'van',b:'ban',focus:'v vs b'},
+    {a:'very',b:'berry',focus:'v vs b'}, {a:'vote',b:'boat',focus:'v vs b'},
+    {a:'think',b:'sink',focus:'θ vs s'}, {a:'free',b:'three',focus:'f vs θ'},
+    {a:'day',b:'they',focus:'d vs ð'}, {a:'she',b:'see',focus:'ʃ vs s'},
+    {a:'chip',b:'ship',focus:'tʃ vs ʃ'}, {a:'yet',b:'jet',focus:'j vs dʒ'},
+    {a:'wet',b:'vet',focus:'w vs v'}, {a:'light',b:'right',focus:'l vs r'}
+  ];
+  var STRESS = [
+    {word:'photograph', syl:['pho','to','graph'], stress:0},
+    {word:'photographer', syl:['pho','to','gra','pher'], stress:1},
+    {word:'photographic', syl:['pho','to','graph','ic'], stress:2},
+    {word:'economy', syl:['e','con','o','my'], stress:1, note:'noun'},
+    {word:'economic', syl:['e','co','nom','ic'], stress:2},
+    {word:'banana', syl:['ba','na','na'], stress:1},
+    {word:'umbrella', syl:['um','brel','la'], stress:1},
+    {word:'computer', syl:['com','pu','ter'], stress:1},
+    {word:'comfortable', syl:['com','for','ta','ble'], stress:0},
+    {word:'present', syl:['pre','sent'], stress:0, note:'noun — a gift'},
+    {word:'present', syl:['pre','sent'], stress:1, note:'verb — to give'},
+    {word:'record', syl:['re','cord'], stress:0, note:'noun'},
+    {word:'record', syl:['re','cord'], stress:1, note:'verb'},
+    {word:'import', syl:['im','port'], stress:0, note:'noun'},
+    {word:'import', syl:['im','port'], stress:1, note:'verb'}
+  ];
+  var ED = [
+    {word:'worked', s:'t'}, {word:'watched', s:'t'}, {word:'kissed', s:'t'}, {word:'washed', s:'t'},
+    {word:'helped', s:'t'}, {word:'stopped', s:'t'}, {word:'talked', s:'t'}, {word:'laughed', s:'t'},
+    {word:'played', s:'d'}, {word:'called', s:'d'}, {word:'cleaned', s:'d'}, {word:'listened', s:'d'},
+    {word:'opened', s:'d'}, {word:'arrived', s:'d'}, {word:'lived', s:'d'}, {word:'studied', s:'d'},
+    {word:'wanted', s:'ɪd'}, {word:'needed', s:'ɪd'}, {word:'started', s:'ɪd'}, {word:'decided', s:'ɪd'},
+    {word:'visited', s:'ɪd'}, {word:'waited', s:'ɪd'}, {word:'ended', s:'ɪd'}, {word:'painted', s:'ɪd'}
+  ];
+  var TRICKY = [
+    {ipa:'θ / ð', title:'th — think / this', body:'Spanish has no /θ/ or /ð/ as separate sounds from /s/ and /d/. Put your tongue between your teeth and blow (no voice) for think, or buzz (with voice) for this.', words:['think','this','three','mother','bath','father']},
+    {ipa:'b / v', title:'b vs v — bet / vet', body:'In Spanish, b and v are the same sound. In English they are not: b closes both lips, v rests your top teeth on your bottom lip.', words:['van','ban','berry','very','vote','boat']},
+    {ipa:'ɪ / iː', title:'short vs long i — ship / sheep', body:'Spanish only has one /i/. English has a short, relaxed one and a long, tense one — mixing them can change the whole word.', words:['ship','sheep','bit','beat','live','leave']},
+    {ipa:'h', title:'the h you must not skip', body:'In Spanish, h is silent — hola, hotel. In English, h is a real puff of breath. Dropping it turns "hot" into "ot".', words:['hot','house','hello','happy','hand']},
+    {ipa:'-ed', title:'-ed is not "ed"', body:'Spanish speakers often add an extra vowel sound to every -ed ending. In English it is usually just a quick /t/ or /d/ stuck onto the word.', words:['worked','played','wanted','stopped','lived']},
+    {ipa:'ʃ / s', title:'sh vs s — she / see', body:'Spanish has no /ʃ/. Round your lips slightly and pull your tongue a little further back than for /s/ — otherwise "she" comes out as "see".', words:['she','see','ship','sip','wash','was']},
+    {ipa:'ɜː', title:'the "er" vowel — bird, work, learn', body:"This central vowel doesn't exist in Spanish. Lips completely relaxed, tongue in the middle of the mouth, nothing moves for the whole sound.", words:['bird','work','learn','third','nurse','early']},
+    {ipa:'p t k', title:'aspiration — a puff of air', body:'At the start of a stressed syllable, English p/t/k release a small puff of air (hold a tissue near your mouth and it should move). Spanish p/t/k never do — without it these consonants can sound like b/d/g to an English ear.', words:['pen','tea','cat','paper','table','coffee']},
+    {ipa:'r (final)', title:'silent final r — car, teacher', body:"In standard British English, r is not pronounced after a vowel at the end of a syllable — car sounds like \"cah\". American English does pronounce it. Both are correct; just be consistent.", words:['car','teacher','star','better','far','water']},
+    {ipa:'ə', title:'schwa — the sound you skip', body:"The schwa /ə/ is the most common sound in English, always in unstressed syllables, and Spanish speakers often \"restore\" the full vowel from spelling instead. Say it as a quick, weak, central \"uh\".", words:['about','banana','common','photograph','famous','support']},
+    {ipa:'rhythm', title:'stress-timing vs syllable-timing', body:"Spanish gives every syllable roughly the same length. English squeezes unstressed syllables and stretches stressed ones, which is what makes it sound \"choppy\" to Spanish ears. See the Sentence Rhythm tab to practise this.", words:['photograph','umbrella','banana','computer','comfortable']}
+  ];
+
+  /* ---------- diagnostic quiz: reuses PAIRS-style items, curated for coverage ---------- */
+  var DIAGNOSTIC = [
+    {a:'ship',b:'sheep',focus:'ɪ vs iː'}, {a:'full',b:'fool',focus:'ʊ vs uː'},
+    {a:'hat',b:'hut',focus:'æ vs ʌ'}, {a:'cot',b:'caught',focus:'ɒ vs ɔː'},
+    {a:'van',b:'ban',focus:'v vs b'}, {a:'think',b:'sink',focus:'θ vs s'},
+    {a:'day',b:'they',focus:'d vs ð'}, {a:'she',b:'see',focus:'ʃ vs s'},
+    {a:'light',b:'right',focus:'l vs r'}, {a:'wet',b:'vet',focus:'w vs v'},
+    {a:'bird',b:'bed',focus:'ɜː vs e'}, {a:'sing',b:'sin',focus:'ŋ vs n'}
+  ];
+
+  /* ---------- sentence rhythm ---------- */
+  var RHYTHM = [
+    {text:'I want to go to the beach.', stressed:[0,2,6], note:"Function words I / to / the shrink to schwa. Only want, go, beach carry weight."},
+    {text:'She can speak three languages.', stressed:[0,2,3,4], note:"Can (function word) barely gets a beat — the real stress lands on speak, three, languages."},
+    {text:'What are you doing tonight?', stressed:[0,3,4], note:"Are and you almost disappear: \"whad-er-yuh doing tonight\"."},
+    {text:'He was born in Madrid.', stressed:[0,2,4], note:"Was and in reduce to a quick schwa; born and Madrid stand out."},
+    {text:'They have never been there before.', stressed:[0,2,3,5], note:"Have reduces to /əv/; never, been, before keep their full vowels."},
+    {text:'Can you pass me the salt, please?', stressed:[2,3,5,6], note:"Can you almost merges into \"kn-yuh\" — pass, me, salt, please are the beats."},
+    {text:'We are going to the cinema later.', stressed:[0,2,5,6], note:"Are, to, the disappear almost completely between the stressed words."},
+    {text:"I don't think that's a good idea.", stressed:[0,2,5,6], note:"Think and idea keep their weight; that's and a shrink right down."},
+    {text:"The train leaves at seven o'clock.", stressed:[1,2,4,5], note:"The and at reduce; train, leaves, seven, o'clock carry the sentence's rhythm."},
+    {text:'How long have you lived here?', stressed:[0,1,4,5], note:"Have you blends to \"av-yuh\" — how, long, lived, here are the strong beats."}
+  ];
+
+  /* ---------- connected speech ---------- */
+  var CONNECTED = [
+    {cat:'Linking', phrase:'an apple', respell:'ə-NAP-əl', body:'A consonant sound glides straight into the next vowel — the n of an joins onto apple, so the word break disappears.'},
+    {cat:'Linking', phrase:'far away', respell:'FAR-ə-WAY', body:'When a word ending in r meets a vowel, British English brings the r back (a "linking r") to join the two words smoothly.'},
+    {cat:'Elision', phrase:'next day', respell:'NEKS DAY', body:'A /t/ squeezed between two other consonants often just disappears — nex(t) day, not "next-uh day".'},
+    {cat:'Elision', phrase:'sandwich', respell:'SAN-wich', body:"The /d/ after n before another consonant is commonly dropped in fast speech — even inside a single word."},
+    {cat:'Intrusion', phrase:'I saw it', respell:'I-SAW-r-it', body:"Between two vowel sounds, speakers often insert a light /r/ or /j/ glide so the words don't collide — \"saw it\" becomes \"saw-r-it\"."},
+    {cat:'Intrusion', phrase:'go on', respell:'GO-w-on', body:'A /w/ glide slips in between the o of go and the vowel of on to keep the sounds flowing.'},
+    {cat:'Weak forms', phrase:'What do you want?', respell:'wə-dyə-WONT', body:'Do and you virtually vanish, fusing into a single quick "dyuh" — only what and want keep their full vowel sound.'},
+    {cat:'Weak forms', phrase:'I could have gone.', respell:'I-could-əv-GONE', body:'Have after a modal verb almost always reduces to /əv/ — this is also why people write the mistake "could of".'},
+    {cat:'Weak forms', phrase:'She was there for us.', respell:'shi-wəz-thər-fər-us', body:'Was and for are function words — they lose their full vowel and shrink to schwa in connected speech.'},
+    {cat:'Linking', phrase:'turn it off', respell:'TUR-ni-TOFF', body:'Every word boundary here disappears: the n of turn links to it, and the t of it links straight into off.'}
+  ];
+
+  /* ================= SPEECH ================= */
+  var state = { accent:'GB', rate:0.88, voicesReady:false };
+  var voiceCache = {GB:null, US:null};
+
+  /* Browsers often expose several voices per locale — some are natural
+     network-based engines (Google, Microsoft "Online/Natural", Apple), others
+     are old local SAPI/eSpeak engines that sound robotic and metallic. Since
+     we can't ship our own audio, we rank whatever the visitor's browser
+     offers and pick the best-sounding one instead of just the first match. */
+  function voiceScore(v){
+    var name = (v.name || '').toLowerCase();
+    var score = 0;
+    if(/google/.test(name)) score += 100;
+    if(/natural|neural|online/.test(name)) score += 95;
+    if(/premium|enhanced|plus/.test(name)) score += 80;
+    if(/siri/.test(name)) score += 90;
+    if(/samantha|alex|ava|nicky|evan|tom|zoe|daniel|kate|serena|stephanie|arthur|rocko|moira/.test(name)) score += 60;
+    if(/microsoft/.test(name) && !/david|mark|zira/.test(name)) score += 40;
+    if(/david|mark/.test(name)) score -= 40;
+    if(/compact/.test(name)) score -= 50;
+    if(/espeak|festival|pico/.test(name)) score -= 100;
+    if(v.localService === false) score += 15; /* network voices tend to sound more natural */
+    return score;
+  }
+  function bestVoiceFor(voices, langRe, fallbackRe){
+    var matches = voices.filter(function(v){return langRe.test(v.lang);});
+    if(!matches.length) matches = voices.filter(function(v){return fallbackRe.test(v.lang);});
+    if(!matches.length) return voices[0];
+    matches.sort(function(a,b){return voiceScore(b) - voiceScore(a);});
+    return matches[0];
+  }
+  function loadVoices(){
+    if(!('speechSynthesis' in window)){
+      document.getElementById('voiceWarn').classList.add('show');
+      return;
+    }
+    var pick = function(){
+      var voices = speechSynthesis.getVoices();
+      if(!voices || !voices.length) return false;
+      voiceCache.GB = bestVoiceFor(voices, /en-GB/i, /^en/i);
+      voiceCache.US = bestVoiceFor(voices, /en-US/i, /^en/i);
+      state.voicesReady = true;
+      return true;
+    };
+    if(!pick()){
+      speechSynthesis.addEventListener('voiceschanged', pick, {once:false});
+      setTimeout(function(){ if(!state.voicesReady) document.getElementById('voiceWarn').classList.add('show'); }, 1500);
+    }
+  }
+  loadVoices();
+
+  function speak(text){
+    if(!('speechSynthesis' in window)) return;
+    try{
+      speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance(text);
+      u.lang = state.accent === 'US' ? 'en-US' : 'en-GB';
+      var v = voiceCache[state.accent];
+      if(v) u.voice = v;
+      u.rate = state.rate;
+      speechSynthesis.speak(u);
+    }catch(e){}
+  }
+
+  document.querySelectorAll('.accent-toggle button').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.accent-toggle button').forEach(function(b){b.classList.remove('active');});
+      btn.classList.add('active');
+      state.accent = btn.getAttribute('data-accent');
+    });
+  });
+  document.getElementById('rateSlider').addEventListener('input', function(e){
+    state.rate = parseFloat(e.target.value);
+  });
+
+  /* ================= TABS ================= */
+  document.querySelectorAll('.tab').forEach(function(tab){
+    tab.addEventListener('click', function(){
+      document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+      document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+      tab.classList.add('active');
+      document.getElementById('panel-' + tab.getAttribute('data-tab')).classList.add('active');
+    });
+  });
+
+  /* ================= STORAGE (per-viewer convenience only) ================= */
+  function getBest(key){
+    try{ return parseInt(localStorage.getItem('phonlab.' + key) || '0', 10) || 0; }catch(e){ return 0; }
+  }
+  function setBest(key, val){
+    try{ localStorage.setItem('phonlab.' + key, String(val)); }catch(e){}
+  }
+
+  /* ================= WEAK-POINT TRACKER (shared across all games) ================= */
+  function getWeakMap(){
+    try{ return JSON.parse(localStorage.getItem('phonlab.weak') || '{}'); }catch(e){ return {}; }
+  }
+  function setWeakMap(map){
+    try{ localStorage.setItem('phonlab.weak', JSON.stringify(map)); }catch(e){}
+  }
+  function recordMiss(focus){
+    if(!focus) return;
+    var map = getWeakMap();
+    map[focus] = (map[focus] || 0) + 1;
+    setWeakMap(map);
+    updateReviewBadge();
+  }
+  function recordHit(focus){
+    // a correct answer very slightly cools down a weak point so the list reflects recent practice
+    if(!focus) return;
+    var map = getWeakMap();
+    if(map[focus]) { map[focus] = Math.max(0, map[focus] - 0.3); setWeakMap(map); updateReviewBadge(); }
+  }
+  function topWeak(n){
+    var map = getWeakMap();
+    var arr = Object.keys(map).filter(function(k){ return map[k] > 0; }).map(function(k){ return {focus:k, count:map[k]}; });
+    arr.sort(function(a,b){ return b.count - a.count; });
+    return arr.slice(0, n || arr.length);
+  }
+  function updateReviewBadge(){
+    var badge = document.getElementById('reviewBadge');
+    if(!badge) return;
+    var n = topWeak().length;
+    if(n > 0){ badge.textContent = n; badge.style.display = 'inline-block'; }
+    else { badge.style.display = 'none'; }
+  }
+
+  /* ================= SOUND CHART ================= */
+  function speakEl(el){ return null; }
+  function renderGrid(container, list){
+    container.innerHTML = '';
+    list.forEach(function(item){
+      var tile = document.createElement('button');
+      tile.type = 'button';
+      tile.className = 'sound-tile' + (item.tricky ? ' tricky' : '');
+      tile.dataset.tricky = item.tricky ? '1' : '0';
+      tile.innerHTML =
+        (item.tricky ? '<span class="flag">★ TRICKY</span>' : '') +
+        '<span class="ipa">/' + item.ipa + '/</span>' +
+        '<span class="word">' + item.word + '</span>' +
+        (item.hint ? '<span class="hint">' + item.hint + '</span>' : '');
+      tile.addEventListener('click', function(){ speak(item.word); });
+      container.appendChild(tile);
+    });
+  }
+  renderGrid(document.getElementById('vowelGrid'), VOWELS);
+  renderGrid(document.getElementById('consGrid'), CONSONANTS);
+
+  document.getElementById('trickyOnly').addEventListener('change', function(e){
+    var on = e.target.checked;
+    document.getElementById('trickyToggleWrap').classList.toggle('on', on);
+    document.querySelectorAll('.sound-tile').forEach(function(tile){
+      tile.style.display = (!on || tile.dataset.tricky === '1') ? '' : 'none';
+    });
+  });
+
+  /* ================= GENERIC MINI-GAME ENGINE ================= */
+  function shuffle(arr){
+    var a = arr.slice();
+    for(var i=a.length-1;i>0;i--){
+      var j = Math.floor(Math.random()*(i+1));
+      var t=a[i]; a[i]=a[j]; a[j]=t;
+    }
+    return a;
+  }
+
+  /* ---- Minimal pairs ---- */
+  (function(){
+    var pool = shuffle(PAIRS);
+    var idx = 0, correct = 0, total = 0, streak = 0;
+    var best = getBest('pairsBest');
+    document.getElementById('pairsBest').textContent = best;
+    var current, answer;
+
+    function load(){
+      if(idx >= pool.length){ pool = shuffle(PAIRS); idx = 0; }
+      current = pool[idx++];
+      answer = Math.random() < 0.5 ? 'a' : 'b';
+      document.getElementById('pairsFocus').textContent = current.focus;
+      var choices = document.getElementById('pairsChoices');
+      choices.innerHTML = '';
+      var opts = shuffle([{k:'a',w:current.a},{k:'b',w:current.b}]);
+      opts.forEach(function(opt){
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'choice-btn';
+        b.textContent = opt.w;
+        b.addEventListener('click', function(){ choose(opt.k, b); });
+        choices.appendChild(b);
+      });
+      document.getElementById('pairsFeedback').textContent = '';
+      document.getElementById('pairsFeedback').className = 'feedback';
+      speak(answer === 'a' ? current.a : current.b);
+    }
+    function choose(k, btnEl){
+      document.querySelectorAll('#pairsChoices .choice-btn').forEach(function(b){ b.disabled = true; });
+      total++;
+      var fb = document.getElementById('pairsFeedback');
+      if(k === answer){
+        correct++; streak++;
+        btnEl.classList.add('correct');
+        fb.textContent = 'Correct — that was "' + (answer==='a'?current.a:current.b) + '".';
+        fb.className = 'feedback good';
+        recordHit(current.focus);
+      }else{
+        streak = 0;
+        btnEl.classList.add('wrong');
+        fb.textContent = 'Not quite — the word was "' + (answer==='a'?current.a:current.b) + '".';
+        fb.className = 'feedback bad';
+        recordMiss(current.focus);
+        document.querySelectorAll('#pairsChoices .choice-btn').forEach(function(b){
+          if(b.textContent === (answer==='a'?current.a:current.b)) b.classList.add('correct');
+        });
+      }
+      if(streak > best){ best = streak; setBest('pairsBest', best); document.getElementById('pairsBest').textContent = best; }
+      document.getElementById('pairsScore').textContent = correct + '/' + total;
+      document.getElementById('pairsStreak').textContent = streak;
+    }
+    document.getElementById('pairsPlay').addEventListener('click', function(){ speak(answer === 'a' ? current.a : current.b); });
+    document.getElementById('pairsNext').addEventListener('click', load);
+    load();
+  })();
+
+  /* ---- Word stress ---- */
+  (function(){
+    var pool = shuffle(STRESS);
+    var idx = 0, correct = 0, total = 0, streak = 0;
+    var best = getBest('stressBest');
+    document.getElementById('stressBest').textContent = best;
+    var current;
+
+    function renderSyl(syl, stressIdx){
+      return syl.map(function(s,i){
+        return i === stressIdx ? '<b>' + s.toUpperCase() + '</b>' : s;
+      }).join('·');
+    }
+    function load(){
+      if(idx >= pool.length){ pool = shuffle(STRESS); idx = 0; }
+      current = pool[idx++];
+      document.getElementById('stressFocus').textContent = current.note || ('word stress');
+      var wrongIdx = current.stress;
+      var tries = 0;
+      while(wrongIdx === current.stress && tries < 10){
+        wrongIdx = Math.floor(Math.random()*current.syl.length);
+        tries++;
+      }
+      var choices = document.getElementById('stressChoices');
+      choices.innerHTML = '';
+      var opts = shuffle([
+        {k:'correct', idx:current.stress},
+        {k:'wrong', idx:wrongIdx}
+      ]);
+      opts.forEach(function(opt){
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'choice-btn';
+        b.innerHTML = '<span class="syl">' + renderSyl(current.syl, opt.idx) + '</span>';
+        b.addEventListener('click', function(){ choose(opt.k, b); });
+        choices.appendChild(b);
+      });
+      document.getElementById('stressFeedback').textContent = '';
+      document.getElementById('stressFeedback').className = 'feedback';
+      speak(current.word);
+    }
+    function choose(k, btnEl){
+      document.querySelectorAll('#stressChoices .choice-btn').forEach(function(b){ b.disabled = true; });
+      total++;
+      var fb = document.getElementById('stressFeedback');
+      if(k === 'correct'){
+        correct++; streak++;
+        btnEl.classList.add('correct');
+        fb.textContent = 'Correct — "' + current.word + '" stresses "' + current.syl[current.stress] + '".';
+        fb.className = 'feedback good';
+        recordHit('word stress');
+      }else{
+        streak = 0;
+        btnEl.classList.add('wrong');
+        fb.textContent = 'Listen again — the stress falls on "' + current.syl[current.stress] + '".';
+        fb.className = 'feedback bad';
+        recordMiss('word stress');
+        document.querySelectorAll('#stressChoices .choice-btn').forEach(function(b){
+          if(b.innerHTML.indexOf(current.syl[current.stress].toUpperCase()) !== -1) b.classList.add('correct');
+        });
+      }
+      if(streak > best){ best = streak; setBest('stressBest', best); document.getElementById('stressBest').textContent = best; }
+      document.getElementById('stressScore').textContent = correct + '/' + total;
+      document.getElementById('stressStreak').textContent = streak;
+    }
+    document.getElementById('stressPlay').addEventListener('click', function(){ speak(current.word); });
+    document.getElementById('stressNext').addEventListener('click', load);
+    load();
+  })();
+
+  /* ---- -ed endings ---- */
+  (function(){
+    var pool = shuffle(ED);
+    var idx = 0, correct = 0, total = 0, streak = 0;
+    var best = getBest('edBest');
+    document.getElementById('edBest').textContent = best;
+    var current;
+    var SOUNDS = [{k:'t',label:'/t/'},{k:'d',label:'/d/'},{k:'ɪd',label:'/ɪd/'}];
+
+    function load(){
+      if(idx >= pool.length){ pool = shuffle(ED); idx = 0; }
+      current = pool[idx++];
+      var choices = document.getElementById('edChoices');
+      choices.innerHTML = '';
+      shuffle(SOUNDS).forEach(function(s){
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'choice-btn';
+        b.textContent = s.label;
+        b.addEventListener('click', function(){ choose(s.k, b); });
+        choices.appendChild(b);
+      });
+      document.getElementById('edFeedback').textContent = '';
+      document.getElementById('edFeedback').className = 'feedback';
+      speak(current.word);
+    }
+    function choose(k, btnEl){
+      document.querySelectorAll('#edChoices .choice-btn').forEach(function(b){ b.disabled = true; });
+      total++;
+      var fb = document.getElementById('edFeedback');
+      if(k === current.s){
+        correct++; streak++;
+        btnEl.classList.add('correct');
+        fb.textContent = 'Correct — "' + current.word + '" ends in /' + current.s + '/.';
+        fb.className = 'feedback good';
+        recordHit('-ed endings');
+      }else{
+        streak = 0;
+        btnEl.classList.add('wrong');
+        fb.textContent = '"' + current.word + '" actually ends in /' + current.s + '/.';
+        fb.className = 'feedback bad';
+        recordMiss('-ed endings');
+        document.querySelectorAll('#edChoices .choice-btn').forEach(function(b){
+          if(b.textContent === '/' + current.s + '/') b.classList.add('correct');
+        });
+      }
+      if(streak > best){ best = streak; setBest('edBest', best); document.getElementById('edBest').textContent = best; }
+      document.getElementById('edScore').textContent = correct + '/' + total;
+      document.getElementById('edStreak').textContent = streak;
+    }
+    document.getElementById('edPlay').addEventListener('click', function(){ speak(current.word); });
+    document.getElementById('edNext').addEventListener('click', load);
+    load();
+  })();
+
+  /* ================= TRICKY SOUNDS TAB ================= */
+  (function(){
+    var container = document.getElementById('trickyCards');
+    TRICKY.forEach(function(card){
+      var el = document.createElement('div');
+      el.className = 'tricky-card';
+      var wordsHtml = card.words.map(function(w){
+        return '<button type="button" class="word-chip" data-word="' + w + '">' +
+          '<svg viewBox="0 0 24 24" fill="none"><path d="M5 9v6h4l5 5V4L9 9H5z" fill="currentColor"/></svg>' + w + '</button>';
+      }).join('');
+      el.innerHTML = '<h3><span class="ipa">' + card.ipa + '</span> ' + card.title + '</h3>' +
+        '<p>' + card.body + '</p>' +
+        '<div class="tricky-words">' + wordsHtml + '</div>';
+      container.appendChild(el);
+    });
+    container.addEventListener('click', function(e){
+      var chip = e.target.closest('.word-chip');
+      if(chip) speak(chip.getAttribute('data-word'));
+    });
+  })();
+
+  /* ================= MOUTH DIAGRAM (realistic skin-toned face, cut open in profile,
+     with on-image Spanish labels) ================= */
+  function placeName(p){
+    if(p < 12) return 'bilabial';
+    if(p < 22) return 'labiodental';
+    if(p < 31) return 'dental';
+    if(p < 41) return 'alveolar';
+    if(p < 51) return 'postalveolar';
+    if(p < 65) return 'palatal';
+    if(p < 88) return 'velar';
+    return 'glottal';
+  }
+  function heightName(y){ return y < 30 ? 'close' : (y < 60 ? 'mid' : 'open'); }
+  function backnessName(x){ return x < 35 ? 'front' : (x < 65 ? 'central' : 'back'); }
+  var HEIGHT_WORD = {close:'high', mid:'mid', open:'low'};
+  var BACK_WORD = {front:'front', central:'central', back:'back'};
+  var MANNER_WORD = {stop:'plosive', affricate:'affricate', fricative:'fricative', nasal:'nasal', lateral:'lateral', approximant:'approximant'};
+
+  // Plain-language caption shown under the drawing — the technical term (above, small)
+  // is shown separately, since "bilabial / alveolar / velar..." are near-identical in English and Spanish.
+  var PLACE_PLAIN = {
+    bilabial: 'The lips come together.',
+    labiodental: 'The upper teeth touch the lower lip.',
+    dental: 'The tip of the tongue pokes out between the teeth.',
+    alveolar: 'The tip of the tongue touches the ridge just behind the upper teeth.',
+    postalveolar: 'The tongue pulls back a little further than for /s/, with the lips slightly rounded.',
+    palatal: 'The body of the tongue arches up close to the roof of the mouth.',
+    velar: 'The back of the tongue touches the soft palate, right at the back.',
+    glottal: 'The throat narrows for an instant — tongue and lips stay relaxed.'
+  };
+  var MANNER_PLAIN = {
+    stop: ' Full closure, then a small burst of air.',
+    affricate: ' Starts closed and ends in a hiss.',
+    fricative: ' A narrow channel makes the air hiss as it passes through.',
+    nasal: ' Air flows out through the nose the whole time.',
+    lateral: ' Air flows around the sides of the tongue.'
+  };
+  // r / j / w are approximants: the tongue or lips only get close, never quite
+  // touch — they need their own caption instead of one that says "touches".
+  var GLIDE_PLAIN = {
+    r: 'The tip of the tongue curls up near the ridge behind the teeth... but never quite touches it.',
+    j: 'The body of the tongue gets very close to the roof of the mouth, then quickly glides into the next sound.',
+    w: 'The lips round into a circle and the tongue pulls back — like starting to say "oo".'
+  };
+  function consonantPlain(c){
+    if(c.manner === 'approximant' && GLIDE_PLAIN[c.ipa]) return GLIDE_PLAIN[c.ipa];
+    var place = placeName(c.place);
+    return (PLACE_PLAIN[place] || '') + (MANNER_PLAIN[c.manner] || '');
+  }
+  function vowelPlain(v){
+    var h = heightName(v.y), b = backnessName(v.x);
+    return 'Tongue ' + HEIGHT_WORD[h] + (b === 'central' ? ', in the centre of the mouth' : ' and ' + BACK_WORD[b]) + '. ' +
+      (v.rounded ? 'Lips rounded and pushed forward.' : 'Lips relaxed, not rounded.');
+  }
+  function consonantTerm(c){
+    return placeName(c.place) + ' · ' + (c.voiced ? 'voiced' : 'voiceless') + ' ' + (MANNER_WORD[c.manner] || c.manner);
+  }
+  function vowelTerm(v){
+    var h = heightName(v.y), b = backnessName(v.x);
+    return BACK_WORD[b] + ' · ' + HEIGHT_WORD[h] + (v.rounded ? ' · rounded' : '');
+  }
+
+  // ---- geometría compartida: cabeza de perfil, cortada para ver dentro de la
+  // boca y la garganta, con tonos reales de piel/lengua/labios, no colores de UI ----
+  var CAVITY_PATH =
+    'M30,86 C40,68 58,54 84,48 C104,44 120,46 132,54 C138,58 140,64 136,70 ' +
+    'C148,80 158,96 158,114 C158,128 150,138 140,142 ' +
+    'C118,140 96,134 76,126 C58,118 44,108 34,98 C31,95 30,91 30,86 Z';
+  var PALATE_LINE =
+    '<path d="M30,86 C40,68 58,54 84,48 C104,44 120,46 132,54" fill="none" stroke="var(--mouth-palate)" stroke-width="3" stroke-linecap="round"/>' +
+    '<path d="M132,54 C138,58 140,64 136,70" fill="none" stroke="var(--mouth-palate)" stroke-width="3" stroke-linecap="round"/>';
+  var TEETH =
+    '<path d="M31,84 L37,80 M33,88 L39,85 M35,92 L41,90" stroke="var(--mouth-tooth)" stroke-width="2.2" stroke-linecap="round"/>' +
+    '<path d="M33,96 L38,100 M35,100 L40,103 M37,104 L42,106" stroke="var(--mouth-tooth)" stroke-width="2.2" stroke-linecap="round"/>';
+  var LIPS_NEUTRAL =
+    '<path d="M28,82 Q19,92 27,101" fill="none" stroke="var(--mouth-lip)" stroke-width="4.5" stroke-linecap="round"/>' +
+    '<path d="M31,95 Q22,104 30,112" fill="none" stroke="var(--mouth-lip)" stroke-width="4.5" stroke-linecap="round" opacity="0.95"/>';
+  var LIPS_ROUNDED = '<ellipse cx="23" cy="96" rx="9" ry="13.5" fill="none" stroke="var(--mouth-lip)" stroke-width="5"/>';
+  var LIPS_BILABIAL = '<path d="M21,78 Q9,90 16,102 Q9,114 23,126" fill="none" stroke="var(--mouth-lip)" stroke-width="10.5" stroke-linecap="round"/>';
+  var LIPS_LABIODENTAL =
+    '<path d="M24,78 Q13,90 18,101" fill="none" stroke="var(--mouth-lip)" stroke-width="6" stroke-linecap="round"/>' +
+    '<line x1="23" y1="87" x2="36" y2="75" stroke="var(--mouth-tooth)" stroke-width="3.4" stroke-linecap="round"/>';
+  var ARROW_DEF = '<defs><marker id="mouthArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">' +
+    '<path d="M0,0 L10,5 L0,10 z" fill="var(--amber)"/></marker></defs>';
+
+  function labelLine(x1,y1,x2,y2){
+    return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="var(--text-sub)" stroke-width="1" stroke-dasharray="2 2" opacity="0.8"/>';
+  }
+  function labelText(x,y,txt,anchor,color,strokeColor){
+    return '<text x="'+x+'" y="'+y+'" text-anchor="'+(anchor||'start')+'" font-family="Manrope,sans-serif" font-size="9.5" font-weight="800" ' +
+      'fill="'+(color||'#eafdf9')+'" letter-spacing="0.02em" style="paint-order:stroke;stroke:'+(strokeColor||'var(--mouth-label-bg)')+';stroke-width:3px;">'+txt+'</text>';
+  }
+  // Fixed anatomy labels, always in the same place — so the drawing explains
+  // itself without depending on the caption text below.
+  var ANATOMY_LABELS =
+    labelLine(62,24,84,47) + labelText(62,18,'PALATE','middle') +
+    labelLine(24,142,26,101) + labelText(4,152,'LIPS','start') +
+    labelLine(52,152,38,96) + labelText(52,162,'TEETH','middle') +
+    labelText(120,124,'TONGUE','middle','#fff','#7a2229');
+
+  function faceShell(inner, contactLabel){
+    return '<svg viewBox="0 0 220 180" xmlns="http://www.w3.org/2000/svg">' +
+      ARROW_DEF +
+      // cabeza con tono de piel real, en vez de un color de interfaz
+      '<path d="M46,150 C30,146 20,134 18,120 C16,108 20,98 26,90 C22,84 20,76 24,68 C20,62 22,54 30,50 C32,40 40,30 52,24 C62,14 80,8 98,8 C122,8 146,16 162,30 C176,42 184,58 186,76 C188,92 184,108 174,120 L174,150 C174,158 168,164 160,164 L60,164 C52,164 46,158 46,150 Z" ' +
+        'fill="var(--mouth-skin)" stroke="var(--mouth-skin-line)" stroke-width="2.5"/>' +
+      // pelo, ceja y ojo: lo que hace que se lea como una cara real y no un icono
+      '<path d="M50,26 C64,12 82,7 100,8 C124,9 146,17 160,29 C150,20 128,13 102,13 C82,13 64,18 50,30 Z" fill="var(--mouth-hair)" opacity="0.92"/>' +
+      '<ellipse cx="96" cy="46" rx="7.5" ry="5" fill="#fff" stroke="var(--mouth-skin-line)" stroke-width="1.3"/>' +
+      '<circle cx="98.5" cy="46" r="2.6" fill="#3a2415"/>' +
+      '<path d="M86,38 Q96,33 108,37" fill="none" stroke="var(--mouth-hair)" stroke-width="2.4" stroke-linecap="round"/>' +
+      '<ellipse cx="27" cy="60" rx="3" ry="2.2" fill="var(--mouth-skin-shade)" opacity="0.85"/>' +
+      '<path d="M148,60 Q158,58 158,72 Q158,86 148,84 Q154,78 153,72 Q154,66 148,60 Z" fill="var(--mouth-skin)" stroke="var(--mouth-skin-line)" stroke-width="2"/>' +
+      '<path d="' + CAVITY_PATH + '" fill="var(--mouth-cavity)"/>' +
+      inner +
+      ANATOMY_LABELS +
+      (contactLabel || '') +
+      '</svg>';
+  }
+
+  // La lengua se dibuja como una forma sólida y carnosa (raíz fija al fondo;
+  // peak = punto más alto/adelantado; tip = la punta) para que se vea su
+  // contorno real, no solo una línea que la representa.
+  function tonguePath(peakX, peakY, tipX, tipY){
+    var rootX=150, rootY=128;
+    if(tipX == null){ tipX = 42; tipY = 100; }
+    var topC1x=(rootX+peakX)/2, topC1y=Math.min(rootY,peakY)-14;
+    var topC2x=(peakX+tipX)/2, topC2y=Math.min(peakY,tipY)-10;
+    return 'M' + rootX + ',' + rootY +
+      ' Q' + topC1x + ',' + topC1y + ' ' + peakX + ',' + peakY +
+      ' Q' + topC2x + ',' + topC2y + ' ' + tipX + ',' + tipY +
+      ' L' + (tipX-2) + ',' + (tipY+9) +
+      ' Q' + ((peakX+tipX)/2) + ',' + (Math.max(peakY,tipY)+15) + ' ' + ((rootX+peakX)/2) + ',' + (rootY+7) +
+      ' Z';
+  }
+  var REST_TONGUE_PATH = tonguePath(96,116,54,110); // relajada, en reposo — la forma de "antes"
+
+  /* active=true dibuja la lengua moviéndose a su posición, con un contorno
+     punteado de su forma en reposo (para que el MOVIMIENTO se vea) y una
+     flecha ámbar de "antes → después". touches=true añade el punto ámbar
+     que marca dónde toca exactamente (se omite en aproximantes — se acercan
+     pero nunca tocan — y no aplica a las vocales). Devuelve {svg, label}. */
+  function tongueSVG(active, peakX, peakY, tipX, tipY, touches){
+    var svg = '';
+    if(active){
+      svg += '<path d="' + REST_TONGUE_PATH + '" fill="none" stroke="rgba(227,123,130,0.35)" stroke-width="2" stroke-dasharray="1 4"/>';
+    }
+    var d = active ? tonguePath(peakX,peakY,tipX,tipY) : REST_TONGUE_PATH;
+    svg += '<path d="' + d + '" fill="var(--mouth-tongue)" stroke="var(--mouth-tongue-line)" stroke-width="2.2" stroke-linejoin="round"/>';
+    // un trazo de brillo suave a lo largo del dorso, para que se lea carnosa y redondeada
+    var hlPeakX = active ? peakX : 96, hlPeakY = active ? peakY : 108;
+    svg += '<path d="M' + (hlPeakX-10) + ',' + (hlPeakY+4) + ' Q' + hlPeakX + ',' + (hlPeakY-4) + ' ' + (hlPeakX+10) + ',' + (hlPeakY+6) +
+      '" fill="none" stroke="var(--mouth-tongue-shade)" stroke-width="2" opacity="0.55" stroke-linecap="round"/>';
+    var label = '';
+    if(active){
+      svg += '<path d="M96,112 Q' + ((96+peakX)/2) + ',' + (Math.min(112,peakY)-20) + ' ' + (peakX+2) + ',' + (peakY-4) +
+        '" fill="none" stroke="var(--amber)" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#mouthArrow)" opacity="0.95"/>';
+      var lx = peakX > 110 ? peakX-8 : peakX+8, ly = peakY-16, anchor = peakX > 110 ? 'end' : 'start';
+      if(touches){
+        svg += '<circle cx="' + peakX + '" cy="' + peakY + '" r="5.5" fill="var(--amber)" stroke="var(--mouth-cavity)" stroke-width="1.4"/>';
+        label = labelLine(lx,ly+3,peakX,peakY-5) + labelText(lx,ly,'TOUCHES HERE',anchor,'var(--amber)');
+      } else {
+        label = labelLine(lx,ly+3,peakX,peakY-5) + labelText(lx,ly,'ALMOST TOUCHES',anchor,'var(--amber)');
+      }
+    }
+    return {svg: svg, label: label};
+  }
+  function lipsSVG(place, rounded){
+    if(rounded) return LIPS_ROUNDED;
+    if(place != null && place < 12) return LIPS_BILABIAL;
+    if(place != null && place < 22) return LIPS_LABIODENTAL;
+    return LIPS_NEUTRAL;
+  }
+  function glottisSVG(){
+    // pequeñas marcas de aire en la garganta, para la /h/ glotal — sin contacto de lengua ni labios
+    return '<path d="M148,92 q7,4 0,10" fill="none" stroke="var(--amber)" stroke-width="1.6" stroke-linecap="round"/>' +
+           '<path d="M144,88 q12,8 0,18" fill="none" stroke="var(--amber)" stroke-width="1.2" stroke-linecap="round" opacity="0.55"/>';
+  }
+  function nasalSVG(){
+    return '<line x1="118" y1="46" x2="128" y2="14" stroke="var(--amber)" stroke-width="2"/>' +
+           '<ellipse cx="130" cy="10" rx="7" ry="4" fill="none" stroke="var(--amber)" stroke-width="2"/>';
+  }
+  function airflowSVG(x,y){
+    return '<path d="M' + (x+9) + ' ' + (y-6) + ' q6 6 0 12" fill="none" stroke="var(--mouth-tongue-line)" stroke-width="1.4"/>' +
+           '<path d="M' + (x+14) + ' ' + (y-9) + ' q9 9 0 18" fill="none" stroke="var(--mouth-tongue-line)" stroke-width="1.1" opacity="0.6"/>';
+  }
+
+  function mouthSVGForVowel(v){
+    var peakX = 40 + (v.x/100)*76;   // delante (40) .. detrás (116)
+    var peakY = 50 + (v.y/100)*68;   // alta (50) .. baja (118)
+    var tipX = Math.max(24, peakX-26);
+    var tipY = Math.min(112, peakY+18);
+    var lips = lipsSVG(null, v.rounded);
+    var t = tongueSVG(true, peakX, peakY, tipX, tipY, false);
+    return faceShell(PALATE_LINE + TEETH + t.svg + lips, t.label);
+  }
+  function mouthSVGForConsonant(c){
+    var t = c.place/100;
+    var contactX = 40 + t*76;
+    var contactY = 50 + t*68;
+    var lips = lipsSVG(c.place, c.rounded);
+    var tongueRes, extras = '';
+    var touches = c.manner !== 'approximant';
+    if(c.ipa === 'w'){
+      // /w/: los labios hacen el redondeo, pero el cuerpo de la lengua también
+      // sube hacia atrás (como un /u/ rápido) — nunca toca nada, sin punto de contacto
+      tongueRes = tongueSVG(true, 108, 56, 60, 96, false);
+    } else if(c.place < 22 || c.place >= 88){
+      // labios (bilabial/labiodental) o la glotis (h) hacen el trabajo; lengua relajada
+      tongueRes = tongueSVG(false);
+      if(c.place >= 88) extras += glottisSVG();
+    } else if(c.place < 51){
+      // sonidos de punta/lámina: la punta es el punto de contacto
+      tongueRes = tongueSVG(true, contactX, contactY, Math.max(24,contactX-30), Math.min(110,contactY+22), touches);
+    } else {
+      // palatal/velar: el CUERPO de la lengua sube al fondo, la punta se queda baja y adelante
+      tongueRes = tongueSVG(true, contactX, contactY, 44, 100, touches);
+    }
+    if((c.manner === 'fricative' || c.manner === 'affricate') && c.place < 88){
+      extras += airflowSVG(contactX, contactY);
+    }
+    if(c.manner === 'nasal') extras += nasalSVG();
+    return faceShell(PALATE_LINE + TEETH + tongueRes.svg + extras + lips, tongueRes.label);
+  }
+
+  var detailLinksHtml = function(word){
+    var yg = 'https://youglish.com/pronounce/' + encodeURIComponent(word) + '/english';
+    var fv = 'https://forvo.com/word/' + encodeURIComponent(word) + '/#en';
+    return '<a href="' + yg + '" target="_blank" rel="noopener">▶ Hear it on YouGlish</a>' +
+           '<a href="' + fv + '" target="_blank" rel="noopener">▶ Hear it on Forvo</a>';
+  };
+
+  function showSoundDetail(item, isVowel){
+    var panel = document.getElementById('soundDetail');
+    document.getElementById('mouthSvgWrap').innerHTML = isVowel ? mouthSVGForVowel(item) : mouthSVGForConsonant(item);
+    document.getElementById('mouthTerm').textContent = isVowel ? vowelTerm(item) : consonantTerm(item);
+    document.getElementById('mouthCaption').textContent = isVowel ? vowelPlain(item) : consonantPlain(item);
+    document.getElementById('detailIpa').textContent = '/' + item.ipa + '/';
+    document.getElementById('detailWord').textContent = 'as in "' + item.word + '"';
+    document.getElementById('detailDesc').textContent = item.hint || 'Click the word again to hear it, or try YouGlish / Forvo for real speakers saying it in context.';
+    document.getElementById('detailLinks').innerHTML = detailLinksHtml(item.word);
+    panel.classList.add('show');
+    panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+
+  /* ================= RECORD & COMPARE MIC WIDGET ================= */
+  function createMicWidget(container, getWordFn){
+    if(!container) return;
+    var supported = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder);
+    var micBtn = document.createElement('button');
+    micBtn.type = 'button'; micBtn.className = 'mic-btn';
+    micBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3z" stroke="currentColor" stroke-width="1.8"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Record yourself</span>';
+    var status = document.createElement('span');
+    status.className = 'mic-status';
+    var playBtn = document.createElement('button');
+    playBtn.type = 'button'; playBtn.className = 'mic-btn mic-playback-btn';
+    playBtn.innerHTML = '▶ Play mine back';
+    container.appendChild(micBtn);
+    container.appendChild(status);
+    container.appendChild(playBtn);
+
+    if(!supported){
+      status.textContent = "Mic recording isn't available in this browser.";
+      micBtn.disabled = true;
+      return;
+    }
+
+    var stream, recorder, chunks = [], audioURL = null, audioEl = null, recording = false;
+
+    micBtn.addEventListener('click', function(){
+      if(recording) return;
+      navigator.mediaDevices.getUserMedia({audio:true}).then(function(s){
+        stream = s;
+        chunks = [];
+        recorder = new MediaRecorder(stream);
+        recorder.ondataavailable = function(e){ if(e.data.size > 0) chunks.push(e.data); };
+        recorder.onstop = function(){
+          if(audioURL) URL.revokeObjectURL(audioURL);
+          var blob = new Blob(chunks, {type:'audio/webm'});
+          audioURL = URL.createObjectURL(blob);
+          audioEl = new Audio(audioURL);
+          playBtn.classList.add('show');
+          status.textContent = 'Recorded ✓ — compare it with the word above.';
+          stream.getTracks().forEach(function(t){ t.stop(); });
+        };
+        recorder.start();
+        recording = true;
+        micBtn.classList.add('recording');
+        micBtn.querySelector('span') && (micBtn.querySelector('span').textContent = 'Stop (2.5s)');
+        status.textContent = 'Recording…';
+        setTimeout(function(){
+          if(recording && recorder.state === 'recording') recorder.stop();
+          recording = false;
+          micBtn.classList.remove('recording');
+          micBtn.querySelector('span') && (micBtn.querySelector('span').textContent = 'Record yourself');
+        }, 2500);
+      }).catch(function(){
+        status.textContent = 'Microphone permission denied — you can still practise by listening.';
+      });
+    });
+    playBtn.addEventListener('click', function(){
+      if(audioEl) audioEl.play();
+      var word = getWordFn ? getWordFn() : null;
+      if(word) setTimeout(function(){ speak(word); }, 1600);
+    });
+  }
+  createMicWidget(document.getElementById('detailMic'), function(){
+    var w = document.getElementById('detailWord');
+    return w ? w.textContent.replace(/^as in "|"$/g,'') : null;
+  });
+  createMicWidget(document.getElementById('pairsMic'), function(){ return null; });
+  createMicWidget(document.getElementById('stressMic'), function(){ return null; });
+  createMicWidget(document.getElementById('edMic'), function(){ return null; });
+  createMicWidget(document.getElementById('rhythmMic'), function(){ return null; });
+
+  /* wire sound-tile clicks to also open the detail panel */
+  (function(){
+    function attach(container, list, isVowel){
+      container.querySelectorAll('.sound-tile').forEach(function(tile, i){
+        tile.addEventListener('click', function(){ showSoundDetail(list[i], isVowel); });
+      });
+    }
+    attach(document.getElementById('vowelGrid'), VOWELS, true);
+    attach(document.getElementById('consGrid'), CONSONANTS, false);
+  })();
+
+  /* ================= DIAGNOSTIC ================= */
+  (function(){
+    var pool = shuffle(DIAGNOSTIC).slice(0, 12);
+    var qIdx = 0, current, answer;
+    document.getElementById('diagStart').addEventListener('click', function(){
+      document.getElementById('diagIntro').style.display = 'none';
+      document.getElementById('diagResults').style.display = 'none';
+      document.getElementById('diagQuiz').style.display = 'block';
+      qIdx = 0; pool = shuffle(DIAGNOSTIC).slice(0, 12);
+      load();
+    });
+    document.getElementById('diagRetake').addEventListener('click', function(){
+      document.getElementById('diagQuiz').style.display = 'block';
+      document.getElementById('diagResults').style.display = 'none';
+      qIdx = 0; pool = shuffle(DIAGNOSTIC).slice(0, 12);
+      load();
+    });
+    function load(){
+      if(qIdx >= pool.length){ finish(); return; }
+      current = pool[qIdx];
+      answer = Math.random() < 0.5 ? 'a' : 'b';
+      document.getElementById('diagProgress').textContent = 'QUESTION ' + (qIdx+1) + ' / ' + pool.length;
+      document.getElementById('diagFocus').textContent = current.focus;
+      var choices = document.getElementById('diagChoices');
+      choices.innerHTML = '';
+      var opts = shuffle([{k:'a',w:current.a},{k:'b',w:current.b}]);
+      opts.forEach(function(opt){
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'choice-btn';
+        b.textContent = opt.w;
+        b.addEventListener('click', function(){ choose(opt.k, b); });
+        choices.appendChild(b);
+      });
+      document.getElementById('diagFeedback').textContent = '';
+      document.getElementById('diagFeedback').className = 'feedback';
+      speak(answer === 'a' ? current.a : current.b);
+    }
+    function choose(k, btnEl){
+      document.querySelectorAll('#diagChoices .choice-btn').forEach(function(b){ b.disabled = true; });
+      var fb = document.getElementById('diagFeedback');
+      if(k === answer){
+        btnEl.classList.add('correct');
+        fb.textContent = 'Correct.'; fb.className = 'feedback good';
+      }else{
+        btnEl.classList.add('wrong');
+        fb.textContent = 'The word was "' + (answer==='a'?current.a:current.b) + '".'; fb.className = 'feedback bad';
+        recordMiss(current.focus);
+      }
+      setTimeout(function(){ qIdx++; load(); }, 900);
+    }
+    document.getElementById('diagPlay').addEventListener('click', function(){ speak(answer === 'a' ? current.a : current.b); });
+    function finish(){
+      document.getElementById('diagQuiz').style.display = 'none';
+      document.getElementById('diagResults').style.display = 'block';
+      var weak = topWeak(3);
+      var list = document.getElementById('diagWeakList');
+      if(!weak.length){
+        list.innerHTML = '<p style="text-align:center;color:var(--text-sub);">No consistent weak spots yet — nice work! Keep practising in Minimal Pairs and Word Stress to sharpen further.</p>';
+        return;
+      }
+      var max = weak[0].count;
+      list.innerHTML = weak.map(function(w){
+        var pct = Math.round((w.count/max)*100);
+        return '<div class="weak-row"><span class="focus">' + w.focus + '</span>' +
+          '<span class="bar-wrap"><span class="bar" style="width:' + pct + '%;"></span></span>' +
+          '<span class="pct">' + w.count.toFixed(0) + '×</span></div>';
+      }).join('') + '<p style="text-align:center;color:var(--text-sub);font-size:13px;margin-top:14px;">Head to the <b style="color:var(--text);">Review</b> tab for a mixed practice session on exactly these.</p>';
+    }
+  })();
+
+  /* ================= SENTENCE RHYTHM ================= */
+  (function(){
+    var idx = 0;
+    var words = [];
+    function render(){
+      var item = RHYTHM[idx];
+      document.getElementById('rhythmProgress').textContent = 'SENTENCE ' + (idx+1) + ' / ' + RHYTHM.length;
+      words = item.text.split(' ');
+      var html = words.map(function(w, i){
+        return '<span class="w" data-i="' + i + '">' + w + '</span>';
+      }).join(' ');
+      document.getElementById('rhythmSentence').innerHTML = html;
+      document.getElementById('rhythmNote').textContent = '';
+      document.getElementById('rhythmSentence').querySelectorAll('.w').forEach(function(el){ el.classList.remove('stressed'); });
+    }
+    function reveal(){
+      var item = RHYTHM[idx];
+      document.getElementById('rhythmSentence').querySelectorAll('.w').forEach(function(el){
+        var i = parseInt(el.getAttribute('data-i'), 10);
+        el.classList.toggle('stressed', item.stressed.indexOf(i) !== -1);
+      });
+      document.getElementById('rhythmNote').textContent = item.note;
+    }
+    function play(){
+      var item = RHYTHM[idx];
+      if(!('speechSynthesis' in window)){ reveal(); return; }
+      try{
+        speechSynthesis.cancel();
+        var u = new SpeechSynthesisUtterance(item.text);
+        u.lang = state.accent === 'US' ? 'en-US' : 'en-GB';
+        var v = voiceCache[state.accent];
+        if(v) u.voice = v;
+        u.rate = state.rate;
+        var spans = document.getElementById('rhythmSentence').querySelectorAll('.w');
+        u.onboundary = function(e){
+          if(e.name && e.name !== 'word') return;
+          // find which word this charIndex falls into
+          var textSoFar = item.text.slice(0, e.charIndex);
+          var wIdx = textSoFar.split(' ').length - 1;
+          spans.forEach(function(el){ el.classList.remove('playing'); });
+          if(spans[wIdx]) spans[wIdx].classList.add('playing');
+        };
+        u.onend = function(){ spans.forEach(function(el){ el.classList.remove('playing'); }); };
+        speechSynthesis.speak(u);
+      }catch(e){}
+    }
+    document.getElementById('rhythmPlay').addEventListener('click', play);
+    document.getElementById('rhythmReveal').addEventListener('click', reveal);
+    document.getElementById('rhythmNext').addEventListener('click', function(){ idx = (idx+1) % RHYTHM.length; render(); });
+    document.getElementById('rhythmPrev').addEventListener('click', function(){ idx = (idx-1+RHYTHM.length) % RHYTHM.length; render(); });
+    render();
+  })();
+
+  /* ================= CONNECTED SPEECH ================= */
+  (function(){
+    var cats = ['All'].concat(shuffle(Array.from(new Set(CONNECTED.map(function(c){return c.cat;})))).sort());
+    var active = 'All';
+    var filterWrap = document.getElementById('connectedFilters');
+    cats.forEach(function(cat){
+      var chip = document.createElement('button');
+      chip.type = 'button'; chip.className = 'filter-chip' + (cat === 'All' ? ' active' : '');
+      chip.textContent = cat;
+      chip.addEventListener('click', function(){
+        active = cat;
+        filterWrap.querySelectorAll('.filter-chip').forEach(function(c){ c.classList.remove('active'); });
+        chip.classList.add('active');
+        renderGrid();
+      });
+      filterWrap.appendChild(chip);
+    });
+    function renderGrid(){
+      var grid = document.getElementById('connectedGrid');
+      grid.innerHTML = '';
+      CONNECTED.filter(function(c){ return active === 'All' || c.cat === active; }).forEach(function(c){
+        var el = document.createElement('div');
+        el.className = 'connected-card';
+        el.innerHTML = '<span class="cat">' + c.cat + '</span>' +
+          '<div class="phrase">' + c.phrase + '</div>' +
+          '<span class="respell">' + c.respell + '</span>' +
+          '<p>' + c.body + '</p>' +
+          '<button class="small-btn" type="button">' +
+          '<svg viewBox="0 0 24 24" fill="none"><path d="M5 9v6h4l5 5V4L9 9H5z" fill="currentColor"/></svg>Play phrase</button>';
+        el.querySelector('.small-btn').addEventListener('click', function(){ speak(c.phrase); });
+        grid.appendChild(el);
+      });
+    }
+    renderGrid();
+  })();
+
+  /* ================= REVIEW TAB ================= */
+  var REVIEW_SOURCE = PAIRS.concat(DIAGNOSTIC);
+  (function(){
+    function render(){
+      var body = document.getElementById('reviewBody');
+      var weak = topWeak();
+      if(!weak.length){
+        body.innerHTML = '<div class="review-empty">No weak points logged yet. Play Minimal Pairs, Word Stress, -ed Endings or the Diagnostic — every miss shows up here, ready to drill again.</div>';
+        return;
+      }
+      var focuses = weak.map(function(w){ return w.focus; });
+      var pool = shuffle(REVIEW_SOURCE.filter(function(p){ return focuses.indexOf(p.focus) !== -1; }));
+      if(!pool.length) pool = shuffle(REVIEW_SOURCE);
+      body.innerHTML =
+        '<div class="review-summary">' + weak.map(function(w){
+          return '<span class="review-pill">' + w.focus + ' <b>' + w.count.toFixed(0) + '×</b></span>';
+        }).join('') + '</div>' +
+        '<div class="game">' +
+          '<div class="score-row"><div class="stat">Score<b id="reviewScore">0/0</b></div><div class="stat">Streak<b id="reviewStreak">0</b></div></div>' +
+          '<div class="prompt-card"><div class="focus-tag" id="reviewFocus"></div><br>' +
+          '<button class="play-btn" id="reviewPlay" type="button">' +
+          '<svg viewBox="0 0 24 24" fill="none"><path d="M5 9v6h4l5 5V4L9 9H5z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Play word</button></div>' +
+          '<div class="choices" id="reviewChoices"></div>' +
+          '<div class="feedback" id="reviewFeedback"></div>' +
+          '<div class="next-row"><button class="ghost-btn" id="reviewNext" type="button">Next →</button></div>' +
+        '</div>';
+      var idx = 0, correct = 0, total = 0, streak = 0, current, answer;
+      function load(){
+        if(idx >= pool.length){ pool = shuffle(pool); idx = 0; }
+        current = pool[idx++];
+        answer = Math.random() < 0.5 ? 'a' : 'b';
+        document.getElementById('reviewFocus').textContent = current.focus;
+        var ch = document.getElementById('reviewChoices');
+        ch.innerHTML = '';
+        shuffle([{k:'a',w:current.a},{k:'b',w:current.b}]).forEach(function(opt){
+          var b = document.createElement('button');
+          b.type = 'button'; b.className = 'choice-btn'; b.textContent = opt.w;
+          b.addEventListener('click', function(){ choose(opt.k, b); });
+          ch.appendChild(b);
+        });
+        document.getElementById('reviewFeedback').textContent = '';
+        document.getElementById('reviewFeedback').className = 'feedback';
+        speak(answer === 'a' ? current.a : current.b);
+      }
+      function choose(k, btnEl){
+        document.querySelectorAll('#reviewChoices .choice-btn').forEach(function(b){ b.disabled = true; });
+        total++;
+        var fb = document.getElementById('reviewFeedback');
+        if(k === answer){
+          correct++; streak++; btnEl.classList.add('correct');
+          fb.textContent = 'Correct.'; fb.className = 'feedback good';
+          recordHit(current.focus);
+        }else{
+          streak = 0; btnEl.classList.add('wrong');
+          fb.textContent = 'It was "' + (answer==='a'?current.a:current.b) + '".'; fb.className = 'feedback bad';
+        }
+        document.getElementById('reviewScore').textContent = correct + '/' + total;
+        document.getElementById('reviewStreak').textContent = streak;
+        renderSummaryPills();
+      }
+      function renderSummaryPills(){
+        var w = topWeak();
+        var wrap = document.querySelector('.review-summary');
+        if(wrap) wrap.innerHTML = w.length ? w.map(function(x){
+          return '<span class="review-pill">' + x.focus + ' <b>' + x.count.toFixed(0) + '×</b></span>';
+        }).join('') : '<span class="review-pill">All caught up 🎉</span>';
+      }
+      document.getElementById('reviewPlay').addEventListener('click', function(){ speak(answer === 'a' ? current.a : current.b); });
+      document.getElementById('reviewNext').addEventListener('click', load);
+      load();
+    }
+    document.querySelector('[data-tab="review"]').addEventListener('click', render);
+    updateReviewBadge();
+  })();
+
+  /* ================= AMBIENT WAVEFORM ================= */
+  (function(){
+    var canvas = document.getElementById('wave');
+    var ctx = canvas.getContext('2d');
+    var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var w, h, bars = [];
+    function resize(){
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = Math.min(window.innerHeight, 900);
+      var count = Math.floor(w / 26);
+      bars = [];
+      for(var i=0;i<count;i++){
+        bars.push({ x: i*26 + 13, phase: Math.random()*Math.PI*2, speed: 0.008 + Math.random()*0.012, amp: 20 + Math.random()*60 });
+      }
+    }
+    function draw(t){
+      ctx.clearRect(0,0,w,h);
+      var midY = h*0.28;
+      ctx.lineCap = 'round';
+      bars.forEach(function(b){
+        var val = reduced ? 0.4 : (Math.sin(b.phase + t*b.speed) * 0.5 + 0.5);
+        var barH = 6 + val*b.amp;
+        var grad = ctx.createLinearGradient(0, midY-barH, 0, midY+barH);
+        grad.addColorStop(0, 'rgba(45,212,191,0)');
+        grad.addColorStop(0.5, 'rgba(45,212,191,0.55)');
+        grad.addColorStop(1, 'rgba(179,157,255,0)');
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(b.x, midY - barH/2);
+        ctx.lineTo(b.x, midY + barH/2);
+        ctx.stroke();
+      });
+      if(!reduced) requestAnimationFrame(draw);
+    }
+    resize();
+    window.addEventListener('resize', resize);
+    draw(0);
+    if(reduced) draw(1000);
+  })();
+
+})();
+</script>
+
+</body></html>
