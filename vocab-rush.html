@@ -1,0 +1,1867 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vocab Rush</title>
+<style>
+:root{
+  --bg:#0b0e1a; --panel:#12172c; --panel2:#161c36; --line:rgba(255,255,255,0.09);
+  --text:#f4f2ec; --sub:#9aa1ba; --vocab:#a78bfa; --vocab-dim:rgba(167,139,250,0.16);
+  --ok:#2dd4bf; --bad:#ff3b5c; --gold:#ffcc66;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{background:var(--bg); color:var(--text); font-family:'Manrope',sans-serif; width:100%; min-height:100%;}
+body{padding:18px 16px 40px; display:flex; flex-direction:column; align-items:center;}
+.wrap{width:100%; max-width:560px; display:flex; flex-direction:column; gap:16px;}
+h1,h2,h3{font-family:'Unbounded',sans-serif; text-wrap:balance;}
+.mono{font-family:'JetBrains Mono',monospace;}
+
+/* top bar */
+.topbar{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  background:linear-gradient(135deg,var(--panel2),var(--panel)); border:1px solid var(--line);
+  border-radius:18px; padding:12px 16px;
+}
+.brand{display:flex; align-items:center; gap:10px;}
+.brand .logo{width:34px; height:34px; border-radius:10px; background:var(--vocab-dim); border:1px solid rgba(167,139,250,0.4);
+  display:flex; align-items:center; justify-content:center; font-size:17px; flex:none;}
+.brand .name{font-family:'Unbounded',sans-serif; font-weight:800; font-size:15px;}
+.stats{display:flex; gap:14px;}
+.stat{text-align:right;}
+.stat .n{font-family:'JetBrains Mono',monospace; font-weight:700; font-size:14px; color:var(--gold); font-variant-numeric:tabular-nums;}
+.stat .l{font-size:9.5px; color:var(--sub); text-transform:uppercase; letter-spacing:.08em;}
+
+/* screens */
+.screen{display:none; flex-direction:column; gap:16px;}
+.screen.active{display:flex;}
+
+.panel{background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:18px;}
+.panel h2{font-size:16px; margin-bottom:4px;}
+.panel .sub{color:var(--sub); font-size:12.5px; margin-bottom:14px;}
+
+.grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:10px;}
+.chip{
+  border:1px solid var(--line); border-radius:14px; padding:14px 12px; background:rgba(255,255,255,0.03);
+  cursor:pointer; text-align:left; display:flex; flex-direction:column; gap:6px; transition:all .15s ease; color:var(--text);
+  font-family:inherit;
+}
+.chip:hover{border-color:var(--vocab); background:var(--vocab-dim);}
+.chip.active{border-color:var(--vocab); background:var(--vocab-dim); box-shadow:0 0 0 1px var(--vocab) inset;}
+.chip .em{font-size:20px;}
+.chip .t{font-weight:700; font-size:13.5px;}
+.chip .s{font-size:10.5px; color:var(--sub); font-family:'JetBrains Mono',monospace;}
+.chip.locked{opacity:.4; cursor:not-allowed;}
+.chip.locked:hover{border-color:var(--line); background:rgba(255,255,255,0.03);}
+
+.rowline{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:11px 14px;
+  border:1px solid var(--line); border-radius:13px; background:rgba(255,255,255,0.02); cursor:pointer; margin-bottom:8px;}
+.rowline:hover{border-color:var(--vocab);}
+.rowline.on{border-color:var(--vocab); background:var(--vocab-dim);}
+.rowline .l{font-weight:700; font-size:13px;}
+.rowline .r{font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--sub);}
+.rowline .mastery{width:56px; height:6px; border-radius:4px; background:rgba(255,255,255,.08); overflow:hidden; flex:none;}
+.rowline .mastery i{display:block; height:100%; background:var(--ok);}
+
+.btn{
+  border:none; border-radius:13px; padding:13px 18px; font-family:'Unbounded',sans-serif; font-weight:700; font-size:13px;
+  cursor:pointer; background:var(--vocab); color:#100a24; transition:transform .1s ease, opacity .15s ease;
+}
+.btn:hover{transform:translateY(-1px);}
+.btn:disabled{opacity:.35; cursor:not-allowed; transform:none;}
+.btn.ghost{background:transparent; border:1px solid var(--line); color:var(--text);}
+.btn.block{width:100%;}
+.btn.sm{padding:9px 14px; font-size:11.5px; border-radius:10px;}
+
+.modes{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px;}
+
+/* session */
+.progress{height:6px; border-radius:4px; background:rgba(255,255,255,.08); overflow:hidden;}
+.progress i{display:block; height:100%; background:var(--vocab); transition:width .25s ease;}
+.session-head{display:flex; justify-content:space-between; align-items:center;}
+.session-head .tag{font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--sub); text-transform:uppercase; letter-spacing:.08em;}
+.session-head .streak{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--gold); font-weight:700;}
+
+.card-area{min-height:230px; display:flex; flex-direction:column; align-items:stretch; justify-content:center;}
+.card{
+  width:100%; background:linear-gradient(160deg,var(--panel2),var(--panel)); border:1px solid var(--line);
+  border-radius:20px; padding:30px 20px; text-align:center; cursor:pointer; position:relative; min-height:200px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
+}
+.card .word{font-family:'Unbounded',sans-serif; font-weight:800; font-size:clamp(22px,6vw,30px);}
+.card .hint{font-size:11px; color:var(--sub); text-transform:uppercase; letter-spacing:.1em; font-family:'JetBrains Mono',monospace;}
+.card .trans{font-size:16px; color:var(--vocab); font-weight:700; display:none;}
+.card.flip .trans{display:block;}
+.card.flip .hint{opacity:0;}
+.speak{
+  position:absolute; top:14px; right:14px; width:34px; height:34px; border-radius:50%; border:1px solid var(--line);
+  background:rgba(255,255,255,0.04); color:var(--text); font-size:15px; display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
+}
+.speak:hover{border-color:var(--vocab);}
+
+.choices{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+.choice{
+  border:1px solid var(--line); border-radius:13px; padding:14px 10px; background:rgba(255,255,255,0.03); color:var(--text);
+  font-family:'Manrope',sans-serif; font-weight:700; font-size:13.5px; cursor:pointer; text-align:center;
+}
+.choice:hover{border-color:var(--vocab);}
+.choice.correct{border-color:var(--ok); background:rgba(45,212,191,0.16); color:var(--ok);}
+.choice.wrong{border-color:var(--bad); background:rgba(255,59,92,0.16); color:var(--bad);}
+
+.type-row{display:flex; gap:10px;}
+.type-row input{
+  flex:1; background:rgba(255,255,255,0.04); border:1px solid var(--line); border-radius:12px; padding:13px 14px;
+  color:var(--text); font-size:15px; font-family:'Manrope',sans-serif;
+}
+.type-row input:focus{outline:none; border-color:var(--vocab);}
+.type-row input.correct{border-color:var(--ok); color:var(--ok);}
+.type-row input.wrong{border-color:var(--bad); color:var(--bad);}
+.feedback{font-size:12.5px; color:var(--sub); min-height:18px;}
+.feedback.ok{color:var(--ok);}
+.feedback.bad{color:var(--bad);}
+
+.flash-actions{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+
+/* summary */
+.big-num{font-family:'Unbounded',sans-serif; font-size:44px; font-weight:900; color:var(--gold); text-align:center;}
+.summary-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; text-align:center;}
+.summary-grid .b{background:rgba(255,255,255,0.03); border:1px solid var(--line); border-radius:13px; padding:14px;}
+.summary-grid .b .n{font-family:'JetBrains Mono',monospace; font-weight:700; font-size:18px;}
+.summary-grid .b .l{font-size:10.5px; color:var(--sub); text-transform:uppercase; letter-spacing:.06em; margin-top:4px;}
+
+.crumbs{display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--sub); font-family:'JetBrains Mono',monospace; flex-wrap:wrap;}
+.crumbs b{color:var(--text); cursor:pointer;}
+.crumbs b:hover{color:var(--vocab);}
+
+footer{text-align:center; color:var(--sub); font-size:11.5px; margin-top:6px;}
+footer a{color:var(--vocab); text-decoration:none;}
+
+/* name capture modal */
+.modal-backdrop{position:fixed; inset:0; background:rgba(0,0,0,0.6); display:none; align-items:center; justify-content:center; z-index:50; padding:20px;}
+.modal-backdrop.show{display:flex;}
+.modal-box{background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:22px; width:100%; max-width:340px; display:flex; flex-direction:column; gap:12px;}
+.modal-box .sub{color:var(--sub); font-size:12.5px;}
+.modal-box input{background:rgba(255,255,255,0.04); border:1px solid var(--line); border-radius:12px; padding:12px 14px; color:var(--text); font-size:15px; font-family:'Manrope',sans-serif;}
+.modal-box input:focus{outline:none; border-color:var(--vocab);}
+
+@media(max-width:420px){ .choices{grid-template-columns:1fr;} .summary-grid{grid-template-columns:1fr 1fr;} }
+
+/* home button (return to main site) */
+.home-fab{
+  position:fixed; top:14px; left:14px; z-index:60;
+  display:flex; align-items:center; gap:7px;
+  background:linear-gradient(135deg,var(--panel2),var(--panel));
+  border:1px solid var(--line); border-radius:999px;
+  padding:9px 14px 9px 11px; text-decoration:none;
+  color:var(--text); font-family:'Manrope',sans-serif; font-weight:700; font-size:12.5px;
+  box-shadow:0 4px 14px rgba(0,0,0,0.35); transition:all .15s ease;
+}
+.home-fab:hover{border-color:var(--vocab); background:var(--vocab-dim);}
+.home-fab .ic{font-size:15px; line-height:1;}
+@media (max-width:420px){
+  .home-fab{top:10px; left:10px; padding:8px 12px 8px 10px; font-size:0;}
+  .home-fab .ic{font-size:16px;}
+  .home-fab .lbl{display:none;}
+}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800;900&family=Manrope:wght@400;500;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<a class="home-fab" href="https://inorderwords.netlify.app/" title="Volver a la pagina principal"><span class="ic">🏠</span><span class="lbl">Inicio</span></a>
+
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="brand"><div class="logo">🧠</div><div class="name">Vocab Rush</div></div>
+    <div class="stats">
+      <div class="stat"><div class="n" id="statXp">0</div><div class="l">XP total</div></div>
+      <div class="stat"><div class="n" id="statMastered">0</div><div class="l">Dominadas</div></div>
+      <div class="stat"><div class="n" id="statStreak">0</div><div class="l">Racha días</div></div>
+    </div>
+  </div>
+
+  <!-- HOME / PICKER -->
+  <div class="screen active" id="screen-home">
+    <div class="panel">
+      <h2>1. Elige tu curso</h2>
+      <div class="sub">Selecciona el curso para ver sus unidades de vocabulario.</div>
+      <div class="grid" id="courseGrid"></div>
+    </div>
+
+    <div class="panel" id="unitPanel" style="display:none;">
+      <h2 id="unitPanelTitle">2. Elige la unidad</h2>
+      <div class="sub">Las unidades bloqueadas llegarán próximamente.</div>
+      <div id="unitList"></div>
+    </div>
+
+    <div class="panel" id="groupPanel" style="display:none;">
+      <h2>3. Elige el bloque de palabras</h2>
+      <div class="sub">Puedes combinar varios bloques en una misma ronda.</div>
+      <div id="groupList"></div>
+    </div>
+
+    <div class="panel" id="modePanel" style="display:none;">
+      <h2>4. Elige el modo de juego</h2>
+      <div class="sub" id="wordCountSub"></div>
+      <div class="modes">
+        <button class="chip" data-mode="flash"><span class="em">🔄</span><span class="t">Flashcards</span><span class="s">Repaso rápido</span></button>
+        <button class="chip" data-mode="choice"><span class="em">🎯</span><span class="t">Elección múltiple</span><span class="s">4 opciones</span></button>
+        <button class="chip" data-mode="type"><span class="em">⌨️</span><span class="t">Escribir</span><span class="s">Modo difícil</span></button>
+      </div>
+      <div style="height:14px;"></div>
+      <button class="btn block" id="startBtn" disabled>Elige un modo para empezar →</button>
+    </div>
+  </div>
+
+  <!-- SESSION -->
+  <div class="screen" id="screen-session">
+    <div class="crumbs"><b id="backToHome">← Salir</b></div>
+    <div class="session-head">
+      <div class="tag" id="sessionTag">Unit · Grupo</div>
+      <div class="streak" id="sessionStreak">🔥 0 seguidas</div>
+    </div>
+    <div class="progress"><i id="progressBar" style="width:0%"></i></div>
+    <div class="card-area" id="cardArea"></div>
+    <div class="feedback" id="feedback"></div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="screen" id="screen-summary">
+    <div class="panel">
+      <h2 style="text-align:center;">¡Ronda completada! 🎉</h2>
+      <div class="big-num" id="sumXp">+0 XP</div>
+      <div style="height:6px;"></div>
+      <div class="summary-grid">
+        <div class="b"><div class="n" id="sumCorrect">0</div><div class="l">Aciertos</div></div>
+        <div class="b"><div class="n" id="sumWrong">0</div><div class="l">Fallos</div></div>
+        <div class="b"><div class="n" id="sumBest">0</div><div class="l">Mejor racha</div></div>
+        <div class="b"><div class="n" id="sumMastered">0</div><div class="l">Palabras dominadas</div></div>
+      </div>
+      <div style="height:16px;"></div>
+      <div class="flash-actions">
+        <button class="btn ghost" id="btnHome">Volver al menú</button>
+        <button class="btn" id="btnAgain">Otra ronda</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>Tu progreso se guarda automáticamente en este dispositivo · <a href="https://inorderwords.netlify.app" target="_blank">inorderwords</a></footer>
+</div>
+
+<!-- name capture modal -->
+<div class="modal-backdrop" id="nameModal">
+  <div class="modal-box">
+    <h3>¿Cómo te llamas?</h3>
+    <div class="sub">Así tu profesor/a podrá ver tu progreso. Solo se pide una vez.</div>
+    <input type="text" id="nameInput" placeholder="Tu nombre y apellido" autocomplete="off">
+    <button class="btn block" id="nameSubmit">Empezar</button>
+  </div>
+</div>
+
+<script>
+/* ---------- BACKEND (Google Apps Script Web App) ---------- */
+/* Apps Script Web App /exec URL (Vocab Rush - Backend).
+   Google Apps Script Web Apps don't send an Access-Control-Allow-Origin
+   header, so a plain fetch() to this URL from inorderwords.netlify.app is
+   always blocked by CORS -- for every visitor, logged in or not. We talk
+   to it with a classic JSONP <script> tag instead: script loads are never
+   subject to CORS, and the backend (doGet in Code.gs) wraps its JSON
+   response in the callback name we pass it.
+   Everything below falls back to the static data / localStorage only
+   if a call to this URL fails for any reason (offline, blocked, etc). */
+const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbxE10u2B5PrXLWXkYAZ31h_ZDVlVmPOmqzaDmGPmhZ2UBFg_-DhGFEYktwIa0o5ixB5/exec';
+
+function jsonpRequest_(params, timeoutMs){
+  return new Promise((resolve)=>{
+    if(!BACKEND_URL) return resolve(null);
+    const cbName = '__vrCb' + Date.now() + '_' + Math.floor(Math.random()*1e6);
+    let done = false;
+    const script = document.createElement('script');
+    const cleanup = ()=>{
+      if(done) return;
+      done = true;
+      try{ delete window[cbName]; }catch(e){ window[cbName] = undefined; }
+      if(script.parentNode) script.parentNode.removeChild(script);
+    };
+    window[cbName] = (data)=>{ cleanup(); resolve(data); };
+    script.onerror = ()=>{ cleanup(); resolve(null); };
+    const qs = new URLSearchParams(params);
+    qs.set('callback', cbName);
+    script.src = BACKEND_URL + '?' + qs.toString();
+    setTimeout(()=>{ cleanup(); resolve(null); }, timeoutMs || 6000);
+    document.head.appendChild(script);
+  });
+}
+
+async function loadVisibility(){
+  if(!BACKEND_URL) return;
+  try{
+    const data = await jsonpRequest_({ action:'visibility' });
+    if(data && data.ok && Array.isArray(data.visibility)){
+      data.visibility.forEach(row=>{
+        const course = DATA.courses.find(c=>c.id===row.course);
+        if(!course) return;
+        const unit = course.units.find(u=>u.id===row.unit);
+        if(!unit) return;
+        unit.live = (row.live === true || row.live === 'TRUE' || row.live === 'true');
+      });
+    }
+  }catch(e){ /* keep static live flags on failure */ }
+}
+
+function postScore(payload){
+  if(!BACKEND_URL) return;
+  try{
+    // fire-and-forget: JSONP GET carrying the score as query params
+    jsonpRequest_(Object.assign({ action:'score' }, payload));
+  }catch(e){}
+}
+
+/* ---------- STUDENT NAME (asked once, for the leaderboard) ---------- */
+const NAME_KEY = 'iow_vocabrush_name';
+function getStudentName(){ try{ return localStorage.getItem(NAME_KEY)||''; }catch(e){ return ''; } }
+function setStudentName(n){ try{ localStorage.setItem(NAME_KEY, n); }catch(e){} }
+
+function ensureName(cb){
+  const existing = getStudentName();
+  if(existing){ cb(); return; }
+  const modal = document.getElementById('nameModal');
+  const input = document.getElementById('nameInput');
+  modal.classList.add('show');
+  input.focus();
+  const submit = ()=>{
+    const val = input.value.trim();
+    if(!val) return;
+    setStudentName(val);
+    modal.classList.remove('show');
+    cb();
+  };
+  document.getElementById('nameSubmit').onclick = submit;
+  input.onkeydown = (e)=>{ if(e.key==='Enter') submit(); };
+}
+
+/* ---------- DATA ---------- */
+const DATA = {
+  courses: [
+    { id:'1eso', name:'1º ESO', emoji:'🌟', book:'Inspo 1',
+      units:[
+        { id:'u1', name:'Unit 1', title:'All about me', live:true, groups:[
+          { id:'appearance', title:'Appearance', words:[
+            {en:'blond(e)', es:'rubio / rubia'},
+            {en:'blue', es:'azul'},
+            {en:'braces', es:'aparato dental'},
+            {en:'brown', es:'marrón / castaño'},
+            {en:'curly', es:'rizado'},
+            {en:'dark', es:'oscuro'},
+            {en:'freckles', es:'pecas'},
+            {en:'glasses', es:'gafas'},
+            {en:'green', es:'verde'},
+            {en:'grey', es:'gris'},
+            {en:'long', es:'largo'},
+            {en:'medium-height', es:'de estatura media'},
+            {en:'red', es:'pelirrojo / roja'},
+            {en:'short', es:'bajo / corto'},
+            {en:'straight', es:'liso'},
+            {en:'tall', es:'alto'}
+          ]},
+          { id:'bedroom', title:'Bedroom furniture', words:[
+            {en:'bed', es:'cama'},
+            {en:'bedside table', es:'mesita de noche'},
+            {en:'chest of drawers', es:'cómoda'},
+            {en:'desk', es:'escritorio'},
+            {en:'floor', es:'suelo'},
+            {en:'lamp', es:'lámpara'},
+            {en:'mirror', es:'espejo'},
+            {en:'poster', es:'póster'},
+            {en:'rug', es:'alfombra'},
+            {en:'shelf / shelves', es:'estante / estantes'},
+            {en:'wall', es:'pared'},
+            {en:'wardrobe', es:'armario'}
+          ]}
+        ]},
+        { id:'u2', name:'Unit 2', title:'School life', live:false, groups:[
+          { id:'places', title:'Places in a school', words:[
+            {en:'art room', es:'aula de arte'},
+            {en:'cafeteria', es:'cafetería'},
+            {en:'classroom', es:'aula'},
+            {en:'gym', es:'gimnasio'},
+            {en:'ICT room', es:'aula de informática'},
+            {en:'library', es:'biblioteca'},
+            {en:'music room', es:'aula de música'},
+            {en:'playground', es:'patio'},
+            {en:'reception', es:'recepción'},
+            {en:'school hall', es:'salón de actos'},
+            {en:'science lab', es:'laboratorio de ciencias'},
+            {en:'sports field', es:'campo de deportes'},
+            {en:'staff room', es:'sala de profesores'}
+          ]},
+          { id:'routine', title:'School day routine', words:[
+            {en:'do sport', es:'hacer deporte'},
+            {en:'do a test', es:'hacer un examen'},
+            {en:'do your homework', es:'hacer los deberes'},
+            {en:'get dressed', es:'vestirse'},
+            {en:'get up (early/late)', es:'levantarse (temprano/tarde)'},
+            {en:'go home', es:'ir a casa'},
+            {en:'go to bed', es:'irse a la cama'},
+            {en:'go to a school club', es:'ir a un club escolar'},
+            {en:'have a break', es:'tener un descanso'},
+            {en:'have breakfast', es:'desayunar'},
+            {en:'have dinner', es:'cenar'},
+            {en:'have lunch', es:'almorzar / comer'},
+            {en:'make friends', es:'hacer amigos'},
+            {en:'take the bus', es:'coger el autobús'},
+            {en:'tidy your room', es:'ordenar tu habitación'},
+            {en:'walk to school', es:'ir al colegio andando'}
+          ]}
+        ]},
+        { id:'u3', name:'Unit 3', title:'My home city', live:false, groups:[
+          { id:'places-town', title:'Places in a town', words:[
+            {en:'bridge', es:'puente'},
+            {en:'car park', es:'aparcamiento'},
+            {en:'cinema', es:'cine'},
+            {en:'hospital', es:'hospital'},
+            {en:'market', es:'mercado'},
+            {en:'museum', es:'museo'},
+            {en:'park', es:'parque'},
+            {en:'restaurant', es:'restaurante'},
+            {en:'shop', es:'tienda'},
+            {en:'shopping centre', es:'centro comercial'},
+            {en:'sports centre', es:'centro deportivo'},
+            {en:'square', es:'plaza'},
+            {en:'stadium', es:'estadio'},
+            {en:'station', es:'estación'}
+          ]},
+          { id:'adjectives-places', title:'Adjectives to describe places', words:[
+            {en:'beautiful', es:'precioso / bonito'},
+            {en:'boring', es:'aburrido'},
+            {en:'bright', es:'luminoso'},
+            {en:'busy', es:'concurrido'},
+            {en:'clean', es:'limpio'},
+            {en:'colourful', es:'colorido'},
+            {en:'dangerous', es:'peligroso'},
+            {en:'dirty', es:'sucio'},
+            {en:'dry', es:'seco'},
+            {en:'exciting', es:'emocionante'},
+            {en:'modern', es:'moderno'},
+            {en:'noisy', es:'ruidoso'},
+            {en:'quiet', es:'tranquilo'},
+            {en:'safe', es:'seguro'},
+            {en:'ugly', es:'feo'},
+            {en:'wet', es:'húmedo / mojado'}
+          ]}
+        ]},
+        { id:'u4', name:'Unit 4', title:'Come and join us!', live:false, groups:[
+          { id:'free-time', title:'Free-time activities', words:[
+            {en:'dance', es:'bailar'},
+            {en:'do crafts', es:'hacer manualidades'},
+            {en:'draw', es:'dibujar'},
+            {en:'go running', es:'salir a correr'},
+            {en:'go shopping', es:'ir de compras'},
+            {en:'listen to music', es:'escuchar música'},
+            {en:'make videos', es:'hacer vídeos'},
+            {en:'play chess', es:'jugar al ajedrez'},
+            {en:'play computer games', es:'jugar a videojuegos'},
+            {en:'play (tennis)', es:'jugar al (tenis)'},
+            {en:'play the (saxophone)', es:'tocar el (saxofón)'},
+            {en:'read books', es:'leer libros'},
+            {en:'take photos', es:'hacer fotos'},
+            {en:'watch films / TV', es:'ver películas / la tele'}
+          ]},
+          { id:'sports', title:'Sports', words:[
+            {en:'athletics', es:'atletismo'},
+            {en:'badminton', es:'bádminton'},
+            {en:'baseball', es:'béisbol'},
+            {en:'basketball', es:'baloncesto'},
+            {en:'cycling', es:'ciclismo'},
+            {en:'football', es:'fútbol'},
+            {en:'golf', es:'golf'},
+            {en:'gymnastics', es:'gimnasia'},
+            {en:'hockey', es:'hockey'},
+            {en:'horse-riding', es:'equitación'},
+            {en:'ice skating', es:'patinaje sobre hielo'},
+            {en:'judo', es:'judo'},
+            {en:'kayaking', es:'kayak'},
+            {en:'rugby', es:'rugby'},
+            {en:'surfing', es:'surf'},
+            {en:'swimming', es:'natación'},
+            {en:'table tennis', es:'tenis de mesa'},
+            {en:'volleyball', es:'voleibol'}
+          ]}
+        ]},
+        { id:'u5', name:'Unit 5', title:'How do you make it?', live:false, groups:[
+          { id:'celebrating', title:'Verb phrases for celebrating', words:[
+            {en:'cook / make special dishes', es:'cocinar / preparar platos especiales'},
+            {en:'decorate a room', es:'decorar una habitación'},
+            {en:'give / get presents', es:'dar / recibir regalos'},
+            {en:'have a party', es:'dar una fiesta'},
+            {en:'invite people to a party', es:'invitar a gente a una fiesta'},
+            {en:'meet up with friends and family', es:'quedar con amigos y familia'},
+            {en:'play games', es:'jugar a juegos'},
+            {en:'sing songs', es:'cantar canciones'},
+            {en:'watch fireworks', es:'ver fuegos artificiales'},
+            {en:'wear special clothes / a costume', es:'llevar ropa especial / un disfraz'}
+          ]},
+          { id:'food-drink', title:'Food and drink', words:[
+            {en:'apples', es:'manzanas'},
+            {en:'beans', es:'judías'},
+            {en:'beef', es:'carne de vaca'},
+            {en:'bread', es:'pan'},
+            {en:'carrots', es:'zanahorias'},
+            {en:'cheese', es:'queso'},
+            {en:'chicken', es:'pollo'},
+            {en:'chilli sauce', es:'salsa picante'},
+            {en:'eggs', es:'huevos'},
+            {en:'ice cream', es:'helado'},
+            {en:'juice', es:'zumo'},
+            {en:'milk', es:'leche'},
+            {en:'nuts', es:'frutos secos'},
+            {en:'olive oil', es:'aceite de oliva'},
+            {en:'onions', es:'cebollas'},
+            {en:'oranges', es:'naranjas'},
+            {en:'pasta', es:'pasta'},
+            {en:'potatoes', es:'patatas'},
+            {en:'rice', es:'arroz'},
+            {en:'salad', es:'ensalada'},
+            {en:'salmon', es:'salmón'},
+            {en:'sugar', es:'azúcar'},
+            {en:'tomatoes', es:'tomates'},
+            {en:'water', es:'agua'}
+          ]}
+        ]},
+        { id:'u6', name:'Unit 6', title:'A visit to a market', live:false, groups:[
+          { id:'clothes', title:'Clothes', words:[
+            {en:'boots', es:'botas'},
+            {en:'cap', es:'gorra'},
+            {en:'coat', es:'abrigo'},
+            {en:'dress', es:'vestido'},
+            {en:'hat', es:'sombrero'},
+            {en:'hoodie', es:'sudadera con capucha'},
+            {en:'jacket', es:'chaqueta'},
+            {en:'jeans', es:'vaqueros'},
+            {en:'joggers', es:'pantalones de chándal'},
+            {en:'jumper', es:'jersey'},
+            {en:'shirt', es:'camisa'},
+            {en:'shorts', es:'pantalones cortos'},
+            {en:'skirt', es:'falda'},
+            {en:'socks', es:'calcetines'},
+            {en:'sunglasses', es:'gafas de sol'},
+            {en:'T-shirt', es:'camiseta'},
+            {en:'trainers', es:'zapatillas de deporte'},
+            {en:'trousers', es:'pantalones'}
+          ]},
+          { id:'adjectives-objects', title:'Adjectives to describe objects', words:[
+            {en:'broken', es:'roto'},
+            {en:'hard', es:'duro'},
+            {en:'heavy', es:'pesado'},
+            {en:'light', es:'ligero'},
+            {en:'patterned', es:'estampado'},
+            {en:'plain', es:'liso / sencillo'},
+            {en:'rough', es:'áspero'},
+            {en:'round', es:'redondo'},
+            {en:'smooth', es:'suave / liso'},
+            {en:'soft', es:'blando'},
+            {en:'square', es:'cuadrado'},
+            {en:'thick', es:'grueso'},
+            {en:'thin', es:'fino'}
+          ]}
+        ]},
+        { id:'u7', name:'Unit 7', title:'She was born in 1996', live:false, groups:[
+          { id:'tv-films', title:'TV shows and films', words:[
+            {en:'action', es:'(película de) acción'},
+            {en:'animation', es:'animación / dibujos animados'},
+            {en:'comedy', es:'comedia'},
+            {en:'documentary', es:'documental'},
+            {en:'drama', es:'drama'},
+            {en:'game show', es:'concurso'},
+            {en:'horror', es:'terror'},
+            {en:'musical', es:'musical'},
+            {en:'reality show', es:'reality'},
+            {en:'romcom (romantic comedy)', es:'comedia romántica'},
+            {en:'sci-fi (science fiction)', es:'ciencia ficción'},
+            {en:'soap opera', es:'telenovela'},
+            {en:'sports show', es:'programa deportivo'},
+            {en:'talent show', es:'programa de talentos'},
+            {en:'the news', es:'las noticias'}
+          ]},
+          { id:'adjectives-entertainment', title:'Adjectives to describe entertainment', words:[
+            {en:'cool', es:'guay'},
+            {en:'fantastic', es:'fantástico'},
+            {en:'fun', es:'divertido'},
+            {en:'funny', es:'gracioso'},
+            {en:'original', es:'original'},
+            {en:'sad', es:'triste'},
+            {en:'scary', es:'de miedo'},
+            {en:'serious', es:'serio'},
+            {en:'silly', es:'tonto'},
+            {en:'simple', es:'simple'},
+            {en:'strange', es:'raro'},
+            {en:'terrible', es:'terrible'}
+          ]}
+        ]},
+        { id:'u8', name:'Unit 8', title:'Can I ask you for some information?', live:false, groups:[
+          { id:'places-nature', title:'Places in nature', words:[
+            {en:'beach', es:'playa'},
+            {en:'coast', es:'costa'},
+            {en:'continent', es:'continente'},
+            {en:'desert', es:'desierto'},
+            {en:'island', es:'isla'},
+            {en:'lake', es:'lago'},
+            {en:'mountain', es:'montaña'},
+            {en:'ocean', es:'océano'},
+            {en:'rainforest', es:'selva tropical'},
+            {en:'river', es:'río'},
+            {en:'sea', es:'mar'},
+            {en:'star', es:'estrella'},
+            {en:'valley', es:'valle'},
+            {en:'volcano', es:'volcán'}
+          ]},
+          { id:'travel-outdoor', title:'Travel and outdoor activities', words:[
+            {en:'enjoy the view', es:'disfrutar de las vistas'},
+            {en:'explore', es:'explorar'},
+            {en:'go by car / coach / train', es:'ir en coche / autocar / tren'},
+            {en:'go camping', es:'ir de camping'},
+            {en:'go climbing', es:'hacer escalada'},
+            {en:'go hiking', es:'hacer senderismo'},
+            {en:'go on a boat trip', es:'hacer una excursión en barco'},
+            {en:'have a BBQ', es:'hacer una barbacoa'},
+            {en:'have a campfire', es:'hacer una hoguera'},
+            {en:'have a picnic', es:'hacer un picnic'},
+            {en:'relax', es:'relajarse'},
+            {en:'ride a bike', es:'montar en bici'}
+          ]}
+        ]}
+      ]
+    },
+    { id:'2eso', name:'2º ESO', emoji:'🚀', book:'Synchronize 2',
+      units:[
+        { id:'u1', name:'Unit 1', title:'Then and now', live:false, groups:[
+          { id:'verbs-opposites', title:'Verbs and their opposites', words:[
+            {en:'agree', es:'estar de acuerdo'},
+            {en:'disagree', es:'estar en desacuerdo'},
+            {en:'appear', es:'aparecer'},
+            {en:'disappear', es:'desaparecer'},
+            {en:'borrow', es:'pedir prestado'},
+            {en:'lend', es:'prestar'},
+            {en:'buy', es:'comprar'},
+            {en:'sell', es:'vender'},
+            {en:'connect', es:'conectar'},
+            {en:'disconnect', es:'desconectar'},
+            {en:'lose', es:'perder'},
+            {en:'win', es:'ganar'},
+            {en:'save', es:'ahorrar'},
+            {en:'spend', es:'gastar'},
+            {en:'send', es:'enviar'},
+            {en:'receive', es:'recibir'}
+          ]},
+          { id:'feelings', title:'Adjectives for feelings', words:[
+            {en:'annoyed', es:'molesto'},
+            {en:'bored', es:'aburrido'},
+            {en:'embarrassed', es:'avergonzado'},
+            {en:'excited', es:'emocionado'},
+            {en:'relaxed', es:'relajado'},
+            {en:'scared', es:'asustado'},
+            {en:'surprised', es:'sorprendido'},
+            {en:'tired', es:'cansado'},
+            {en:'unhappy', es:'triste / infeliz'},
+            {en:'worried', es:'preocupado'}
+          ]},
+          { id:'time-capsules', title:'Time capsules (vocabulario de lectura)', words:[
+            {en:'close', es:'cerrar'},
+            {en:'container', es:'recipiente'},
+            {en:'cupboard', es:'armario'},
+            {en:'ground', es:'suelo'},
+            {en:'hide', es:'esconder'},
+            {en:'include', es:'incluir'},
+            {en:'inside', es:'dentro'},
+            {en:'items', es:'objetos'},
+            {en:'outside', es:'fuera'},
+            {en:'safe', es:'caja fuerte'}
+          ]}
+        ]},
+        { id:'u2', name:'Unit 2', title:'Art and design', live:false, groups:[
+          { id:'adjectives-synonyms', title:'Adjectives and synonyms', words:[
+            {en:'attractive', es:'atractivo'},
+            {en:'pretty', es:'bonito'},
+            {en:'awful', es:'horrible'},
+            {en:'terrible', es:'terrible'},
+            {en:'bright', es:'vivo / luminoso'},
+            {en:'colourful', es:'colorido'},
+            {en:'brilliant', es:'brillante'},
+            {en:'incredible', es:'increíble'},
+            {en:'enormous', es:'enorme'},
+            {en:'huge', es:'enorme'},
+            {en:'unusual', es:'poco común'},
+            {en:'strange', es:'extraño'}
+          ]},
+          { id:'materials', title:'Materials', words:[
+            {en:'cardboard', es:'cartón'},
+            {en:'cotton', es:'algodón'},
+            {en:'glass', es:'cristal'},
+            {en:'leather', es:'cuero'},
+            {en:'metal', es:'metal'},
+            {en:'paper', es:'papel'},
+            {en:'plastic', es:'plástico'},
+            {en:'wood', es:'madera'},
+            {en:'wool', es:'lana'}
+          ]},
+          { id:'art-artists', title:'Art and artists', words:[
+            {en:'dance', es:'baile / bailar'},
+            {en:'dancer', es:'bailarín / bailarina'},
+            {en:'design', es:'diseño / diseñar'},
+            {en:'designer', es:'diseñador/a'},
+            {en:'illustration', es:'ilustración'},
+            {en:'illustrator', es:'ilustrador/a'},
+            {en:'music', es:'música'},
+            {en:'musician', es:'músico/a'},
+            {en:'paint', es:'pintura / pintar'},
+            {en:'painter', es:'pintor/a'},
+            {en:'photograph', es:'fotografía'},
+            {en:'photographer', es:'fotógrafo/a'},
+            {en:'sculpture', es:'escultura'},
+            {en:'sculptor', es:'escultor/a'},
+            {en:'street art', es:'arte urbano'},
+            {en:'street artist', es:'artista urbano/a'}
+          ]}
+        ]},
+        { id:'u3', name:'Unit 3', title:'Fresh air', live:false, groups:[
+          { id:'outdoor-activities', title:'Outdoor leisure activities', words:[
+            {en:'cycling', es:'ciclismo'},
+            {en:'drone flying', es:'volar drones'},
+            {en:'free running', es:'free running'},
+            {en:'Frisbee throwing', es:'lanzar el frisbee'},
+            {en:'in-line skating', es:'patinaje en línea'},
+            {en:'jogging', es:'hacer footing'},
+            {en:'kite-flying', es:'volar cometas'},
+            {en:'microscooting', es:'ir en patinete'},
+            {en:'rowing', es:'remo'},
+            {en:'working out', es:'hacer ejercicio'}
+          ]},
+          { id:'outdoor-events', title:'Outdoor events', words:[
+            {en:'arts and crafts market', es:'mercado de artesanía'},
+            {en:'carnival', es:'carnaval'},
+            {en:'car show', es:'exposición de coches'},
+            {en:'charity football match', es:'partido de fútbol benéfico'},
+            {en:'concert', es:'concierto'},
+            {en:'food (truck) festival', es:'festival de camiones de comida'},
+            {en:'funfair', es:'feria / parque de atracciones'},
+            {en:'fun run', es:'carrera popular'},
+            {en:'music festival', es:'festival de música'},
+            {en:'outdoor cinema', es:'cine al aire libre'}
+          ]},
+          { id:'park-features', title:'Features of parks', words:[
+            {en:'bench', es:'banco'},
+            {en:'bridge', es:'puente'},
+            {en:'café', es:'cafetería'},
+            {en:'duck pond', es:'estanque de patos'},
+            {en:'lake', es:'lago'},
+            {en:'open-air theatre', es:'teatro al aire libre'},
+            {en:'outdoor gym', es:'gimnasio al aire libre'},
+            {en:'path', es:'camino / sendero'},
+            {en:'picnic area', es:'zona de picnic'},
+            {en:'playground', es:'parque infantil'},
+            {en:'skatepark', es:'pista de skate'}
+          ]}
+        ]},
+        { id:'u4', name:'Unit 4', title:'A helping hand', live:false, groups:[
+          { id:'personality-adjectives', title:'Personality adjectives', words:[
+            {en:'impatient', es:'impaciente'},
+            {en:'patient', es:'paciente'},
+            {en:'lazy', es:'perezoso'},
+            {en:'hard-working', es:'trabajador'},
+            {en:'mean', es:'tacaño / mezquino'},
+            {en:'generous', es:'generoso'},
+            {en:'rude', es:'maleducado'},
+            {en:'polite', es:'educado'},
+            {en:'shy', es:'tímido'},
+            {en:'confident', es:'seguro de sí mismo'},
+            {en:'unhelpful', es:'poco servicial'},
+            {en:'helpful', es:'servicial'},
+            {en:'unkind', es:'poco amable'},
+            {en:'kind', es:'amable'}
+          ]},
+          { id:'phrasal-verbs', title:'Phrasal verbs', words:[
+            {en:'find out', es:'averiguar'},
+            {en:'go away', es:'irse'},
+            {en:'look after', es:'cuidar de'},
+            {en:'look at', es:'mirar'},
+            {en:'pick up', es:'recoger'},
+            {en:'take part in', es:'participar en'},
+            {en:'talk over', es:'hablar sobre / discutir'},
+            {en:'turn off', es:'apagar'},
+            {en:'turn on', es:'encender'},
+            {en:'work out', es:'hacer ejercicio / resolver'}
+          ]},
+          { id:'good-deeds', title:'Good deeds', words:[
+            {en:'donate (something) to charity', es:'donar (algo) a una ONG'},
+            {en:'offer your seat to (someone)', es:'ceder tu asiento a (alguien)'},
+            {en:'volunteer at (a place)', es:'hacer voluntariado en (un lugar)'},
+            {en:'help (someone) across the street', es:'ayudar a (alguien) a cruzar la calle'},
+            {en:'put (some litter) in the bin', es:'tirar (basura) a la papelera'},
+            {en:'write a thank you message', es:'escribir un mensaje de agradecimiento'}
+          ]}
+        ]},
+        { id:'u5', name:'Unit 5', title:"Let's play", live:false, groups:[
+          { id:'senses', title:'Senses', words:[
+            {en:'ears', es:'oídos'},
+            {en:'hearing', es:'oído (sentido)'},
+            {en:'mouth', es:'boca'},
+            {en:'nose', es:'nariz'},
+            {en:'pattern', es:'patrón / diseño'},
+            {en:'sight', es:'vista'},
+            {en:'smell', es:'olfato / oler'},
+            {en:'smooth', es:'suave / liso'},
+            {en:'soft', es:'blando'},
+            {en:'stare', es:'mirar fijamente'},
+            {en:'sweet', es:'dulce'},
+            {en:'taste', es:'gusto / saborear'},
+            {en:'tongue', es:'lengua'},
+            {en:'touch', es:'tacto / tocar'},
+            {en:'voice', es:'voz'}
+          ]},
+          { id:'gaming-verbs', title:'Gaming verbs', words:[
+            {en:'avoid', es:'evitar'},
+            {en:'balance', es:'equilibrar'},
+            {en:'beat', es:'vencer'},
+            {en:'collect', es:'coleccionar'},
+            {en:'compete', es:'competir'},
+            {en:'continue', es:'continuar'},
+            {en:'control', es:'controlar'},
+            {en:'dislike', es:'que no le gusta'},
+            {en:'hurt', es:'hacer daño'},
+            {en:'recognize', es:'reconocer'},
+            {en:'solve', es:'resolver'},
+            {en:'worry', es:'preocuparse'}
+          ]},
+          { id:'games', title:'Games', words:[
+            {en:'board game', es:'juego de mesa'},
+            {en:'card game', es:'juego de cartas'},
+            {en:'experience (n)', es:'experiencia'},
+            {en:'imagination', es:'imaginación'},
+            {en:'knowledge', es:'conocimiento'},
+            {en:'luck', es:'suerte'},
+            {en:'memory', es:'memoria'},
+            {en:'patience', es:'paciencia'},
+            {en:'quiz game', es:'concurso de preguntas'},
+            {en:'role-playing game', es:'juego de rol'},
+            {en:'speed', es:'velocidad'},
+            {en:'strategy', es:'estrategia'},
+            {en:'thought', es:'pensamiento'},
+            {en:'vocabulary', es:'vocabulario'},
+            {en:'word game', es:'juego de palabras'}
+          ]}
+        ]},
+        { id:'u6', name:'Unit 6', title:'Move it!', live:false, groups:[
+          { id:'exercise-body', title:'Exercise and the body', words:[
+            {en:'bones', es:'huesos'},
+            {en:'brain', es:'cerebro'},
+            {en:'burn calories', es:'quemar calorías'},
+            {en:'get fit', es:'ponerse en forma'},
+            {en:'heart', es:'corazón'},
+            {en:'injury', es:'lesión'},
+            {en:'lose weight', es:'perder peso'},
+            {en:'lungs', es:'pulmones'},
+            {en:'muscles', es:'músculos'},
+            {en:'pain', es:'dolor'},
+            {en:'rest', es:'descanso / descansar'},
+            {en:'stretch', es:'estirar'},
+            {en:'train', es:'entrenar'},
+            {en:'warm up', es:'calentar'}
+          ]},
+          { id:'personal-hygiene', title:'Personal hygiene', words:[
+            {en:'brush your hair / your teeth', es:'cepillarte el pelo / los dientes'},
+            {en:'change your socks / your toothbrush', es:'cambiarte los calcetines / el cepillo de dientes'},
+            {en:'cut your fingernails / toenails / hair', es:'cortarte las uñas / el pelo'},
+            {en:'go to the dentist / the hairdresser', es:'ir al dentista / a la peluquería'},
+            {en:'prevent spots / smelly feet / illness', es:'prevenir los granos / el mal olor de pies / las enfermedades'},
+            {en:'use deodorant / soap / shampoo', es:'usar desodorante / jabón / champú'}
+          ]},
+          { id:'morning-routines', title:'Morning routines', words:[
+            {en:'active', es:'activo'},
+            {en:'alarm', es:'alarma / despertador'},
+            {en:'asleep', es:'dormido'},
+            {en:'energy', es:'energía'},
+            {en:'fit', es:'en forma'},
+            {en:'fresh', es:'fresco / descansado'},
+            {en:'get up', es:'levantarse'},
+            {en:'lifestyle', es:'estilo de vida'},
+            {en:'personal hygiene', es:'higiene personal'},
+            {en:'wake up', es:'despertarse'}
+          ]}
+        ]},
+        { id:'u7', name:'Unit 7', title:'Skills for life', live:false, groups:[
+          { id:'learning-verbs-nouns', title:'Verbs and nouns related to learning', words:[
+            {en:'achieve', es:'lograr'},
+            {en:'achievement', es:'logro'},
+            {en:'behave', es:'comportarse'},
+            {en:'behaviour', es:'comportamiento'},
+            {en:'decide', es:'decidir'},
+            {en:'decision', es:'decisión'},
+            {en:'know', es:'saber'},
+            {en:'knowledge', es:'conocimiento'},
+            {en:'learn', es:'aprender'},
+            {en:'learning', es:'aprendizaje'},
+            {en:'move', es:'mover(se)'},
+            {en:'movement', es:'movimiento'},
+            {en:'respond', es:'responder'},
+            {en:'response', es:'respuesta'},
+            {en:'solve', es:'resolver'},
+            {en:'solution', es:'solución'},
+            {en:'speak', es:'hablar'},
+            {en:'speech', es:'discurso'},
+            {en:'train', es:'entrenar'},
+            {en:'training', es:'entrenamiento'}
+          ]},
+          { id:'verbs', title:'Verbs', words:[
+            {en:'communicate', es:'comunicar'},
+            {en:'consider', es:'considerar'},
+            {en:'discover', es:'descubrir'},
+            {en:'educate', es:'educar'},
+            {en:'expect', es:'esperar'},
+            {en:'experience', es:'experimentar'},
+            {en:'offer', es:'ofrecer'},
+            {en:'provide', es:'proporcionar'},
+            {en:'suggest', es:'sugerir'},
+            {en:'support', es:'apoyar'}
+          ]},
+          { id:'online-learning', title:'Online learning', words:[
+            {en:'check a fact', es:'comprobar un dato'},
+            {en:'distract you from (something)', es:'distraerte de (algo)'},
+            {en:'find answers', es:'encontrar respuestas'},
+            {en:'find out about (something)', es:'averiguar sobre (algo)'},
+            {en:'learn from others', es:'aprender de los demás'},
+            {en:'research a subject', es:'investigar un tema'},
+            {en:'search for information', es:'buscar información'},
+            {en:'stay focused', es:'mantenerse concentrado'},
+            {en:'use a search engine', es:'usar un buscador'},
+            {en:'use online resources', es:'usar recursos en línea'}
+          ]}
+        ]}
+      ]
+    },
+    { id:'3eso', name:'3º ESO', emoji:'⚡', book:'Inspo 3',
+      units:[
+        { id:'u1', name:'Unit 1', title:'Identity', live:false, groups:[
+          { id:'personal-qualities', title:'Personal qualities', words:[
+            {en:'brave', es:'valiente'},
+            {en:'calm', es:'tranquilo/a'},
+            {en:'caring', es:'cariñoso/a, atento/a'},
+            {en:'confident', es:'seguro/a de sí mismo/a'},
+            {en:'easy-going', es:'de trato fácil, relajado/a'},
+            {en:'generous', es:'generoso/a'},
+            {en:'nosy', es:'cotilla, entrometido/a'},
+            {en:'outgoing', es:'extrovertido/a'},
+            {en:'patient', es:'paciente'},
+            {en:'selfish', es:'egoísta'},
+            {en:'sensible', es:'sensato/a'},
+            {en:'shy', es:'tímido/a'},
+            {en:'smart', es:'listo/a, inteligente'},
+            {en:'thoughtful', es:'considerado/a, atento/a'},
+            {en:'tidy', es:'ordenado/a'},
+            {en:'warm', es:'cálido/a, afectuoso/a'}
+          ]},
+          { id:'life-events', title:'Life events', words:[
+            {en:'be born', es:'nacer'},
+            {en:'change jobs / career', es:'cambiar de trabajo / carrera'},
+            {en:'change schools', es:'cambiar de colegio'},
+            {en:'get a job', es:'conseguir un trabajo'},
+            {en:'get divorced', es:'divorciarse'},
+            {en:'get married', es:'casarse'},
+            {en:'go to university', es:'ir a la universidad'},
+            {en:'graduate', es:'graduarse'},
+            {en:'have children', es:'tener hijos'},
+            {en:'have a gap year', es:'tomarse un año sabático'},
+            {en:'leave school', es:'dejar los estudios / el colegio'},
+            {en:'move house', es:'mudarse de casa'},
+            {en:'move to another country', es:'mudarse a otro país'},
+            {en:'retire', es:'jubilarse'},
+            {en:'start school', es:'empezar el colegio'}
+          ]}
+        ]},
+        { id:'u2', name:'Unit 2', title:'Explore', live:false, groups:[
+          { id:'tourism', title:'Tourism', words:[
+            {en:'accommodation', es:'alojamiento'},
+            {en:'budget', es:'presupuesto'},
+            {en:'campsite', es:'camping'},
+            {en:'crowded', es:'abarrotado/a, lleno de gente'},
+            {en:'day trip', es:'excursión de un día'},
+            {en:'destination', es:'destino'},
+            {en:'historic', es:'histórico/a'},
+            {en:'hostel', es:'albergue'},
+            {en:'resort', es:'complejo turístico'},
+            {en:'road trip', es:'viaje por carretera'},
+            {en:'seaside', es:'costa, playa'},
+            {en:'staycation', es:'vacaciones cerca de casa'},
+            {en:'theme park', es:'parque temático'},
+            {en:'tour', es:'recorrido, tour'},
+            {en:'touristy', es:'muy turístico/a (con matiz negativo)'},
+            {en:'unspoilt', es:'virgen, sin explotar (paisaje)'}
+          ]},
+          { id:'geography', title:'Geography', words:[
+            {en:'(river)bank', es:'orilla (del río)'},
+            {en:'canyon', es:'cañón'},
+            {en:'cave', es:'cueva'},
+            {en:'cliff', es:'acantilado'},
+            {en:'countryside', es:'campo, zona rural'},
+            {en:'farmland', es:'tierras de cultivo'},
+            {en:'grassland', es:'pradera'},
+            {en:'hill', es:'colina'},
+            {en:'jungle', es:'selva'},
+            {en:'mud', es:'barro'},
+            {en:'sand dune', es:'duna de arena'},
+            {en:'scenery', es:'paisaje'},
+            {en:'stream', es:'arroyo'},
+            {en:'valley', es:'valle'},
+            {en:'waterfall', es:'cascada'},
+            {en:'woodland', es:'bosque'}
+          ]}
+        ]},
+        { id:'u3', name:'Unit 3', title:'Citizens', live:false, groups:[
+          { id:'collocations', title:'Collocations', words:[
+            {en:'fight for equality', es:'luchar por la igualdad'},
+            {en:'fight for justice', es:'luchar por la justicia'},
+            {en:'fight for your rights', es:'luchar por tus derechos'},
+            {en:'launch a campaign', es:'lanzar una campaña'},
+            {en:'launch a product', es:'lanzar un producto'},
+            {en:'launch an investigation', es:'lanzar/abrir una investigación'},
+            {en:'make a difference', es:'marcar la diferencia'},
+            {en:'pass a law', es:'aprobar una ley'},
+            {en:'raise awareness', es:'concienciar'},
+            {en:'raise money', es:'recaudar dinero'},
+            {en:'reduce inequality', es:'reducir la desigualdad'},
+            {en:'reduce poverty', es:'reducir la pobreza'}
+          ]},
+          { id:'homographs', title:'Homographs: verbs and nouns', words:[
+            {en:'conflict', es:'conflicto / entrar en conflicto'},
+            {en:'decrease', es:'disminuir / disminución'},
+            {en:'export', es:'exportar / exportación'},
+            {en:'import', es:'importar / importación'},
+            {en:'increase', es:'aumentar / aumento'},
+            {en:'object', es:'objetar / objeto'},
+            {en:'permit', es:'permitir / permiso'},
+            {en:'present', es:'presentar / regalo'},
+            {en:'protest', es:'protestar / protesta'},
+            {en:'record', es:'grabar / récord, registro'},
+            {en:'update', es:'actualizar / actualización'}
+          ]}
+        ]},
+        { id:'u4', name:'Unit 4', title:'Technology', live:false, groups:[
+          { id:'technology-verbs', title:'Technology (verbs)', words:[
+            {en:'block', es:'bloquear'},
+            {en:'bookmark', es:'guardar en marcadores'},
+            {en:'delete', es:'eliminar, borrar'},
+            {en:'download', es:'descargar'},
+            {en:'mute', es:'silenciar'},
+            {en:'scroll', es:'desplazarse (por la pantalla)'},
+            {en:'stream', es:'retransmitir en directo'},
+            {en:'subscribe (to)', es:'suscribirse (a)'},
+            {en:'swipe', es:'deslizar (el dedo)'},
+            {en:'tap', es:'tocar (la pantalla)'},
+            {en:'upload', es:'subir (un archivo)'}
+          ]},
+          { id:'phrasal-verbs-1', title:'Phrasal verbs (1)', words:[
+            {en:'carry on', es:'continuar, seguir'},
+            {en:'come across', es:'encontrarse con, toparse con'},
+            {en:'come over', es:'venir de visita'},
+            {en:'deal with', es:'lidiar con, encargarse de'},
+            {en:'figure out', es:'averiguar, entender'},
+            {en:'give up', es:'rendirse, dejarlo'},
+            {en:'go through', es:'pasar por, revisar'},
+            {en:'hold on', es:'esperar (un momento)'},
+            {en:'reach out', es:'ponerse en contacto'},
+            {en:'show off', es:'presumir'},
+            {en:'show up', es:'aparecer, presentarse'},
+            {en:'turn to', es:'recurrir a'}
+          ]}
+        ]},
+        { id:'u5', name:'Unit 5', title:'Feeling good', live:false, groups:[
+          { id:'free-time', title:'Free-time activities', words:[
+            {en:'bowling', es:'bolos'},
+            {en:'chess', es:'ajedrez'},
+            {en:'coding', es:'programación'},
+            {en:'cooking', es:'cocinar'},
+            {en:'creative writing', es:'escritura creativa'},
+            {en:'cycling', es:'ciclismo'},
+            {en:'gaming', es:'videojuegos'},
+            {en:'hiking', es:'senderismo'},
+            {en:'martial arts', es:'artes marciales'},
+            {en:'paddleboarding', es:'paddle surf'},
+            {en:'painting', es:'pintura'},
+            {en:'skateboarding', es:'monopatín'}
+          ]},
+          { id:'feelings', title:'Feelings (nouns and adjectives)', words:[
+            {en:'amazed', es:'asombrado/a'},
+            {en:'amazement', es:'asombro'},
+            {en:'annoyance', es:'fastidio, molestia'},
+            {en:'annoyed', es:'molesto/a'},
+            {en:'anxiety', es:'ansiedad'},
+            {en:'anxious', es:'ansioso/a'},
+            {en:'disappointed', es:'decepcionado/a'},
+            {en:'disappointment', es:'decepción'},
+            {en:'embarrassed', es:'avergonzado/a'},
+            {en:'embarrassment', es:'vergüenza'},
+            {en:'grateful', es:'agradecido/a'},
+            {en:'gratitude', es:'gratitud'},
+            {en:'guilt', es:'culpa'},
+            {en:'guilty', es:'culpable'},
+            {en:'jealous', es:'celoso/a'},
+            {en:'jealousy', es:'celos'}
+          ]}
+        ]},
+        { id:'u6', name:'Unit 6', title:'Shopping', live:false, groups:[
+          { id:'money-shopping', title:'Money and shopping', words:[
+            {en:'afford', es:'permitirse (económicamente)'},
+            {en:'bargain', es:'ganga'},
+            {en:'brand', es:'marca'},
+            {en:'cash', es:'efectivo'},
+            {en:'change', es:'cambio (dinero)'},
+            {en:'checkout', es:'caja (de la tienda)'},
+            {en:'discount', es:'descuento'},
+            {en:'order', es:'pedido / pedir'},
+            {en:'packaging', es:'embalaje'},
+            {en:'payment', es:'pago'},
+            {en:'purchase', es:'compra / comprar'},
+            {en:'receipt', es:'recibo, ticket'},
+            {en:'return', es:'devolver'},
+            {en:'second-hand', es:'de segunda mano'},
+            {en:'special offer', es:'oferta especial'},
+            {en:'value', es:'valor'}
+          ]},
+          { id:'phrasal-verbs-2', title:'Phrasal verbs (2)', words:[
+            {en:'be down to', es:'depender de, ser responsabilidad de'},
+            {en:'bump into', es:'encontrarse por casualidad con'},
+            {en:'catch up with', es:'ponerse al día con'},
+            {en:'come up with', es:'ocurrírsele (una idea)'},
+            {en:'count on', es:'contar con'},
+            {en:'do without', es:'pasar sin, prescindir de'},
+            {en:'drop off', es:'dejar (a alguien/algo)'},
+            {en:'drop out', es:'abandonar (los estudios)'},
+            {en:'hang out (with)', es:'pasar el rato (con)'},
+            {en:'pick up', es:'recoger'},
+            {en:'point out', es:'señalar'},
+            {en:'run out (of)', es:'quedarse sin'},
+            {en:'sell out', es:'agotarse'},
+            {en:'try on', es:'probarse (ropa)'},
+            {en:'turn down', es:'rechazar'}
+          ]}
+        ]},
+        { id:'u7', name:'Unit 7', title:'Express yourself!', live:false, groups:[
+          { id:'music-dance', title:'Music and dance', words:[
+            {en:'album', es:'álbum'},
+            {en:'audience', es:'público'},
+            {en:'busker', es:'músico callejero'},
+            {en:'choir', es:'coro'},
+            {en:'costume', es:'vestuario, disfraz'},
+            {en:'dance routine', es:'coreografía'},
+            {en:'gig', es:'concierto (pequeño)'},
+            {en:'lip sync', es:'playback'},
+            {en:'lyrics', es:'letra (de una canción)'},
+            {en:'music video', es:'videoclip'},
+            {en:'playlist', es:'lista de reproducción'},
+            {en:'recording artist', es:'artista discográfico/a'},
+            {en:'rehearse', es:'ensayar'},
+            {en:'rehearsal', es:'ensayo'},
+            {en:'stage', es:'escenario'},
+            {en:'track', es:'pista, canción'}
+          ]},
+          { id:'compound-nouns', title:'Compound nouns', words:[
+            {en:'ballroom dancing', es:'baile de salón'},
+            {en:'band member', es:'miembro de un grupo'},
+            {en:'concert hall', es:'sala de conciertos'},
+            {en:'dance floor', es:'pista de baile'},
+            {en:'drum kit', es:'batería (instrumento)'},
+            {en:'heavy metal', es:'heavy metal'},
+            {en:'lead singer', es:'cantante principal'},
+            {en:'leisure activity', es:'actividad de ocio'},
+            {en:'night life', es:'vida nocturna'},
+            {en:'rock musician', es:'músico de rock'},
+            {en:'singing lesson', es:'clase de canto'},
+            {en:'social life', es:'vida social'},
+            {en:'sound system', es:'equipo de sonido'}
+          ]}
+        ]},
+        { id:'u8', name:'Unit 8', title:'Plot twist', live:false, groups:[
+          { id:'describing-stories', title:'Describing stories', words:[
+            {en:'character', es:'personaje'},
+            {en:'confusing', es:'confuso/a'},
+            {en:'convincing / unconvincing', es:'convincente / poco convincente'},
+            {en:'dialogue', es:'diálogo'},
+            {en:'ending', es:'final (de una historia)'},
+            {en:'fast-paced', es:'de ritmo rápido, trepidante'},
+            {en:'gripping', es:'apasionante, que engancha'},
+            {en:'magical', es:'mágico/a'},
+            {en:'plot', es:'trama, argumento'},
+            {en:'realistic / unrealistic', es:'realista / poco realista'},
+            {en:'scene', es:'escena'},
+            {en:'setting', es:'ambientación'},
+            {en:'thought-provoking', es:'que hace reflexionar'},
+            {en:'twist', es:'giro (argumental)'}
+          ]},
+          { id:'extreme-adjectives', title:'Extreme adjectives', words:[
+            {en:'ancient', es:'antiguo/a, milenario/a'},
+            {en:'boiling', es:'abrasador/a (de calor)'},
+            {en:'delicious', es:'delicioso/a'},
+            {en:'disgusting', es:'asqueroso/a'},
+            {en:'dreadful', es:'horrible, espantoso/a'},
+            {en:'filthy', es:'mugriento/a, muy sucio/a'},
+            {en:'freezing', es:'helado/a, congelado/a'},
+            {en:'furious', es:'furioso/a'},
+            {en:'hideous', es:'horrendo/a'},
+            {en:'hilarious', es:'graciosísimo/a'},
+            {en:'stunning', es:'impresionante, deslumbrante'},
+            {en:'terrifying', es:'aterrador/a'},
+            {en:'tiny', es:'diminuto/a'},
+            {en:'tragic', es:'trágico/a'}
+          ]}
+        ]}
+      ]
+    },
+    { id:'4eso', name:'4º ESO', emoji:'🎓', book:'Synchronize 4',
+      units:[
+        { id:'u1', name:'Unit 1', title:'Teen spirit', live:false, groups:[
+          { id:'society', title:'Society', words:[
+            {en:'(be) addicted to', es:'ser adicto/a a'},
+            {en:'(be) dependent on', es:'depender de'},
+            {en:'(be) selfish', es:'ser egoísta'},
+            {en:'(be) spoiled', es:'estar mimado/a, consentido/a'},
+            {en:'(be) unfair', es:'ser injusto/a'},
+            {en:'(have strong) values', es:'tener valores firmes'},
+            {en:'attitude', es:'actitud'},
+            {en:'authority', es:'autoridad'},
+            {en:'generation', es:'generación'},
+            {en:'judge', es:'juzgar'},
+            {en:'represent', es:'representar'},
+            {en:'respect', es:'respeto, respetar'},
+            {en:'stand up for', es:'defender'}
+          ]},
+          { id:'phrasal-verbs', title:'Phrasal verbs', words:[
+            {en:'ask somebody over', es:'invitar a alguien a casa'},
+            {en:'bring over', es:'traer (a casa de alguien)'},
+            {en:'come along', es:'venir, acompañar'},
+            {en:'end up', es:'terminar, acabar'},
+            {en:'get together', es:'reunirse'},
+            {en:'hang out', es:'pasar el rato'},
+            {en:'meet up with', es:'quedar con'},
+            {en:'remind somebody of', es:'recordarle algo a alguien'},
+            {en:'show up', es:'aparecer, presentarse'},
+            {en:'tell somebody off', es:'regañar a alguien'}
+          ]},
+          { id:'relationships', title:'Relationships', words:[
+            {en:'advise', es:'aconsejar'},
+            {en:'appreciate', es:'apreciar, valorar'},
+            {en:'assist', es:'ayudar, asistir'},
+            {en:'commit (to)', es:'comprometerse (a)'},
+            {en:'encourage', es:'animar, alentar'},
+            {en:'responsibility', es:'responsabilidad'},
+            {en:'volunteer', es:'voluntario/a, ofrecerse voluntario/a'}
+          ]}
+        ]},
+        { id:'u2', name:'Unit 2', title:'In business', live:false, groups:[
+          { id:'money-business', title:'Money and business', words:[
+            {en:'(bank) account', es:'cuenta (bancaria)'},
+            {en:'cash machine', es:'cajero automático'},
+            {en:'charge', es:'cobrar'},
+            {en:'entrepreneur', es:'emprendedor/a'},
+            {en:'expenses', es:'gastos'},
+            {en:'income', es:'ingresos'},
+            {en:'in exchange for', es:'a cambio de'},
+            {en:'profit', es:'beneficio, ganancia'},
+            {en:'run', es:'dirigir, gestionar (un negocio)'},
+            {en:'savings', es:'ahorros'},
+            {en:'set up', es:'montar, fundar (un negocio)'},
+            {en:'wages', es:'salario, sueldo'}
+          ]},
+          { id:'personal-skills', title:'Personal skills', words:[
+            {en:'attention to detail', es:'atención al detalle'},
+            {en:'communication skills', es:'habilidades de comunicación'},
+            {en:'computer programming', es:'programación informática'},
+            {en:'creativity', es:'creatividad'},
+            {en:'critical thinking', es:'pensamiento crítico'},
+            {en:'design skills', es:'habilidades de diseño'},
+            {en:'leadership skills', es:'habilidades de liderazgo'},
+            {en:'negotiation skills', es:'habilidades de negociación'},
+            {en:'organizational skills', es:'habilidades organizativas'},
+            {en:'time management', es:'gestión del tiempo'}
+          ]},
+          { id:'personality-adjectives', title:'Personality adjectives', words:[
+            {en:'ambitious', es:'ambicioso/a'},
+            {en:'calm', es:'tranquilo/a'},
+            {en:'competitive', es:'competitivo/a'},
+            {en:'curious', es:'curioso/a'},
+            {en:'determined', es:'decidido/a'},
+            {en:'generous', es:'generoso/a'},
+            {en:'keen', es:'entusiasta'},
+            {en:'practical', es:'práctico/a'}
+          ]}
+        ]},
+        { id:'u3', name:'Unit 3', title:'Planet Earth', live:false, groups:[
+          { id:'fundraising', title:'Fundraising (verb-noun collocations)', words:[
+            {en:'achieve a goal', es:'alcanzar un objetivo'},
+            {en:'give your time', es:'dedicar tu tiempo'},
+            {en:'launch a campaign', es:'lanzar una campaña'},
+            {en:'make a difference', es:'marcar la diferencia'},
+            {en:'promote a cause', es:'promover una causa'},
+            {en:'raise funds', es:'recaudar fondos'},
+            {en:'reach a target', es:'alcanzar una meta'},
+            {en:'save the planet', es:'salvar el planeta'},
+            {en:'donate money', es:'donar dinero'},
+            {en:'sign a petition', es:'firmar una petición'},
+            {en:'hold an event', es:'organizar un evento'},
+            {en:'find sponsors', es:'encontrar patrocinadores'}
+          ]},
+          { id:'nature-environment', title:'Nature and the environment', words:[
+            {en:'absorb', es:'absorber'},
+            {en:'carbon footprint', es:'huella de carbono'},
+            {en:'climate change', es:'cambio climático'},
+            {en:'damage', es:'daño, dañar'},
+            {en:'green', es:'ecológico/a'},
+            {en:'greenhouse gases', es:'gases de efecto invernadero'},
+            {en:'habitats', es:'hábitats'},
+            {en:'loss', es:'pérdida'},
+            {en:'reduce', es:'reducir'},
+            {en:'species', es:'especie'},
+            {en:'suffer', es:'sufrir'},
+            {en:'support', es:'apoyar'},
+            {en:'sustainable', es:'sostenible'},
+            {en:'threaten', es:'amenazar'}
+          ]},
+          { id:'verbs-change', title:'Verbs related to change', words:[
+            {en:'ensure', es:'asegurar, garantizar'},
+            {en:'establish', es:'establecer'},
+            {en:'inspire', es:'inspirar'},
+            {en:'recreate', es:'recrear'},
+            {en:'transform', es:'transformar'}
+          ]}
+        ]},
+        { id:'u4', name:'Unit 4', title:'Picture this', live:false, groups:[
+          { id:'photography', title:'Photography', words:[
+            {en:'angle', es:'ángulo'},
+            {en:'close-up', es:'primer plano'},
+            {en:'contrast', es:'contraste'},
+            {en:'depth', es:'profundidad'},
+            {en:'effective', es:'eficaz, efectivo/a'},
+            {en:'flash', es:'flash'},
+            {en:'frame', es:'encuadre, encuadrar'},
+            {en:'highlight', es:'resaltar, destacar'},
+            {en:'impact', es:'impacto'},
+            {en:'point at', es:'apuntar a, señalar'},
+            {en:'set up', es:'preparar, montar'},
+            {en:'shoot', es:'fotografiar, disparar (la cámara)'},
+            {en:'shot', es:'foto, toma'},
+            {en:'subject', es:'sujeto (de la foto)'},
+            {en:'viewer', es:'espectador/a'}
+          ]},
+          { id:'prepositional-phrases', title:'Prepositional phrases', words:[
+            {en:'at first', es:'al principio'},
+            {en:'by chance', es:'por casualidad'},
+            {en:'by far', es:'con diferencia'},
+            {en:'in / out of focus', es:'enfocado / desenfocado'},
+            {en:'in a hurry', es:'con prisa'},
+            {en:'in contrast', es:'en cambio, por el contrario'},
+            {en:'in fact', es:'de hecho'},
+            {en:'in general', es:'en general'},
+            {en:'out of the ordinary', es:'fuera de lo común'}
+          ]},
+          { id:'adjective-suffixes', title:'Adjective suffixes', words:[
+            {en:'cheerful', es:'alegre'},
+            {en:'cultural', es:'cultural'},
+            {en:'dependent', es:'dependiente'},
+            {en:'effective', es:'eficaz'},
+            {en:'enjoyable', es:'agradable, disfrutable'},
+            {en:'hopeless', es:'inútil, desesperado/a'},
+            {en:'impressive', es:'impresionante'},
+            {en:'natural', es:'natural'},
+            {en:'pleasant', es:'agradable'},
+            {en:'political', es:'político/a'},
+            {en:'powerful', es:'poderoso/a'},
+            {en:'useless', es:'inútil'},
+            {en:'valuable', es:'valioso/a'}
+          ]}
+        ]},
+        { id:'u5', name:'Unit 5', title:'Survival', live:false, groups:[
+          { id:'survival-equipment', title:'Survival equipment', words:[
+            {en:'compass', es:'brújula'},
+            {en:'first-aid kit', es:'botiquín de primeros auxilios'},
+            {en:'magnifying glass', es:'lupa'},
+            {en:'matches', es:'cerillas'},
+            {en:'metal pot', es:'olla metálica'},
+            {en:'multitool', es:'herramienta multiusos'},
+            {en:'rope', es:'cuerda'},
+            {en:'tarpaulin', es:'lona'},
+            {en:'torch', es:'linterna'},
+            {en:'waterproof bag', es:'bolsa impermeable'},
+            {en:'water purification tablets', es:'pastillas potabilizadoras de agua'},
+            {en:'whistle', es:'silbato'}
+          ]},
+          { id:'disasters', title:'Disasters', words:[
+            {en:'avalanche', es:'avalancha'},
+            {en:'cyber attack', es:'ciberataque'},
+            {en:'drought', es:'sequía'},
+            {en:'earthquake', es:'terremoto'},
+            {en:'flooding', es:'inundación'},
+            {en:'forest fire', es:'incendio forestal'},
+            {en:'global warming', es:'calentamiento global'},
+            {en:'hurricane', es:'huracán'},
+            {en:'nuclear explosion', es:'explosión nuclear'},
+            {en:'volcanic eruption', es:'erupción volcánica'}
+          ]},
+          { id:'survival-skills', title:'Survival skills', words:[
+            {en:'attitude', es:'actitud'},
+            {en:'heat', es:'calor'},
+            {en:'protect', es:'proteger'},
+            {en:'source', es:'fuente'},
+            {en:'task', es:'tarea'}
+          ]}
+        ]},
+        { id:'u6', name:'Unit 6', title:'News travels fast', live:false, groups:[
+          { id:'news-media', title:'News and media', words:[
+            {en:'breaking news', es:'noticia de última hora'},
+            {en:'eyewitness', es:'testigo presencial'},
+            {en:'headline', es:'titular'},
+            {en:'journalist', es:'periodista'},
+            {en:'live', es:'en directo'},
+            {en:'news presenter', es:'presentador/a de noticias'},
+            {en:'report', es:'informe, informar'},
+            {en:'reporter', es:'reportero/a'},
+            {en:'source', es:'fuente'},
+            {en:'update', es:'actualización'}
+          ]},
+          { id:'compound-nouns-media', title:'Compound nouns: media', words:[
+            {en:'celebrity influencer', es:'influencer famoso/a'},
+            {en:'clickbait', es:'ciberanzuelo, contenido sensacionalista'},
+            {en:'conspiracy theory', es:'teoría de la conspiración'},
+            {en:'current affairs', es:'actualidad'},
+            {en:'fake news', es:'noticias falsas'},
+            {en:'media outlet', es:'medio de comunicación'},
+            {en:'newsfeed', es:'fuente de noticias (redes)'},
+            {en:'paywall', es:'muro de pago'},
+            {en:'social media platform', es:'plataforma de redes sociales'},
+            {en:'visual medium', es:'medio visual'}
+          ]},
+          { id:'adverb-adjective-collocations', title:'Adverb and adjective collocations', words:[
+            {en:'absolutely delighted', es:'absolutamente encantado/a'},
+            {en:'completely different', es:'completamente diferente'},
+            {en:'highly unlikely', es:'muy improbable'},
+            {en:'incredibly friendly', es:'increíblemente amable'},
+            {en:'ridiculously easy', es:'ridículamente fácil'},
+            {en:'extremely weird', es:'extremadamente raro/a'}
+          ]}
+        ]},
+        { id:'u7', name:'Unit 7', title:'Future living', live:false, groups:[
+          { id:'tech-adjectives', title:'Adjectives to describe technology', words:[
+            {en:'affordable', es:'asequible'},
+            {en:'adaptable', es:'adaptable'},
+            {en:'energy-saving', es:'de bajo consumo energético'},
+            {en:'experimental', es:'experimental'},
+            {en:'high-tech', es:'de alta tecnología'},
+            {en:'innovative', es:'innovador/a'},
+            {en:'inspiring', es:'inspirador/a'},
+            {en:'smart', es:'inteligente'},
+            {en:'solar-powered', es:'con energía solar'},
+            {en:'virtual', es:'virtual'}
+          ]},
+          { id:'buildings-materials', title:'Buildings and materials', words:[
+            {en:'brick', es:'ladrillo'},
+            {en:'concrete', es:'hormigón'},
+            {en:'hut', es:'cabaña'},
+            {en:'iron', es:'hierro'},
+            {en:'mud', es:'barro'},
+            {en:'skyscraper', es:'rascacielos'},
+            {en:'steel', es:'acero'},
+            {en:'stone', es:'piedra'},
+            {en:'storey', es:'planta (de un edificio)'},
+            {en:'tent', es:'tienda de campaña'},
+            {en:'tower', es:'torre'}
+          ]},
+          { id:'computing-ai', title:'Computing and AI', words:[
+            {en:'automated', es:'automatizado/a'},
+            {en:'block', es:'bloquear'},
+            {en:'bot', es:'bot'},
+            {en:'detect', es:'detectar'},
+            {en:'simulate', es:'simular'},
+            {en:'software', es:'software'}
+          ]}
+        ]}
+      ]
+    }
+  ]
+};
+
+/* ---------- STORAGE ---------- */
+const STORE_KEY = 'iow_vocabrush_v1';
+function loadStore(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return { xp:0, words:{}, lastPlayed:null, streak:0 };
+}
+function saveStore(){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(store)); }catch(e){}
+}
+let store = loadStore();
+
+function bumpStreak(){
+  const today = new Date().toISOString().slice(0,10);
+  if(store.lastPlayed === today) return;
+  const y = new Date(Date.now()-86400000).toISOString().slice(0,10);
+  store.streak = (store.lastPlayed === y) ? (store.streak||0)+1 : 1;
+  store.lastPlayed = today;
+  saveStore();
+}
+
+function wordId(courseId, unitId, groupId, en){
+  return [courseId,unitId,groupId,en].join('::').toLowerCase().replace(/\s+/g,'-');
+}
+function wordState(id){
+  if(!store.words[id]) store.words[id] = {box:0, correct:0, wrong:0};
+  return store.words[id];
+}
+
+function refreshTopStats(){
+  document.getElementById('statXp').textContent = store.xp||0;
+  document.getElementById('statStreak').textContent = store.streak||0;
+  const mastered = Object.values(store.words).filter(w=>w.box>=4).length;
+  document.getElementById('statMastered').textContent = mastered;
+}
+
+/* ---------- NAV STATE ---------- */
+let sel = { course:null, unit:null, groups:[], mode:null };
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+/* ---------- HOME BUILD ---------- */
+function buildCourseGrid(){
+  const grid = document.getElementById('courseGrid');
+  grid.innerHTML = '';
+  DATA.courses.forEach(c=>{
+    const el = document.createElement('button');
+    el.className = 'chip';
+    el.innerHTML = `<span class="em">${c.emoji}</span><span class="t">${c.name}</span><span class="s">${c.book}</span>`;
+    el.onclick = ()=>{ sel.course=c; sel.unit=null; sel.groups=[]; sel.mode=null;
+      [...grid.children].forEach(ch=>ch.classList.remove('active')); el.classList.add('active');
+      buildUnitList(); document.getElementById('unitPanel').style.display='block';
+      document.getElementById('groupPanel').style.display='none';
+      document.getElementById('modePanel').style.display='none';
+      document.getElementById('unitPanelTitle').textContent = `2. Elige la unidad · ${c.name}`;
+    };
+    grid.appendChild(el);
+  });
+}
+
+function unitMastery(course, unit){
+  if(!unit.groups) return 0;
+  let total=0, mastered=0;
+  unit.groups.forEach(g=>g.words.forEach(w=>{
+    total++; const st = store.words[wordId(course.id,unit.id,g.id,w.en)];
+    if(st && st.box>=4) mastered++;
+  }));
+  return total ? Math.round(mastered/total*100) : 0;
+}
+
+function buildUnitList(){
+  const list = document.getElementById('unitList');
+  list.innerHTML = '';
+  sel.course.units.forEach(u=>{
+    const row = document.createElement('div');
+    const locked = u.locked || !u.groups || !u.live;
+    row.className = 'rowline' + (locked?' locked':'');
+    if(locked){
+      row.style.opacity = .45; row.style.cursor='not-allowed';
+      row.innerHTML = `<div class="l">${u.name}</div><div class="r">Próximamente</div>`;
+    } else {
+      const m = unitMastery(sel.course, u);
+      row.innerHTML = `<div class="l">${u.name} · ${u.title||''}</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="mastery"><i style="width:${m}%"></i></div>
+          <div class="r">${m}%</div>
+        </div>`;
+      row.onclick = ()=>{ sel.unit=u; sel.groups=[];
+        [...list.children].forEach(r=>r.classList.remove('on')); row.classList.add('on');
+        buildGroupList(); document.getElementById('groupPanel').style.display='block';
+        document.getElementById('modePanel').style.display='none';
+      };
+    }
+    list.appendChild(row);
+  });
+}
+
+function buildGroupList(){
+  const list = document.getElementById('groupList');
+  list.innerHTML = '';
+  sel.unit.groups.forEach(g=>{
+    const row = document.createElement('div');
+    row.className = 'rowline';
+    const st = g.words.map(w=>store.words[wordId(sel.course.id,sel.unit.id,g.id,w.en)]);
+    const mastered = st.filter(s=>s&&s.box>=4).length;
+    row.innerHTML = `<div class="l">${g.title}</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="r">${mastered}/${g.words.length} · ${g.words.length} palabras</div>
+      </div>`;
+    row.onclick = ()=>{
+      row.classList.toggle('on');
+      if(sel.groups.includes(g.id)) sel.groups = sel.groups.filter(x=>x!==g.id);
+      else sel.groups.push(g.id);
+      updateModePanel();
+    };
+    list.appendChild(row);
+  });
+}
+
+function currentWords(){
+  const words = [];
+  sel.unit.groups.filter(g=>sel.groups.includes(g.id)).forEach(g=>{
+    g.words.forEach(w=> words.push({...w, groupId:g.id, groupTitle:g.title}));
+  });
+  return words;
+}
+
+function updateModePanel(){
+  const panel = document.getElementById('modePanel');
+  const n = currentWords().length;
+  if(sel.groups.length===0){ panel.style.display='none'; return; }
+  panel.style.display='block';
+  document.getElementById('wordCountSub').textContent = `${n} palabras seleccionadas.`;
+  const startBtn = document.getElementById('startBtn');
+  startBtn.disabled = !sel.mode;
+  startBtn.textContent = sel.mode ? `Empezar ronda (${n} palabras) →` : 'Elige un modo para empezar →';
+}
+
+document.querySelectorAll('#modePanel .chip').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    sel.mode = btn.dataset.mode;
+    document.querySelectorAll('#modePanel .chip').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    updateModePanel();
+  });
+});
+document.getElementById('startBtn').onclick = ()=>{ if(sel.mode) ensureName(startSession); };
+document.getElementById('backToHome').onclick = ()=> showScreen('screen-home');
+document.getElementById('btnHome').onclick = ()=> showScreen('screen-home');
+document.getElementById('btnAgain').onclick = ()=> startSession();
+
+/* ---------- SESSION ENGINE ---------- */
+let session = null;
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+
+function startSession(){
+  const words = currentWords();
+  const queue = shuffle(words).map(w=>({...w, tries:0}));
+  session = {
+    queue, total: queue.length, correct:0, wrong:0, xpEarned:0,
+    streak:0, bestStreak:0, mode: sel.mode
+  };
+  document.getElementById('sessionTag').textContent = `${sel.course.name} · ${sel.unit.name} · ${sel.groups.map(id=>sel.unit.groups.find(g=>g.id===id).title).join(' + ')}`;
+  showScreen('screen-session');
+  nextCard();
+}
+
+function updateProgress(){
+  const done = session.total - session.queue.length;
+  const pct = session.total ? Math.round((done/session.total)*100) : 100;
+  document.getElementById('progressBar').style.width = pct+'%';
+  document.getElementById('sessionStreak').textContent = `🔥 ${session.streak} seguidas`;
+}
+
+function speak(text){
+  try{
+    if(!('speechSynthesis' in window)) return;
+    const u = new SpeechSynthesisUtterance(text.replace(/\(e\)|\//g,' '));
+    u.lang = 'en-GB'; u.rate = 0.92;
+    speechSynthesis.cancel(); speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+function registerResult(word, correct){
+  const id = wordId(sel.course.id, sel.unit.id, word.groupId, word.en);
+  const st = wordState(id);
+  if(correct){
+    st.box = Math.min(5, st.box+1); st.correct++;
+    const gained = (st.box)*4;
+    session.xpEarned += gained; store.xp = (store.xp||0)+gained;
+    session.correct++; session.streak++; session.bestStreak = Math.max(session.bestStreak, session.streak);
+  } else {
+    st.box = Math.max(0, st.box-1); st.wrong++;
+    session.xpEarned += 1; store.xp = (store.xp||0)+1;
+    session.wrong++; session.streak = 0;
+  }
+  bumpStreak();
+  saveStore();
+  refreshTopStats();
+  updateProgress();
+}
+
+function nextCard(){
+  document.getElementById('feedback').textContent='';
+  document.getElementById('feedback').className='feedback';
+  updateProgress();
+  if(session.queue.length===0){ finishSession(); return; }
+  const word = session.queue.shift();
+  if(session.mode==='flash') renderFlash(word);
+  else if(session.mode==='choice') renderChoice(word);
+  else renderType(word);
+}
+
+function requeueWrong(word){
+  word.tries = (word.tries||0)+1;
+  if(word.tries < 3){
+    const pos = Math.min(session.queue.length, 2+Math.floor(Math.random()*2));
+    session.queue.splice(pos,0,word);
+  }
+}
+
+function renderFlash(word){
+  const area = document.getElementById('cardArea');
+  area.innerHTML = `
+    <div class="card" id="flashCard">
+      <div class="speak" id="speakBtn">🔊</div>
+      <div class="hint">Pulsa la tarjeta para ver la traducción</div>
+      <div class="word">${word.en}</div>
+      <div class="trans">${word.es}</div>
+    </div>
+    <div style="height:12px;"></div>
+    <div class="flash-actions" id="flashActions" style="display:none; width:100%;">
+      <button class="btn ghost" id="dontKnow">No lo sabía</button>
+      <button class="btn" id="doKnow">Lo sabía</button>
+    </div>
+  `;
+  const card = document.getElementById('flashCard');
+  card.onclick = (e)=>{
+    if(e.target.id==='speakBtn') return;
+    card.classList.add('flip');
+    document.getElementById('flashActions').style.display='grid';
+  };
+  document.getElementById('speakBtn').onclick = ()=> speak(word.en);
+  area.querySelector('#dontKnow').onclick = ()=>{ registerResult(word,false); requeueWrong(word); nextCard(); };
+  area.querySelector('#doKnow').onclick = ()=>{ registerResult(word,true); nextCard(); };
+}
+
+function distractors(word, key, n){
+  const pool = sel.unit.groups.flatMap(g=>g.words).filter(w=>w.en!==word.en);
+  return shuffle(pool).slice(0,n).map(w=>w[key]);
+}
+
+function renderChoice(word){
+  const area = document.getElementById('cardArea');
+  const askEnglish = Math.random()<0.5;
+  const prompt = askEnglish ? word.es : word.en;
+  const correctAns = askEnglish ? word.en : word.es;
+  const key = askEnglish ? 'en' : 'es';
+  const options = shuffle([correctAns, ...distractors(word,key,3)]);
+  area.innerHTML = `
+    <div class="card" style="min-height:120px;">
+      <div class="speak" id="speakBtn">🔊</div>
+      <div class="hint">${askEnglish? 'Elige la palabra en inglés' : 'Elige el significado'}</div>
+      <div class="word" style="font-size:22px;">${prompt}</div>
+    </div>`;
+  document.getElementById('speakBtn').onclick = ()=> speak(askEnglish? '' : word.en) || speak(word.en);
+  const choices = document.createElement('div');
+  choices.className='choices'; choices.style.marginTop='14px';
+  options.forEach(opt=>{
+    const b = document.createElement('button');
+    b.className='choice'; b.textContent = opt;
+    b.onclick = ()=>{
+      const ok = opt === correctAns;
+      [...choices.children].forEach(c=>{
+        c.disabled = true;
+        if(c.textContent===correctAns) c.classList.add('correct');
+        else if(c===b && !ok) c.classList.add('wrong');
+      });
+      registerResult(word, ok);
+      const fb = document.getElementById('feedback');
+      fb.textContent = ok ? '¡Correcto!' : `Era: ${correctAns}`;
+      fb.className = 'feedback ' + (ok?'ok':'bad');
+      if(!ok) requeueWrong(word);
+      setTimeout(nextCard, 700);
+    };
+    choices.appendChild(b);
+  });
+  area.appendChild(choices);
+}
+
+function renderType(word){
+  const area = document.getElementById('cardArea');
+  area.innerHTML = `
+    <div class="card" style="min-height:120px;">
+      <div class="speak" id="speakBtn">🔊</div>
+      <div class="hint">Escribe la palabra en inglés</div>
+      <div class="word" style="font-size:22px;">${word.es}</div>
+    </div>
+    <div style="height:12px;"></div>
+    <div class="type-row" style="width:100%;">
+      <input type="text" id="typeInput" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="type here...">
+      <button class="btn" id="typeSubmit">Enviar</button>
+    </div>
+  `;
+  document.getElementById('speakBtn').onclick = ()=> speak(word.en);
+  const input = document.getElementById('typeInput');
+  const submit = ()=>{
+    const val = input.value.trim().toLowerCase();
+    const correctVal = word.en.toLowerCase();
+    const ok = val === correctVal || val === correctVal.replace(/\(e\)/,'').trim() || val === correctVal.replace(/\(e\)/,'e').trim();
+    input.classList.add(ok?'correct':'wrong');
+    input.disabled = true; document.getElementById('typeSubmit').disabled = true;
+    registerResult(word, ok);
+    const fb = document.getElementById('feedback');
+    fb.textContent = ok ? '¡Correcto!' : `Era: ${word.en}`;
+    fb.className = 'feedback ' + (ok?'ok':'bad');
+    if(!ok) requeueWrong(word);
+    setTimeout(nextCard, 900);
+  };
+  document.getElementById('typeSubmit').onclick = submit;
+  input.addEventListener('keydown', e=>{ if(e.key==='Enter') submit(); });
+  input.focus();
+}
+
+function finishSession(){
+  document.getElementById('sumXp').textContent = `+${session.xpEarned} XP`;
+  document.getElementById('sumCorrect').textContent = session.correct;
+  document.getElementById('sumWrong').textContent = session.wrong;
+  document.getElementById('sumBest').textContent = session.bestStreak;
+  const mastered = Object.values(store.words).filter(w=>w.box>=4).length;
+  document.getElementById('sumMastered').textContent = mastered;
+  showScreen('screen-summary');
+
+  postScore({
+    student: getStudentName(),
+    course: sel.course.id,
+    unit: sel.unit.id,
+    group: sel.groups.join('+'),
+    game: session.mode,
+    correct: session.correct,
+    wrong: session.wrong,
+    xp: session.xpEarned
+  });
+}
+
+/* ---------- INIT ---------- */
+function autoSelectFromURL(){
+  try{
+    const params = new URLSearchParams(location.search);
+    const wanted = params.get('course');
+    if(!wanted) return;
+    const idx = DATA.courses.findIndex(c=>c.id===wanted);
+    if(idx<0) return;
+    const grid = document.getElementById('courseGrid');
+    grid.children[idx] && grid.children[idx].click();
+  }catch(e){}
+}
+
+(async function init(){
+  await loadVisibility();
+  buildCourseGrid();
+  refreshTopStats();
+  autoSelectFromURL();
+})();
+</script>
+</body>
+</html>
