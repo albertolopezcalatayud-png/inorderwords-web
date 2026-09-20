@@ -1,0 +1,290 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Trap Zone</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800;900&family=Manrope:wght@400;500;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0e1a; --bg-panel:#12172c; --bg-panel-2:#161c36; --bg-card:#1a2140;
+    --line:rgba(255,255,255,0.09); --line-strong:rgba(255,255,255,0.16);
+    --text:#f4f2ec; --text-sub:#9aa1ba; --text-faint:#6b7290;
+    --coral:#ff6b4a; --coral-dim:rgba(255,107,74,0.16);
+    --teal:#2dd4bf; --teal-dim:rgba(45,212,191,0.14);
+    --gold:#ffcc66; --danger:#ff4d6d; --danger-dim:rgba(255,77,109,0.14);
+    --safe:#4ade80;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{background:var(--bg); color:var(--text); font-family:'Manrope',sans-serif; width:100%; overflow-x:hidden;}
+  body{line-height:1.5; padding-bottom:60px;}
+  .wrap{position:relative; z-index:1; max-width:980px; margin:0 auto; padding:0 20px;}
+
+  #stars{position:fixed; inset:0; z-index:0; opacity:0.5;}
+
+  header.hero{padding:44px 0 28px; text-align:center;}
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:10px;
+    font-family:'JetBrains Mono',monospace; font-size:11.5px; font-weight:700;
+    letter-spacing:0.16em; text-transform:uppercase; color:var(--danger);
+    background:var(--danger-dim); border:1px solid rgba(255,77,109,0.4);
+    padding:7px 16px; border-radius:99px;
+  }
+  .eyebrow::before{content:''; width:6px; height:6px; border-radius:50%; background:var(--danger); box-shadow:0 0 8px var(--danger);}
+  h1{
+    font-family:'Unbounded',sans-serif; font-weight:900;
+    font-size:clamp(30px,7vw,56px); line-height:1.02; letter-spacing:-0.01em;
+    margin:20px 0 12px;
+    background:linear-gradient(120deg,#fff 25%,var(--danger) 70%,var(--coral) 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .tagline{font-size:clamp(15px,2vw,18px); color:var(--text-sub); max-width:600px; margin:0 auto; font-weight:500;}
+  .tagline b{color:var(--text); font-weight:800;}
+
+  .levels{display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin:28px 0 6px;}
+  .level-btn{
+    font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; letter-spacing:0.02em;
+    background:var(--bg-panel); border:1px solid var(--line); color:var(--text-sub);
+    padding:9px 16px; border-radius:99px; cursor:pointer; transition:all .15s ease;
+  }
+  .level-btn:hover{border-color:var(--line-strong); color:var(--text);}
+  .level-btn.active{background:var(--danger); border-color:var(--danger); color:#1a0508;}
+  .level-note{text-align:center; color:var(--text-faint); font-size:12.5px; margin:10px 0 6px;}
+
+  .stats-bar{
+    display:flex; justify-content:center; gap:28px; margin:22px 0 8px; flex-wrap:wrap;
+  }
+  .stat{text-align:center;}
+  .stat .n{font-family:'Unbounded',sans-serif; font-size:26px; font-weight:800; color:var(--gold);}
+  .stat .l{font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-faint);}
+
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:16px; margin-top:26px;}
+
+  .trap{
+    position:relative; background:var(--bg-panel); border:1px solid var(--line); border-radius:16px;
+    padding:20px; cursor:pointer; transition:border-color .2s ease, transform .2s ease;
+    min-height:150px; display:flex; flex-direction:column; gap:8px;
+  }
+  .trap:hover{border-color:var(--line-strong); transform:translateY(-2px);}
+  .trap.mastered{border-color:rgba(74,222,128,0.45);}
+  .trap .type-tag{
+    align-self:flex-start; font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700;
+    letter-spacing:0.08em; text-transform:uppercase; padding:3px 9px; border-radius:99px;
+  }
+  .trap .type-tag.ff{background:var(--danger-dim); color:var(--danger);}
+  .trap .type-tag.err{background:var(--teal-dim); color:var(--teal);}
+  .trap .word{font-family:'Unbounded',sans-serif; font-weight:800; font-size:1.3rem; margin:2px 0;}
+  .trap .hint{color:var(--text-sub); font-size:0.92rem;}
+  .trap .flip-cta{margin-top:auto; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-faint); letter-spacing:0.05em;}
+  .trap .mastered-badge{position:absolute; top:14px; right:14px; font-size:1.1rem;}
+
+  .reveal{display:none; border-top:1px dashed var(--line-strong); margin-top:6px; padding-top:10px;}
+  .trap.open .reveal{display:block;}
+  .trap.open .hint{display:none;}
+  .trap.open .flip-cta{display:none;}
+  .reveal .real{color:var(--safe); font-weight:800; margin-bottom:4px;}
+  .reveal .correct{font-weight:700; margin-bottom:6px;}
+  .reveal .example{color:var(--text-sub); font-style:italic; font-size:0.9rem; margin-bottom:10px;}
+  .reveal .btns{display:flex; gap:8px;}
+  .reveal button{
+    font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; letter-spacing:0.03em;
+    border-radius:8px; padding:7px 10px; cursor:pointer; border:1px solid var(--line-strong);
+    background:var(--bg-card); color:var(--text-sub); flex:1;
+  }
+  .reveal button.yes:hover{border-color:var(--safe); color:var(--safe);}
+  .reveal button.no:hover{border-color:var(--danger); color:var(--danger);}
+
+  footer{text-align:center; margin-top:50px; color:var(--text-faint); font-size:12px; font-family:'JetBrains Mono',monospace;}
+  footer a{color:var(--teal);}
+
+  .ow-home-fab{
+    position:fixed; top:14px; left:14px; z-index:9999;
+    display:flex; align-items:center; gap:7px;
+    background:var(--bg-panel);
+    border:1px solid var(--line); border-radius:999px;
+    padding:9px 14px 9px 11px; text-decoration:none;
+    color:var(--text); font-family:'Manrope',sans-serif; font-weight:700; font-size:12.5px;
+    box-shadow:0 4px 14px rgba(0,0,0,0.35); transition:all .15s ease;
+  }
+  .ow-home-fab:hover{border-color:var(--teal); background:var(--teal-dim);}
+  .ow-home-fab .ic{font-size:15px; line-height:1;}
+  @media (max-width:420px){
+    .ow-home-fab{top:10px; left:10px; padding:8px 12px 8px 10px; font-size:0;}
+    .ow-home-fab .ic{font-size:16px;}
+    .ow-home-fab .lbl{display:none;}
+  }
+</style>
+
+<a class="ow-home-fab" href="https://inorderwords.netlify.app/" title="Volver a la pagina principal"><span class="ic">🏠</span><span class="lbl">Inicio</span></a>
+<canvas id="stars"></canvas>
+<div class="wrap">
+  <header class="hero">
+    <span class="eyebrow">⚠ mission control · english</span>
+    <h1>Trap Zone</h1>
+    <p class="tagline">The <b>false friends</b> and translation errors that show up again and again in exams. Read it, take a guess, then find out.</p>
+  </header>
+
+  <div class="levels" id="levels"></div>
+  <p class="level-note" id="levelNote"></p>
+
+  <div class="stats-bar">
+    <div class="stat"><div class="n" id="statMastered">0</div><div class="l">Traps mastered</div></div>
+    <div class="stat"><div class="n" id="statTotal">0</div><div class="l">In this level</div></div>
+  </div>
+  <div style="text-align:center; margin-top:14px;">
+    <button id="sendMissionLogBtn" style="font-family:'JetBrains Mono',monospace; font-size:11.5px; font-weight:700; letter-spacing:0.05em; background:var(--bg-panel); border:1px solid var(--line-strong); color:var(--teal); padding:9px 16px; border-radius:99px; cursor:pointer;">📡 Send to Mission Log</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <footer>Click any card to reveal the trap · your progress is saved on this device</footer>
+</div>
+
+<script>
+const LEVELS = ['1º ESO','2º ESO','3º ESO','4º ESO','1º Bach','2º Bach'];
+
+const TRAPS = [
+  { id:'library', level:1, type:'ff', en:'library', hint:'Looks like Spanish "librería"?', real:'A place to borrow books', correct:'Spanish "librería" means bookshop / bookstore, not library.', example:'I borrowed this book from the school library.' },
+  { id:'large', level:1, type:'ff', en:'large', hint:'Looks like Spanish "largo"?', real:'Big in size', correct:'Spanish "largo" means long, not large.', example:'They live in a large house near the beach.' },
+  { id:'carpet', level:1, type:'ff', en:'carpet', hint:'Looks like Spanish "carpeta"?', real:'A rug on the floor', correct:'Spanish "carpeta" means folder / binder, not carpet.', example:'The cat is sleeping on the carpet.' },
+  { id:'have-years', level:1, type:'err', en:'*I have 12 years', hint:'A word-for-word translation of "tengo 12 años"', real:'Structure mistake', correct:'Say "I am 12 years old" — age uses the verb "to be", not "to have".', example:'She is 12 years old, not she has 12 years.' },
+  { id:'parents', level:1, type:'ff', en:'parents', hint:'Looks like Spanish "parientes"?', real:'Mother and father', correct:'Spanish "parientes" means relatives, not parents.', example:'My parents are coming to the school meeting.' },
+  { id:'college-fake', level:1, type:'ff', en:'success', hint:'Looks like Spanish "suceso"?', real:'Achieving a goal', correct:'Spanish "suceso" means an event / incident, not success.', example:'The concert was a huge success.' },
+
+  { id:'embarrassed', level:2, type:'ff', en:'embarrassed', hint:'Looks like Spanish "embarazada"?', real:'Feeling awkward or ashamed', correct:'Spanish "embarazada" means pregnant, not embarrassed.', example:'I felt so embarrassed when I forgot my lines.' },
+  { id:'exit', level:2, type:'ff', en:'exit', hint:'Looks like Spanish "éxito"?', real:'The way out', correct:'Spanish "éxito" means success, not exit.', example:'Please use the emergency exit.' },
+  { id:'fabric', level:2, type:'ff', en:'fabric', hint:'Looks like Spanish "fábrica"?', real:'Cloth or textile', correct:'Spanish "fábrica" means factory, not fabric.', example:'This dress is made of a soft cotton fabric.' },
+  { id:'boring-bored', level:2, type:'err', en:'*I am boring', hint:'Is "aburrido" always "boring"?', real:'-ed vs -ing confusion', correct:'Say "I am bored" for how you feel — "boring" describes what causes that feeling.', example:'This film is boring, so I am bored.' },
+  { id:'sensible', level:2, type:'ff', en:'sensible', hint:'Looks like Spanish "sensible"?', real:'Practical, showing good judgement', correct:'Spanish "sensible" means sensitive (easily affected emotionally), not sensible.', example:'It was a sensible decision to leave early.' },
+  { id:'agree', level:2, type:'err', en:'*I am agree', hint:'A word-for-word translation of "estoy de acuerdo"', real:'Structure mistake', correct:'Say "I agree" — "agree" is already a verb, it doesn\'t need "am".', example:'I agree with you, not I am agree with you.' },
+
+  { id:'realize', level:3, type:'ff', en:'realize', hint:'Looks like Spanish "realizar"?', real:'To become aware of something', correct:'Spanish "realizar" means to do / carry out, not to realize.', example:'I didn\'t realize it was so late.' },
+  { id:'assist', level:3, type:'ff', en:'assist', hint:'Looks like Spanish "asistir" (to attend)?', real:'To help someone', correct:'Spanish "asistir a" means to attend, not to assist.', example:'The nurse assisted the doctor during the operation.' },
+  { id:'attend', level:3, type:'ff', en:'attend', hint:'Looks like Spanish "atender"?', real:'To be present at an event', correct:'Spanish "atender" means to attend TO someone / to serve, not to attend an event.', example:'All students must attend the assembly.' },
+  { id:'depends-of', level:3, type:'err', en:'*It depends of', hint:'A word-for-word translation of "depende de"', real:'Wrong preposition', correct:'Say "it depends ON" — never "depends of".', example:'It depends on the weather.' },
+  { id:'career', level:3, type:'ff', en:'career', hint:'Looks like Spanish "carrera" (a race)?', real:'A profession over time', correct:'A running "carrera" in English is race, not career.', example:'She has had a long career as a teacher.' },
+  { id:'sympathetic', level:3, type:'ff', en:'sympathetic', hint:'Looks like Spanish "simpático"?', real:'Compassionate, understanding', correct:'Spanish "simpático" means nice / friendly, not sympathetic.', example:'She was very sympathetic when I told her the bad news.' },
+
+  { id:'constipated', level:4, type:'ff', en:'constipated', hint:'Looks like Spanish "constipado" (a cold)?', real:'Unable to empty your bowels', correct:'Spanish "constipado" means to have a cold, not constipated.', example:'Eat more fibre if you feel constipated.' },
+  { id:'rope', level:4, type:'ff', en:'rope', hint:'Looks like Spanish "ropa"?', real:'A thick cord', correct:'Spanish "ropa" means clothes, not rope.', example:'The climbers used a strong rope.' },
+  { id:'pretend', level:4, type:'ff', en:'pretend', hint:'Looks like Spanish "pretender"?', real:'To fake, to make believe', correct:'Spanish "pretender" means to intend to / to try to, not to pretend.', example:'The children pretended to be pirates.' },
+  { id:'married-with', level:4, type:'err', en:'*married with', hint:'A word-for-word translation of "casado con"', real:'Wrong preposition', correct:'Say "married TO" — never "married with".', example:'He has been married to Ana for ten years.' },
+  { id:'argument', level:4, type:'ff', en:'argument', hint:'Looks like Spanish "argumento" (a plot)?', real:'A verbal disagreement', correct:'A story\'s "argumento" in English is plot, not argument.', example:'They had a big argument about money.' },
+  { id:'lecture', level:4, type:'ff', en:'lecture', hint:'Looks like Spanish "lectura"?', real:'A formal talk to an audience', correct:'Spanish "lectura" means reading, not lecture.', example:'The professor gave a two-hour lecture.' },
+
+  { id:'notice', level:5, type:'ff', en:'notice', hint:'Looks like Spanish "noticia"?', real:'A warning sign, or to become aware', correct:'Spanish "noticia" means news, not notice.', example:'Did you notice the new sign on the door?' },
+  { id:'remove', level:5, type:'ff', en:'remove', hint:'Looks like Spanish "remover" (to stir)?', real:'To take something away', correct:'Spanish "remover" means to stir, not to remove.', example:'Please remove your shoes before entering.' },
+  { id:'support', level:5, type:'ff', en:'support', hint:'Looks like Spanish "soportar" (to put up with)?', real:'To back someone up', correct:'Spanish "soportar" means to stand / bear / put up with, not to support.', example:'My family has always supported my decisions.' },
+  { id:'people-is', level:5, type:'err', en:'*The people is', hint:'"People" already behaves like a plural', real:'Agreement mistake', correct:'Say "the people ARE" — "people" is already plural, it never takes -s or "is".', example:'The people in this town are very friendly.' },
+  { id:'introduce', level:5, type:'ff', en:'introduce', hint:'Looks like Spanish "introducir" (to insert)?', real:'To present someone', correct:'Spanish "introducir" means to insert / put in, not to introduce a person.', example:'Let me introduce you to my sister.' },
+  { id:'disgust', level:5, type:'ff', en:'disgust', hint:'Looks like Spanish "disgusto"?', real:'Strong dislike or revulsion', correct:'Spanish "disgusto" means upset / annoyance, not disgust.', example:'She looked at the dirty plate with disgust.' },
+
+  { id:'actually', level:6, type:'ff', en:'actually', hint:'Looks like Spanish "actualmente"?', real:'In fact, really', correct:'Spanish "actualmente" means nowadays / currently, not actually.', example:'Actually, I think you\'re right.' },
+  { id:'eventually', level:6, type:'ff', en:'eventually', hint:'Looks like Spanish "eventualmente"?', real:'Finally, after some time', correct:'Spanish "eventualmente" means possibly / occasionally, not eventually.', example:'We got lost, but we eventually found the hotel.' },
+  { id:'explain-me', level:6, type:'err', en:'*Explain me', hint:'A word-for-word translation of "explícame"', real:'Missing preposition', correct:'Say "explain TO me" or "tell me" — never "explain me".', example:'Can you explain to me how this works?' },
+  { id:'sensitive-vs-sensible', level:6, type:'ff', en:'sensitive', hint:'Is this the same as Spanish "sensato"?', real:'Easily affected emotionally', correct:'Spanish "sensato" is "sensible" in English — "sensitive" is for emotions.', example:'He is a very sensitive person and cries easily at films.' },
+  { id:'resume', level:6, type:'ff', en:'resume', hint:'Looks like Spanish "resumir"?', real:'To continue after a pause', correct:'Spanish "resumir" means to summarize; a "resume" (US) is a CV.', example:'We will resume the meeting after lunch.' },
+  { id:'a-lot-of-people-is', level:6, type:'err', en:'*A lot of people is', hint:'Quantity + plural noun', real:'Agreement mistake', correct:'Say "a lot of people ARE" — it agrees with "people", not with "a lot".', example:'A lot of people are worried about the exam.' },
+  { id:'terrific', level:6, type:'ff', en:'terrific', hint:'Sounds like "terrorífico"?', real:'Excellent, fantastic', correct:'Spanish "terrorífico" means terrifying / terrible, not terrific.', example:'We had a terrific time at the party.' },
+];
+
+const MASTERED_KEY = 'trapZoneMastered';
+let currentLevel = LEVELS.length;
+let mastered = new Set(JSON.parse(localStorage.getItem(MASTERED_KEY) || '[]'));
+
+function saveMastered(){ localStorage.setItem(MASTERED_KEY, JSON.stringify([...mastered])); }
+
+const starCanvas = document.getElementById('stars');
+const starCtx = starCanvas.getContext('2d');
+let stars = [];
+function resizeStars(){
+  starCanvas.width = window.innerWidth; starCanvas.height = document.body.scrollHeight;
+  stars = Array.from({length:90}, () => ({
+    x: Math.random()*starCanvas.width, y: Math.random()*starCanvas.height,
+    r: Math.random()*1.4+0.3, o: Math.random()*0.6+0.2
+  }));
+  drawStars();
+}
+function drawStars(){
+  starCtx.clearRect(0,0,starCanvas.width,starCanvas.height);
+  stars.forEach(s => {
+    starCtx.beginPath(); starCtx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    starCtx.fillStyle = `rgba(255,255,255,${s.o})`; starCtx.fill();
+  });
+}
+window.addEventListener('resize', resizeStars);
+setTimeout(resizeStars, 200);
+
+function renderLevels(){
+  const box = document.getElementById('levels');
+  box.innerHTML = LEVELS.map((l,i) =>
+    `<button class="level-btn${i+1===currentLevel?' active':''}" data-level="${i+1}">${l}</button>`
+  ).join('');
+  box.querySelectorAll('.level-btn').forEach(btn => {
+    btn.addEventListener('click', () => { currentLevel = parseInt(btn.dataset.level); render(); });
+  });
+  document.getElementById('levelNote').textContent =
+    `Showing traps up to ${LEVELS[currentLevel-1]} (includes earlier levels)`;
+}
+
+function visibleTraps(){
+  return TRAPS.filter(t => t.level <= currentLevel);
+}
+
+function renderGrid(){
+  const grid = document.getElementById('grid');
+  const traps = visibleTraps();
+  grid.innerHTML = traps.map(t => {
+    const isMastered = mastered.has(t.id);
+    return `<div class="trap${isMastered ? ' mastered' : ''}" data-id="${t.id}">
+      ${isMastered ? '<span class="mastered-badge">✅</span>' : ''}
+      <span class="type-tag ${t.type}">${t.type === 'ff' ? 'False friend' : 'Typical error'}</span>
+      <div class="word">${t.en}</div>
+      <div class="hint">${t.hint}</div>
+      <div class="flip-cta">Tap to reveal →</div>
+      <div class="reveal">
+        <div class="real">✔ ${t.real}</div>
+        <div class="correct">${t.correct}</div>
+        <div class="example">"${t.example}"</div>
+        <div class="btns">
+          <button class="yes" data-id="${t.id}">👍 I knew this</button>
+          <button class="no" data-id="${t.id}">🔁 Review again</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  grid.querySelectorAll('.trap').forEach(card => {
+    card.addEventListener('click', (e) => {
+      if(e.target.tagName === 'BUTTON') return;
+      card.classList.toggle('open');
+    });
+  });
+  grid.querySelectorAll('.reveal .yes').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      mastered.add(btn.dataset.id); saveMastered(); render();
+    });
+  });
+  grid.querySelectorAll('.reveal .no').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      mastered.delete(btn.dataset.id); saveMastered(); render();
+    });
+  });
+
+  document.getElementById('statTotal').textContent = traps.length;
+  document.getElementById('statMastered').textContent = traps.filter(t => mastered.has(t.id)).length;
+  setTimeout(resizeStars, 50);
+}
+
+const MISSION_LOG_URL = 'https://inorderwords.netlify.app/mission-log.html';
+document.getElementById('sendMissionLogBtn').addEventListener('click', () => {
+  const total = visibleTraps().length;
+  const masteredCount = visibleTraps().filter(t => mastered.has(t.id)).length;
+  const payload = { kind:'trapzone', mastered: masteredCount, total: total, date: new Date().toISOString() };
+  const encoded = encodeURIComponent(btoa(JSON.stringify(payload)));
+  window.open(`${MISSION_LOG_URL}?import=${encoded}`, '_blank', 'noopener');
+});
+
+function render(){ renderLevels(); renderGrid(); }
+render();
+</script>
+</body></html>
