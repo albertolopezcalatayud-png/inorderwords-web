@@ -1,0 +1,698 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Verb Tense Challenge</title>
+<style>
+  :root{
+    --bg:#ffffff;
+    --card-bg:#ffffff;
+    --text:#0f1419;
+    --secondary:#536471;
+    --border:#eff3f4;
+    --accent:#1d9bf0;
+    --accent-hover:#1a8cd8;
+    --note-bg:#f7f9f9;
+    --note-border:#eff3f4;
+    --shadow: 0 1px 2px rgba(0,0,0,0.05);
+  }
+  body.theme-dim{
+    --bg:#15202b;
+    --card-bg:#15202b;
+    --text:#e7e9ea;
+    --secondary:#8b98a5;
+    --border:#38444d;
+    --note-bg:#1c2732;
+    --note-border:#38444d;
+  }
+  body.theme-dark{
+    --bg:#000000;
+    --card-bg:#000000;
+    --text:#e7e9ea;
+    --secondary:#71767b;
+    --border:#2f3336;
+    --note-bg:#16181c;
+    --note-border:#2f3336;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
+    transition:background .2s ease,color .2s ease;
+  }
+
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px 20px;
+    border-bottom:1px solid var(--border);
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:800;
+    font-size:20px;
+  }
+  .brand .logo{
+    width:34px;height:34px;border-radius:50%;
+    background:var(--text);color:var(--bg);
+    display:flex;align-items:center;justify-content:center;
+    font-size:18px;font-weight:900;flex-shrink:0;
+  }
+  .topbar-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .iconbtn{
+    background:transparent;
+    border:1px solid var(--border);
+    color:var(--text);
+    border-radius:999px;
+    padding:8px 14px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+  }
+  .iconbtn:hover{background:var(--note-bg);}
+
+  .progress-wrap{
+    padding:0 20px;
+  }
+  .progress-track{
+    height:5px;
+    background:var(--border);
+    border-radius:4px;
+    overflow:hidden;
+    margin-top:2px;
+  }
+  .progress-fill{
+    height:100%;
+    background:var(--accent);
+    width:1%;
+    transition:width .25s ease;
+  }
+  .progress-label{
+    font-size:13px;
+    color:var(--secondary);
+    padding:8px 20px 0 20px;
+    display:flex;
+    justify-content:space-between;
+  }
+
+  .stage{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+  }
+  .stage-inner{
+    width:100%;
+    max-width:620px;
+  }
+
+  .helper-banner{
+    background:var(--note-bg);
+    border:1px solid var(--note-border);
+    border-radius:14px;
+    padding:12px 16px;
+    font-size:14px;
+    color:var(--secondary);
+    margin-bottom:16px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+  }
+  .helper-banner button{
+    background:none;border:none;color:var(--secondary);
+    font-size:18px;cursor:pointer;line-height:1;flex-shrink:0;
+  }
+
+  .tweet-card{
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:20px;
+    background:var(--card-bg);
+    box-shadow:var(--shadow);
+  }
+  .tweet-header{
+    display:flex;
+    gap:12px;
+  }
+  .avatar{
+    width:52px;height:52px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-weight:800;font-size:18px;flex-shrink:0;
+  }
+  .who{display:flex;flex-direction:column;line-height:1.25;min-width:0;}
+  .name-row{display:flex;align-items:center;gap:4px;flex-wrap:wrap;}
+  .display-name{font-weight:800;font-size:16px;color:var(--text);}
+  .verified{color:var(--accent);font-size:15px;}
+  .handle-row{color:var(--secondary);font-size:15px;}
+
+  .tweet-text{
+    font-size:26px;
+    line-height:1.45;
+    margin:18px 0 16px 0;
+    font-weight:500;
+    word-wrap:break-word;
+  }
+  .tweet-text .tag{color:var(--accent);}
+
+  .stats-row{
+    display:flex;
+    gap:28px;
+    color:var(--secondary);
+    font-size:14px;
+    padding-top:10px;
+    border-top:1px solid var(--border);
+    flex-wrap:wrap;
+  }
+  .stat{display:flex;align-items:center;gap:6px;}
+
+  .reveal-panel{
+    margin-top:16px;
+    background:var(--note-bg);
+    border:1px solid var(--note-border);
+    border-radius:16px;
+    padding:16px 18px;
+    display:none;
+  }
+  .reveal-panel.show{display:block;animation:fadeIn .25s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:translateY(0);}}
+  .reveal-title{
+    display:flex;align-items:center;gap:8px;
+    font-weight:800;font-size:15px;color:var(--secondary);
+    margin-bottom:8px;
+  }
+  .reveal-title .dot{
+    width:16px;height:16px;border-radius:50%;
+    background:var(--accent);color:#fff;
+    font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .reveal-tense{
+    font-size:21px;font-weight:800;color:var(--text);margin-bottom:6px;
+  }
+  .reveal-explanation{
+    font-size:15px;color:var(--text);line-height:1.5;margin-bottom:10px;
+  }
+  .reveal-formation{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:13px;
+    background:var(--bg);
+    border:1px solid var(--note-border);
+    border-radius:8px;
+    padding:8px 10px;
+    color:var(--secondary);
+    display:inline-block;
+  }
+
+  .controls{
+    border-top:1px solid var(--border);
+    padding:14px 20px calc(14px + env(safe-area-inset-bottom));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    flex-wrap:wrap;
+    position:sticky;
+    bottom:0;
+    background:var(--bg);
+  }
+  .nav-btn{
+    background:transparent;
+    border:1px solid var(--border);
+    color:var(--text);
+    border-radius:999px;
+    padding:10px 18px;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .nav-btn:hover:not(:disabled){background:var(--note-bg);}
+  .nav-btn:disabled{opacity:.35;cursor:not-allowed;}
+
+  .reveal-btn{
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    border-radius:999px;
+    padding:10px 26px;
+    font-size:16px;
+    font-weight:800;
+    cursor:pointer;
+  }
+  .reveal-btn:hover{background:var(--accent-hover);}
+  .reveal-btn.active{background:var(--text);color:var(--bg);}
+
+  .jump-box{
+    display:flex;align-items:center;gap:6px;
+    font-size:14px;color:var(--secondary);
+  }
+  .jump-box input{
+    width:56px;
+    text-align:center;
+    padding:8px 4px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:var(--bg);
+    color:var(--text);
+    font-size:14px;
+  }
+
+  @media (max-width:520px){
+    .tweet-text{font-size:21px;}
+    .brand{font-size:17px;}
+    .controls{gap:8px;}
+    .nav-btn,.reveal-btn{padding:9px 14px;font-size:14px;}
+  }
+
+  .ow-home-fab{
+    position:fixed; top:14px; left:14px; z-index:9999;
+    display:flex; align-items:center; gap:7px;
+    background:var(--card-bg);
+    border:1px solid var(--border); border-radius:999px;
+    padding:9px 14px 9px 11px; text-decoration:none;
+    color:var(--text); font-weight:700; font-size:12.5px;
+    box-shadow:0 4px 14px rgba(0,0,0,0.15); transition:all .15s ease;
+  }
+  .ow-home-fab:hover{border-color:var(--accent); background:var(--note-bg);}
+  .ow-home-fab .ic{font-size:15px; line-height:1;}
+  @media (max-width:420px){
+    .ow-home-fab{top:10px; left:10px; padding:8px 12px 8px 10px; font-size:0;}
+    .ow-home-fab .ic{font-size:16px;}
+    .ow-home-fab .lbl{display:none;}
+  }
+</style>
+<a class="ow-home-fab" href="https://inorderwords.netlify.app/" title="Volver a la pagina principal"><span class="ic">🏠</span><span class="lbl">Inicio</span></a>
+<div class="topbar">
+  <div class="brand"><span class="logo">𝕏</span> Verb Tense Challenge</div>
+  <div class="topbar-right">
+    <button class="iconbtn" id="shuffleBtn" title="Shuffle the tweet order">🔀 Shuffle</button>
+    <button class="iconbtn" id="restartBtn" title="Go back to tweet 1">↺ Restart</button>
+    <button class="iconbtn" id="themeBtn" title="Change theme">☀️ Light</button>
+  </div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-label">
+    <span id="counterLabel">Tweet 1 / 100</span>
+    <span id="categoryHintLabel"></span>
+  </div>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+</div>
+
+<div class="stage">
+  <div class="stage-inner">
+
+    <div class="helper-banner" id="helperBanner">
+      <span>💡 Read the tweet out loud with the class and identify the verb tense before clicking "Reveal answer".</span>
+      <button id="closeHelper" title="Close">✕</button>
+    </div>
+
+    <div class="tweet-card">
+      <div class="tweet-header">
+        <div class="avatar" id="avatar">MC</div>
+        <div class="who">
+          <div class="name-row">
+            <span class="display-name" id="displayName">Maya Chen</span>
+            <span class="verified">✔</span>
+          </div>
+          <div class="handle-row"><span id="handle">@mayatravels</span> · <span id="timeAgo">2h</span></div>
+        </div>
+      </div>
+
+      <div class="tweet-text" id="tweetText"></div>
+
+      <div class="stats-row">
+        <div class="stat">💬 <span id="statReplies">0</span></div>
+        <div class="stat">🔁 <span id="statRetweets">0</span></div>
+        <div class="stat">❤️ <span id="statLikes">0</span></div>
+        <div class="stat">📤</div>
+      </div>
+    </div>
+
+    <div class="reveal-panel" id="revealPanel">
+      <div class="reveal-title"><span class="dot">i</span> GRAMMAR NOTE</div>
+      <div class="reveal-tense" id="revealTense"></div>
+      <div class="reveal-explanation" id="revealExplanation"></div>
+      <div class="reveal-formation" id="revealFormation"></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="controls">
+  <button class="nav-btn" id="prevBtn">← Previous</button>
+  <button class="reveal-btn" id="revealBtn">Reveal answer</button>
+  <button class="nav-btn" id="nextBtn">Next →</button>
+  <div class="jump-box">
+    Go to #
+    <input type="number" id="jumpInput" min="1" max="100" value="1">
+    <button class="iconbtn" id="jumpBtn">Go</button>
+  </div>
+</div>
+<script>
+(function(){
+
+  const profiles = [
+    {name:"Maya Chen", handle:"@mayatravels", color:"#F91880", initials:"MC"},
+    {name:"Leo Fernández", handle:"@leo_writes", color:"#1D9BF0", initials:"LF"},
+    {name:"Aisha Osei", handle:"@aishaos", color:"#00BA7C", initials:"AO"},
+    {name:"Tom Becker", handle:"@tombeckerdev", color:"#7856FF", initials:"TB"},
+    {name:"Priya Nair", handle:"@priya.codes", color:"#FFAD1F", initials:"PN"},
+    {name:"Jonas Weber", handle:"@jonasw", color:"#F4212E", initials:"JW"},
+    {name:"Grace Kim", handle:"@gracekim_", color:"#1D9BF0", initials:"GK"},
+    {name:"Sam Rivera", handle:"@samr", color:"#00BA7C", initials:"SR"},
+    {name:"Nora Haddad", handle:"@norah", color:"#7856FF", initials:"NH"},
+    {name:"Ben Walsh", handle:"@benwalsh22", color:"#FFAD1F", initials:"BW"},
+    {name:"Elena Popescu", handle:"@elenap", color:"#F91880", initials:"EP"},
+    {name:"Kwame Boateng", handle:"@kwameb", color:"#1D9BF0", initials:"KB"},
+    {name:"Sofia Marchetti", handle:"@sofiam", color:"#00BA7C", initials:"SM"},
+    {name:"David Okafor", handle:"@davido", color:"#F4212E", initials:"DO"},
+    {name:"Mia Larsen", handle:"@mialarsen", color:"#7856FF", initials:"ML"},
+    {name:"Hassan Ali", handle:"@hassana", color:"#FFAD1F", initials:"HA"},
+    {name:"Chloe Dubois", handle:"@chloed", color:"#F91880", initials:"CD"},
+    {name:"Ravi Patel", handle:"@ravip", color:"#1D9BF0", initials:"RP"},
+    {name:"Freya Nilsson", handle:"@freyan", color:"#00BA7C", initials:"FN"},
+    {name:"Diego Morales", handle:"@diegom", color:"#F4212E", initials:"DM"}
+  ];
+
+  const categories = [
+    {tense:"Present Simple", explanation:"Used for habits, routines, general facts, and permanent truths.", formation:"Subject + verb (+s/es in 3rd person) — Subject + do/does + not + verb"},
+    {tense:"Present Continuous", explanation:"Used for actions happening right now, temporary situations, or future plans that are already arranged.", formation:"Subject + am/is/are + verb-ing"},
+    {tense:"Present Perfect Simple", explanation:"Used for past actions connected to the present: life experiences, results visible now, or recent actions.", formation:"Subject + have/has + past participle"},
+    {tense:"Present Perfect Continuous", explanation:"Used for actions that started in the past and continue (or have just finished) now, emphasizing the duration.", formation:"Subject + have/has + been + verb-ing"},
+    {tense:"Past Simple", explanation:"Used for actions completed at a specific, definite time in the past.", formation:"Subject + past-tense verb (regular -ed / irregular)"},
+    {tense:"Past Continuous", explanation:"Used for actions in progress at a specific moment in the past, or interrupted by another action.", formation:"Subject + was/were + verb-ing"},
+    {tense:"Past Perfect Simple", explanation:"Used for a past action that happened before another past action.", formation:"Subject + had + past participle"},
+    {tense:"Past Perfect Continuous", explanation:"Used for an action that had been in progress for a period of time before another moment or action in the past.", formation:"Subject + had + been + verb-ing"},
+    {tense:"Future Simple (will)", explanation:"Used for predictions, spontaneous decisions, promises, or offers.", formation:"Subject + will + base verb"},
+    {tense:"Future Continuous", explanation:"Used for an action that will be in progress at a specific moment in the future.", formation:"Subject + will + be + verb-ing"},
+    {tense:"Future Perfect Simple", explanation:"Used for an action that will be completed before a specific moment in the future.", formation:"Subject + will + have + past participle"},
+    {tense:"Future Perfect Continuous", explanation:"Used to emphasize the duration of an action that will continue up to a specific point in the future.", formation:"Subject + will + have + been + verb-ing"},
+    {tense:"Going to Future", explanation:"Used for plans or intentions already decided, or predictions based on present evidence.", formation:"Subject + am/is/are + going to + base verb"},
+    {tense:"Present Simple (scheduled future)", explanation:"Used for fixed timetables and official schedules (trains, flights, pre-arranged events).", formation:"Same as present simple, but referring to a scheduled future event"},
+    {tense:"First Conditional", explanation:"Used to talk about real or likely future situations and their consequence.", formation:"If + present simple, ... will + base verb"},
+    {tense:"Second Conditional", explanation:"Used for hypothetical, unlikely, or imaginary situations in the present or future.", formation:"If + past simple, ... would + base verb"},
+    {tense:"Third Conditional", explanation:"Used to talk about hypothetical situations in the past that did not happen, and their imagined result.", formation:"If + past perfect, ... would have + past participle"},
+    {tense:"Used to", explanation:"Used for habits or states that existed in the past but are no longer true.", formation:"Subject + used to + base verb"},
+    {tense:"Passive Voice – Present Simple", explanation:"Used when the focus is on the action or on who/what receives it, not on who performs it (present).", formation:"Subject + am/is/are + past participle"},
+    {tense:"Passive Voice – Past Simple", explanation:"Same as the present passive, but referring to an action completed in the past.", formation:"Subject + was/were + past participle"}
+  ];
+
+  const sentences = [
+    ["I always drink my coffee black. No sugar, no milk, no negotiation. ☕",
+     "The sun rises in the east and sets in the west. Basic science, people.",
+     "My brother works as a nurse at the city hospital.",
+     "Water boils at 100°C at sea level. Chemistry class flashbacks.",
+     "She never eats breakfast before 9am, no matter what."],
+
+    ["I'm sitting in traffic right now and I'm losing my mind. 🚗",
+     "We're currently redecorating the living room, so please excuse the mess.",
+     "My wifi is actually working today. Someone pinch me.",
+     "They're interviewing the new candidate this afternoon.",
+     "I'm learning Portuguese this year — wish me luck!"],
+
+    ["I have visited fourteen countries so far, and I'm not stopping.",
+     "She has just finished her final exam! 🎉",
+     "We have never seen a film that good before.",
+     "He has already left the office for the day.",
+     "I've lost my keys again. Third time this week."],
+
+    ["I've been working on this project for six months straight.",
+     "She has been studying for the bar exam since January.",
+     "We've been waiting for this delivery for two weeks!",
+     "He's been feeling under the weather all week.",
+     "They've been arguing about the same thing for hours."],
+
+    ["I watched the entire season in one night. No regrets.",
+     "She graduated from university in 2019.",
+     "We flew to Lisbon last summer and it was amazing.",
+     "He forgot his passport at home and missed the flight.",
+     "They opened a new coffee shop downtown last month."],
+
+    ["I was cooking dinner when the fire alarm went off.",
+     "She was jogging in the park when it started to rain.",
+     "We were watching the game when the power went out.",
+     "He was talking on the phone during the entire meeting.",
+     "They were sleeping when the earthquake hit."],
+
+    ["By the time I arrived, the meeting had already started.",
+     "She had finished the report before her boss even asked for it.",
+     "We had never eaten sushi before that trip to Tokyo.",
+     "He realized he had left his laptop on the train.",
+     "They had already sold the house by the time we made an offer."],
+
+    ["I had been waiting for over an hour when she finally showed up.",
+     "She had been working there for a decade before she got promoted.",
+     "We had been driving for six hours when the car broke down.",
+     "He had been feeling sick for days before he saw a doctor.",
+     "They had been dating for years before they got engaged."],
+
+    ["I'll call you as soon as I land.",
+     "Don't worry, I'll help you move this weekend.",
+     "Experts predict the economy will recover next year.",
+     "I think it will rain later today.",
+     "She'll be so happy when she hears the news!"],
+
+    ["This time tomorrow, I'll be lying on a beach in Bali. 🏖️",
+     "At 9pm we'll be watching the fireworks from the rooftop.",
+     "She'll be presenting her thesis this time next week.",
+     "We'll be flying over the Atlantic while you're still asleep.",
+     "He'll be working late again tonight, as usual."],
+
+    ["By next year, I will have finished my degree.",
+     "By the time you read this, I will have already left the country.",
+     "She will have completed the marathon by noon.",
+     "By December, we will have lived here for a decade.",
+     "He will have saved enough money for the trip by summer."],
+
+    ["By June, I will have been working here for five years.",
+     "By the time she retires, she will have been teaching for thirty years.",
+     "We will have been traveling for 24 hours straight by the time we land.",
+     "By midnight, he will have been studying for twelve hours.",
+     "By 2030, they will have been running this business for two decades."],
+
+    ["Look at those clouds — it's going to storm any minute.",
+     "We're going to move to a new city next spring.",
+     "I'm going to start eating healthier, starting tomorrow. For real this time.",
+     "She's going to launch her own business next month.",
+     "Careful, that glass is going to fall!"],
+
+    ["My flight leaves at 6am tomorrow, so I need to sleep now.",
+     "The conference starts on Monday and ends on Thursday.",
+     "The train departs from platform 4 at exactly 10:15.",
+     "The new season premieres next Friday!",
+     "Our meeting is at 3pm, right after lunch."],
+
+    ["If it rains tomorrow, we'll cancel the picnic.",
+     "If you don't book now, the tickets will sell out.",
+     "I'll text you if anything changes.",
+     "If she studies hard, she'll pass the exam easily.",
+     "If we leave now, we won't miss the train."],
+
+    ["If I had more free time, I would travel the whole world.",
+     "I would buy that house if I won the lottery.",
+     "If she were here, she would know exactly what to do.",
+     "If I were you, I wouldn't trust him.",
+     "We would live somewhere warmer if we could."],
+
+    ["If I had known about the traffic, I would have left earlier.",
+     "She wouldn't have missed the flight if she had checked in online.",
+     "If they had saved more money, they would have bought the apartment.",
+     "I would have called you if I had had your number.",
+     "If we had left on time, we wouldn't have missed the show."],
+
+    ["I used to play the violin when I was a kid.",
+     "She used to live in Berlin before she moved here.",
+     "We used to go camping every summer as a family.",
+     "He didn't use to like coffee, but now he can't live without it.",
+     "They used to be best friends back in high school."],
+
+    ["English is spoken in over 60 countries around the world.",
+     "This app is used by millions of people every day.",
+     "The office is cleaned every night after closing.",
+     "New episodes are released every Friday.",
+     "Recycled paper is made from used materials."],
+
+    ["The Eiffel Tower was built in 1889.",
+     "This song was written over twenty years ago.",
+     "The email was sent by mistake.",
+     "The bridge was damaged during the storm.",
+     "The award was given to the youngest contestant."]
+  ];
+
+  const timeLabels = ["1m","3m","7m","12m","25m","45m","1h","2h","3h","4h","6h","8h","12h","18h","1d","2d","3d","4d","5d","6d"];
+
+  function seededRandom(seed){
+    const x = Math.sin(seed) * 10000;
+    return x - Math.floor(x);
+  }
+
+  let tweets = [];
+  let counter = 0;
+  for(let r=0;r<5;r++){
+    for(let c=0;c<20;c++){
+      tweets.push({
+        id: counter+1,
+        catIndex: c,
+        text: sentences[c][r],
+        profile: profiles[counter % profiles.length],
+        time: timeLabels[(counter*7) % timeLabels.length],
+        replies: Math.floor(seededRandom(counter*3+1)*80)+1,
+        retweets: Math.floor(seededRandom(counter*5+2)*300)+2,
+        likes: Math.floor(seededRandom(counter*11+3)*1800)+15
+      });
+      counter++;
+    }
+  }
+
+  let currentIndex = 0;
+  let revealed = false;
+  let themeIndex = 0;
+  const themeNames = ["☀️ Light","🌙 Dim","⚫ Dark"];
+  const themeClasses = ["","theme-dim","theme-dark"];
+
+  const els = {
+    avatar: document.getElementById("avatar"),
+    displayName: document.getElementById("displayName"),
+    handle: document.getElementById("handle"),
+    timeAgo: document.getElementById("timeAgo"),
+    tweetText: document.getElementById("tweetText"),
+    statReplies: document.getElementById("statReplies"),
+    statRetweets: document.getElementById("statRetweets"),
+    statLikes: document.getElementById("statLikes"),
+    revealPanel: document.getElementById("revealPanel"),
+    revealTense: document.getElementById("revealTense"),
+    revealExplanation: document.getElementById("revealExplanation"),
+    revealFormation: document.getElementById("revealFormation"),
+    counterLabel: document.getElementById("counterLabel"),
+    categoryHintLabel: document.getElementById("categoryHintLabel"),
+    progressFill: document.getElementById("progressFill"),
+    prevBtn: document.getElementById("prevBtn"),
+    nextBtn: document.getElementById("nextBtn"),
+    revealBtn: document.getElementById("revealBtn"),
+    jumpInput: document.getElementById("jumpInput"),
+    jumpBtn: document.getElementById("jumpBtn"),
+    shuffleBtn: document.getElementById("shuffleBtn"),
+    restartBtn: document.getElementById("restartBtn"),
+    themeBtn: document.getElementById("themeBtn"),
+    helperBanner: document.getElementById("helperBanner"),
+    closeHelper: document.getElementById("closeHelper")
+  };
+
+  function formatNumber(n){
+    if(n >= 1000) return (n/1000).toFixed(1).replace(".0","") + "K";
+    return String(n);
+  }
+
+  function linkify(text){
+    return text.replace(/#(\w+)/g, '<span class="tag">#$1</span>');
+  }
+
+  function render(){
+    const t = tweets[currentIndex];
+    els.avatar.style.background = t.profile.color;
+    els.avatar.textContent = t.profile.initials;
+    els.displayName.textContent = t.profile.name;
+    els.handle.textContent = t.profile.handle;
+    els.timeAgo.textContent = t.time;
+    els.tweetText.innerHTML = linkify(t.text);
+    els.statReplies.textContent = formatNumber(t.replies);
+    els.statRetweets.textContent = formatNumber(t.retweets);
+    els.statLikes.textContent = formatNumber(t.likes);
+
+    const cat = categories[t.catIndex];
+    els.revealTense.textContent = cat.tense;
+    els.revealExplanation.textContent = cat.explanation;
+    els.revealFormation.textContent = cat.formation;
+
+    els.counterLabel.textContent = `Tweet ${currentIndex+1} / ${tweets.length}`;
+    els.progressFill.style.width = (((currentIndex+1)/tweets.length)*100) + "%";
+    els.jumpInput.value = currentIndex+1;
+
+    els.prevBtn.disabled = currentIndex === 0;
+    els.nextBtn.disabled = currentIndex === tweets.length-1;
+
+    setRevealed(false);
+  }
+
+  function setRevealed(state){
+    revealed = state;
+    if(revealed){
+      els.revealPanel.classList.add("show");
+      els.revealBtn.textContent = "Hide answer";
+      els.revealBtn.classList.add("active");
+    } else {
+      els.revealPanel.classList.remove("show");
+      els.revealBtn.textContent = "Reveal answer";
+      els.revealBtn.classList.remove("active");
+    }
+  }
+
+  function goTo(index){
+    if(index < 0 || index >= tweets.length) return;
+    currentIndex = index;
+    render();
+  }
+
+  function shuffleArray(arr){
+    for(let i=arr.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [arr[i],arr[j]] = [arr[j],arr[i]];
+    }
+    return arr;
+  }
+
+  els.prevBtn.addEventListener("click", ()=>goTo(currentIndex-1));
+  els.nextBtn.addEventListener("click", ()=>goTo(currentIndex+1));
+  els.revealBtn.addEventListener("click", ()=>setRevealed(!revealed));
+
+  els.jumpBtn.addEventListener("click", ()=>{
+    const n = parseInt(els.jumpInput.value,10);
+    if(!isNaN(n)) goTo(n-1);
+  });
+  els.jumpInput.addEventListener("keydown",(e)=>{
+    if(e.key === "Enter") els.jumpBtn.click();
+  });
+
+  els.shuffleBtn.addEventListener("click", ()=>{
+    shuffleArray(tweets);
+    currentIndex = 0;
+    render();
+  });
+
+  els.restartBtn.addEventListener("click", ()=>goTo(0));
+
+  els.themeBtn.addEventListener("click", ()=>{
+    themeIndex = (themeIndex+1) % 3;
+    document.body.className = themeClasses[themeIndex];
+    els.themeBtn.textContent = themeNames[themeIndex];
+  });
+
+  els.closeHelper.addEventListener("click", ()=>{
+    els.helperBanner.style.display = "none";
+  });
+
+  document.addEventListener("keydown",(e)=>{
+    if(document.activeElement === els.jumpInput) return;
+    if(e.key === "ArrowRight") goTo(currentIndex+1);
+    else if(e.key === "ArrowLeft") goTo(currentIndex-1);
+    else if(e.key === " " || e.key === "Enter"){
+      e.preventDefault();
+      els.revealBtn.click();
+    }
+  });
+
+  render();
+})();
+</script>
+
+</body></html>
