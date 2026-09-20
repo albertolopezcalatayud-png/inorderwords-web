@@ -1,0 +1,296 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Mission Log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800;900&family=Manrope:wght@400;500;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0e1a; --bg-panel:#12172c; --bg-card:#161c36;
+    --line:rgba(255,255,255,0.09); --line-strong:rgba(255,255,255,0.18);
+    --text:#f4f2ec; --text-sub:#9aa1ba; --text-faint:#6b7290;
+    --coral:#ff6b4a; --teal:#2dd4bf; --teal-dim:rgba(45,212,191,0.14);
+    --gold:#ffcc66; --safe:#4ade80;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{background:var(--bg); color:var(--text); font-family:'Manrope',sans-serif; width:100%; overflow-x:hidden;}
+  body{line-height:1.5; padding-bottom:70px;}
+  .wrap{position:relative; z-index:1; max-width:940px; margin:0 auto; padding:0 20px;}
+  #stars{position:fixed; inset:0; z-index:0; opacity:0.5;}
+
+  header.hero{padding:40px 0 22px; text-align:center;}
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:10px; font-family:'JetBrains Mono',monospace; font-size:11.5px; font-weight:700;
+    letter-spacing:0.16em; text-transform:uppercase; color:var(--teal); background:var(--teal-dim);
+    border:1px solid rgba(45,212,191,0.4); padding:7px 16px; border-radius:99px;
+  }
+  .eyebrow::before{content:''; width:6px; height:6px; border-radius:50%; background:var(--teal); box-shadow:0 0 8px var(--teal);}
+  h1{
+    font-family:'Unbounded',sans-serif; font-weight:900; font-size:clamp(28px,7vw,50px); line-height:1.05; letter-spacing:-0.01em;
+    margin:18px 0 10px; background:linear-gradient(120deg,#fff 25%,var(--teal) 70%,var(--gold) 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .tagline{font-size:clamp(14.5px,2vw,17px); color:var(--text-sub); max-width:600px; margin:0 auto; font-weight:500;}
+
+  .pilot-bar{
+    display:flex; gap:10px; align-items:center; justify-content:center; margin:26px 0 6px; flex-wrap:wrap;
+  }
+  .pilot-bar input, .pilot-bar select{
+    font-family:'Manrope',sans-serif; font-weight:700; background:var(--bg-panel); border:1px solid var(--line);
+    color:var(--text); padding:10px 14px; border-radius:10px; font-size:0.92rem;
+  }
+  .pilot-bar .hint{font-size:11.5px; color:var(--text-faint); width:100%; text-align:center; margin-top:4px;}
+
+  .toast{
+    position:fixed; top:18px; left:50%; transform:translateX(-50%) translateY(-20px); z-index:50;
+    background:var(--teal); color:#04211c; font-weight:800; padding:12px 20px; border-radius:12px;
+    opacity:0; transition:all .3s ease; box-shadow:0 10px 30px rgba(0,0,0,0.4); font-size:0.92rem;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  section{margin-top:40px;}
+  .section-label{
+    font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--text-sub); display:flex; align-items:center; gap:12px; margin:0 0 16px;
+  }
+  .section-label::after{content:''; flex:1; height:1px; background:var(--line);}
+
+  .games-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px;}
+  .game-card{
+    background:var(--bg-panel); border:1px solid var(--line); border-radius:16px; padding:18px 20px;
+  }
+  .game-card .name{font-family:'Unbounded',sans-serif; font-weight:800; font-size:1.02rem; margin-bottom:6px;}
+  .game-card .best{font-family:'Unbounded',sans-serif; font-weight:900; font-size:1.8rem; color:var(--gold);}
+  .game-card .best span{font-size:0.65rem; font-weight:700; color:var(--text-faint); font-family:'JetBrains Mono',monospace; text-transform:uppercase; margin-left:4px;}
+  .game-card .meta{font-size:12px; color:var(--text-faint); margin-top:6px;}
+  .game-card.empty{color:var(--text-faint); font-size:0.88rem; display:flex; align-items:center; justify-content:center; text-align:center; min-height:90px;}
+
+  .traps-card{
+    background:var(--bg-panel); border:1px solid var(--line); border-radius:16px; padding:20px 22px;
+    display:flex; align-items:center; gap:20px; flex-wrap:wrap;
+  }
+  .traps-card .big{font-family:'Unbounded',sans-serif; font-weight:900; font-size:2.1rem; color:var(--safe);}
+  .traps-card .bar{flex:1; min-width:180px; height:10px; background:var(--bg-card); border-radius:99px; overflow:hidden;}
+  .traps-card .bar-fill{height:100%; background:linear-gradient(90deg,var(--teal),var(--safe)); border-radius:99px; transition:width .4s ease;}
+
+  .units-level{margin-bottom:18px; background:var(--bg-panel); border:1px solid var(--line); border-radius:16px; padding:16px 20px;}
+  .units-level .lvl-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;}
+  .units-level .lvl-head b{font-family:'Unbounded',sans-serif; font-size:0.95rem;}
+  .units-level .lvl-head .count{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-faint);}
+  .unit-row{display:flex; align-items:center; gap:10px; padding:6px 0; border-top:1px solid var(--line);}
+  .unit-row:first-of-type{border-top:none;}
+  .unit-row input[type=checkbox]{width:18px; height:18px; accent-color:var(--teal); cursor:pointer;}
+  .unit-row span{flex:1; font-size:0.9rem;}
+  .unit-row span.done{color:var(--text-faint); text-decoration:line-through;}
+  .unit-row button{background:none; border:none; color:var(--text-faint); cursor:pointer; font-size:14px;}
+  .unit-row button:hover{color:var(--coral);}
+  .add-unit{display:flex; gap:8px; margin-top:10px;}
+  .add-unit input{flex:1; background:var(--bg-card); border:1px solid var(--line); color:var(--text); padding:8px 12px; border-radius:8px; font-size:0.85rem;}
+  .add-unit button{
+    background:var(--teal); color:#04211c; border:none; border-radius:8px; padding:8px 14px; font-weight:800; cursor:pointer; font-size:0.85rem;
+  }
+
+  .link-out{
+    display:inline-flex; align-items:center; gap:6px; margin-top:14px; font-family:'JetBrains Mono',monospace; font-size:11.5px;
+    color:var(--teal); text-decoration:none; border:1px solid rgba(45,212,191,0.35); padding:8px 14px; border-radius:99px;
+  }
+  .link-out:hover{background:var(--teal-dim);}
+
+  footer{text-align:center; margin-top:56px; color:var(--text-faint); font-size:12px; font-family:'JetBrains Mono',monospace;}
+
+  .ow-home-fab{
+    position:fixed; top:14px; left:14px; z-index:9999;
+    display:flex; align-items:center; gap:7px;
+    background:var(--bg-panel);
+    border:1px solid var(--line); border-radius:999px;
+    padding:9px 14px 9px 11px; text-decoration:none;
+    color:var(--text); font-family:'Manrope',sans-serif; font-weight:700; font-size:12.5px;
+    box-shadow:0 4px 14px rgba(0,0,0,0.35); transition:all .15s ease;
+  }
+  .ow-home-fab:hover{border-color:var(--teal); background:var(--teal-dim);}
+  .ow-home-fab .ic{font-size:15px; line-height:1;}
+  @media (max-width:420px){
+    .ow-home-fab{top:10px; left:10px; padding:8px 12px 8px 10px; font-size:0;}
+    .ow-home-fab .ic{font-size:16px;}
+    .ow-home-fab .lbl{display:none;}
+  }
+</style>
+
+<a class="ow-home-fab" href="https://inorderwords.netlify.app/" title="Volver a la pagina principal"><span class="ic">🏠</span><span class="lbl">Inicio</span></a>
+<canvas id="stars"></canvas>
+<div class="toast" id="toast"></div>
+
+<div class="wrap">
+  <header class="hero">
+    <span class="eyebrow">📡 mission control · english</span>
+    <h1>Mission Log</h1>
+    <p class="tagline">Your progress in Inorderwords: games, traps mastered and units completed — all saved on this device.</p>
+  </header>
+
+  <div class="pilot-bar">
+    <input type="text" id="pilotName" placeholder="Your name" />
+    <select id="pilotCourse">
+      <option value="">Grade</option>
+      <option>1º ESO</option><option>2º ESO</option><option>3º ESO</option>
+      <option>4º ESO</option><option>1º Bach</option><option>2º Bach</option>
+    </select>
+    <p class="hint">Only used to personalise your Mission Log on this device — nothing is sent anywhere.</p>
+  </div>
+
+  <section>
+    <div class="section-label">🎮 My games</div>
+    <div class="games-grid" id="gamesGrid"></div>
+    <a class="link-out" href="https://inorderwords.netlify.app/verb-striker.html" target="_blank" rel="noopener">🚀 Play Verb Striker</a>
+    <a class="link-out" href="https://inorderwords.netlify.app/preposition-blaster.html" target="_blank" rel="noopener">🎯 Play Preposition Blaster</a>
+  </section>
+
+  <section>
+    <div class="section-label">⚠ Trap Zone</div>
+    <div class="traps-card">
+      <div class="big" id="trapBig">0</div>
+      <div style="min-width:140px;">
+        <div style="font-size:0.82rem; color:var(--text-sub);">traps mastered</div>
+        <div class="bar" style="margin-top:6px;"><div class="bar-fill" id="trapBar" style="width:0%"></div></div>
+      </div>
+    </div>
+    <a class="link-out" href="https://inorderwords.netlify.app/trap-zone.html" target="_blank" rel="noopener">⚠ Go to Trap Zone</a>
+    <p class="hint" style="margin-top:10px; text-align:left;">Opening Trap Zone from this link saves your count here automatically the next time you open Mission Log in the same play session. If you don't see any change, go back to Trap Zone and press "📡 Send to Mission Log".</p>
+  </section>
+
+  <section>
+    <div class="section-label">📘 My units</div>
+    <div id="unitsBox"></div>
+  </section>
+
+  <footer>Everything you see here lives only in this browser — switch device and you start a fresh log.</footer>
+</div>
+
+<script>
+  const K = { pilot:'missionLogPilot', imports:'missionLogImports', units:'missionLogUnits' };
+  function loadJSON(key, fallback){ try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch(e){ return fallback; } }
+  function saveJSON(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
+
+  const pilot = loadJSON(K.pilot, { name:'', course:'' });
+  document.getElementById('pilotName').value = pilot.name || '';
+  document.getElementById('pilotCourse').value = pilot.course || '';
+  document.getElementById('pilotName').addEventListener('input', e => { pilot.name = e.target.value; saveJSON(K.pilot, pilot); });
+  document.getElementById('pilotCourse').addEventListener('change', e => { pilot.course = e.target.value; saveJSON(K.pilot, pilot); });
+
+  function showToast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2600);
+  }
+
+  function handleImport(){
+    const params = new URLSearchParams(location.search);
+    const raw = params.get('import');
+    if(!raw) return;
+    try {
+      const payload = JSON.parse(atob(decodeURIComponent(raw)));
+      const store = loadJSON(K.imports, {});
+      if(payload.kind === 'game'){
+        const list = store[payload.tool] || [];
+        list.push({ name: payload.name, course: payload.course, score: payload.score, date: payload.date });
+        store[payload.tool] = list.sort((a,b) => b.score - a.score).slice(0, 20);
+        showToast(`📡 ${payload.tool}: score of ${payload.score} saved to your Mission Log`);
+      } else if(payload.kind === 'trapzone'){
+        store['Trap Zone'] = { mastered: payload.mastered, total: payload.total, date: payload.date };
+        showToast(`📡 Trap Zone: ${payload.mastered}/${payload.total} traps saved to your Mission Log`);
+      }
+      saveJSON(K.imports, store);
+    } catch(e) { /* malformed payload, ignore silently */ }
+    history.replaceState(null, '', location.pathname);
+  }
+
+  function renderGames(){
+    const store = loadJSON(K.imports, {});
+    const games = ['Verb Striker', 'Preposition Blaster'];
+    const grid = document.getElementById('gamesGrid');
+    grid.innerHTML = games.map(g => {
+      const runs = store[g];
+      if(!runs || runs.length === 0){
+        return `<div class="game-card empty">No&nbsp;<b>${g}</b>&nbsp;runs saved here yet.</div>`;
+      }
+      const best = runs[0];
+      return `<div class="game-card">
+        <div class="name">${g}</div>
+        <div class="best">${best.score}<span>PTS · best</span></div>
+        <div class="meta">${best.name} · ${best.course} · ${runs.length} run(s) logged</div>
+      </div>`;
+    }).join('');
+  }
+
+  function renderTraps(){
+    const store = loadJSON(K.imports, {});
+    const tz = store['Trap Zone'];
+    const mastered = tz ? tz.mastered : 0;
+    const total = tz ? tz.total : 0;
+    document.getElementById('trapBig').textContent = mastered;
+    document.getElementById('trapBar').style.width = total > 0 ? Math.round((mastered/total)*100) + '%' : '0%';
+  }
+
+  const LEVELS = ['1º ESO','2º ESO','3º ESO','4º ESO','1º Bach','2º Bach'];
+  let units = loadJSON(K.units, null);
+  if(!units){
+    units = {}; LEVELS.forEach(l => units[l] = []);
+    saveJSON(K.units, units);
+  }
+
+  function renderUnits(){
+    const box = document.getElementById('unitsBox');
+    box.innerHTML = LEVELS.map(lvl => {
+      const list = units[lvl] || [];
+      const done = list.filter(u => u.done).length;
+      return `<div class="units-level" data-level="${lvl}">
+        <div class="lvl-head"><b>${lvl}</b><span class="count">${done}/${list.length} done</span></div>
+        ${list.map((u,i) => `<div class="unit-row">
+            <input type="checkbox" ${u.done ? 'checked' : ''} data-level="${lvl}" data-i="${i}" class="unit-check">
+            <span class="${u.done?'done':''}">${u.text}</span>
+            <button data-level="${lvl}" data-i="${i}" class="unit-del" title="Remove">✕</button>
+          </div>`).join('') || '<p style="color:var(--text-faint); font-size:0.85rem;">No units added for this level yet.</p>'}
+        <div class="add-unit">
+          <input type="text" placeholder="Add a unit, e.g. 'Unit 3 — Past tenses'" data-level="${lvl}" class="add-input">
+          <button data-level="${lvl}" class="add-btn">Add</button>
+        </div>
+      </div>`;
+    }).join('');
+
+    box.querySelectorAll('.unit-check').forEach(cb => cb.addEventListener('change', () => {
+      units[cb.dataset.level][cb.dataset.i].done = cb.checked; saveJSON(K.units, units); renderUnits();
+    }));
+    box.querySelectorAll('.unit-del').forEach(btn => btn.addEventListener('click', () => {
+      units[btn.dataset.level].splice(btn.dataset.i, 1); saveJSON(K.units, units); renderUnits();
+    }));
+    box.querySelectorAll('.add-btn').forEach(btn => btn.addEventListener('click', () => addUnit(btn.dataset.level)));
+    box.querySelectorAll('.add-input').forEach(inp => inp.addEventListener('keydown', e => { if(e.key === 'Enter') addUnit(inp.dataset.level); }));
+  }
+
+  function addUnit(level){
+    const input = document.querySelector(`.add-input[data-level="${level}"]`);
+    const text = input.value.trim();
+    if(!text) return;
+    units[level].push({ text, done:false });
+    saveJSON(K.units, units);
+    renderUnits();
+  }
+
+  const starCanvas = document.getElementById('stars');
+  const starCtx = starCanvas.getContext('2d');
+  let stars = [];
+  function resizeStars(){
+    starCanvas.width = window.innerWidth; starCanvas.height = document.body.scrollHeight;
+    stars = Array.from({length:80}, () => ({ x: Math.random()*starCanvas.width, y: Math.random()*starCanvas.height, r: Math.random()*1.4+0.3, o: Math.random()*0.6+0.2 }));
+    drawStars();
+  }
+  function drawStars(){
+    starCtx.clearRect(0,0,starCanvas.width,starCanvas.height);
+    stars.forEach(s => { starCtx.beginPath(); starCtx.arc(s.x,s.y,s.r,0,Math.PI*2); starCtx.fillStyle = `rgba(255,255,255,${s.o})`; starCtx.fill(); });
+  }
+  window.addEventListener('resize', resizeStars);
+
+  handleImport();
+  renderGames();
+  renderTraps();
+  renderUnits();
+  setTimeout(resizeStars, 200);
+</script>
+</body></html>
