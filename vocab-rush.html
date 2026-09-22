@@ -81,6 +81,7 @@ h1,h2,h3{font-family:'Unbounded',sans-serif; text-wrap:balance;}
 .session-head{display:flex; justify-content:space-between; align-items:center;}
 .session-head .tag{font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--sub); text-transform:uppercase; letter-spacing:.08em;}
 .session-head .streak{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--gold); font-weight:700;}
+.session-head .points{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ok); font-weight:700;}
 
 .card-area{min-height:230px; display:flex; flex-direction:column; align-items:stretch; justify-content:center;}
 .card{
@@ -184,6 +185,12 @@ footer a{color:var(--vocab); text-decoration:none;}
 
   <!-- HOME / PICKER -->
   <div class="screen active" id="screen-home">
+    <div class="panel" id="rankingPanel" style="display:none;">
+      <h2>🏆 Ranking de la clase</h2>
+      <div class="sub">Puntos totales de los alumnos que han jugado en este dispositivo o en otros.</div>
+      <div id="rankingList" style="display:flex; flex-direction:column; gap:8px; margin-top:10px;"></div>
+    </div>
+
     <div class="panel">
       <h2>1. Elige tu curso</h2>
       <div class="sub">Selecciona el curso para ver sus unidades de vocabulario.</div>
@@ -220,7 +227,10 @@ footer a{color:var(--vocab); text-decoration:none;}
     <div class="crumbs"><b id="backToHome">← Salir</b></div>
     <div class="session-head">
       <div class="tag" id="sessionTag">Unit · Grupo</div>
-      <div class="streak" id="sessionStreak">🔥 0 seguidas</div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div class="points" id="sessionPoints">⭐ 0 pts</div>
+        <div class="streak" id="sessionStreak">🔥 0 seguidas</div>
+      </div>
     </div>
     <div class="progress"><i id="progressBar" style="width:0%"></i></div>
     <div class="card-area" id="cardArea"></div>
@@ -1526,6 +1536,26 @@ function refreshTopStats(){
   document.getElementById('statMastered').textContent = mastered;
 }
 
+async function loadRanking(){
+  if(!BACKEND_URL) return;
+  try{
+    const data = await jsonpRequest_({ action:'leaderboard' }, 7000);
+    const panel = document.getElementById('rankingPanel');
+    const list = document.getElementById('rankingList');
+    if(!data || !data.ok || !Array.isArray(data.leaderboard) || data.leaderboard.length===0){
+      panel.style.display = 'none';
+      return;
+    }
+    const rows = [...data.leaderboard].sort((a,b)=>(b.xp||0)-(a.xp||0)).slice(0,15);
+    const me = getStudentName();
+    list.innerHTML = rows.map((r,i)=>{
+      const mine = me && r.student && r.student.toLowerCase()===me.toLowerCase();
+      return `<div class="rowline${mine?' on':''}"><div class="l">${i+1}. ${(r.student||'?')}</div><div class="r">${r.xp||0} XP</div></div>`;
+    }).join('');
+    panel.style.display = '';
+  }catch(e){ /* keep ranking hidden on failure */ }
+}
+
 /* ---------- NAV STATE ---------- */
 let sel = { course:null, unit:null, groups:[], mode:null };
 
@@ -1670,6 +1700,7 @@ function updateProgress(){
   const pct = session.total ? Math.round((done/session.total)*100) : 100;
   document.getElementById('progressBar').style.width = pct+'%';
   document.getElementById('sessionStreak').textContent = `🔥 ${session.streak} seguidas`;
+  document.getElementById('sessionPoints').textContent = `⭐ ${session.xpEarned} pts`;
 }
 
 function speak(text){
@@ -1841,6 +1872,7 @@ function finishSession(){
     wrong: session.wrong,
     xp: session.xpEarned
   });
+  setTimeout(loadRanking, 1200);
 }
 
 /* ---------- INIT ---------- */
@@ -1861,6 +1893,7 @@ function autoSelectFromURL(){
   buildCourseGrid();
   refreshTopStats();
   autoSelectFromURL();
+  loadRanking();
 })();
 </script>
 </body>

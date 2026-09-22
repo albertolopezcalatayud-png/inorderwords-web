@@ -380,12 +380,43 @@
     ];
 
     let currentPool = [], currentVerb = null, score = 0, streak = 0, lives = 3, coins = 0;
-    let playerName = "", playerCourse = "", rawLeaderboardData = [];
+    let playerName = "", playerCourse = "", rawLeaderboardData = [], classLeaderboardData = [];
     let failedVerbs = [], totalAttempts = 0, totalSuccess = 0;
     let wordStartTime = 0, timerInterval = null, timeLimitSeconds = 45;
 
     const LEADERBOARD_KEY = 'verbStrikerLeaderboard';
     const TEACHER_PIN = "1234";
+
+    // Shared class backend (same Google Sheet used across all games)
+    const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbxE10u2B5PrXLWXkYAZ31h_ZDVlVmPOmqzaDmGPmhZ2UBFg_-DhGFEYktwIa0o5ixB5/exec';
+    function jsonpRequest_(params, timeoutMs){
+      return new Promise((resolve)=>{
+        const cbName = 'cb_' + Math.random().toString(36).slice(2);
+        let done = false;
+        const script = document.createElement('script');
+        const cleanup = ()=>{
+          if(done) return;
+          done = true;
+          try{ delete window[cbName]; }catch(e){ window[cbName] = undefined; }
+          if(script.parentNode) script.parentNode.removeChild(script);
+        };
+        window[cbName] = (data)=>{ cleanup(); resolve(data); };
+        script.onerror = ()=>{ cleanup(); resolve(null); };
+        const qs = new URLSearchParams(params);
+        qs.set('callback', cbName);
+        script.src = BACKEND_URL + '?' + qs.toString();
+        setTimeout(()=>{ cleanup(); resolve(null); }, timeoutMs || 6000);
+        document.head.appendChild(script);
+      });
+    }
+    function postScoreToBackend(){
+      if(!BACKEND_URL || score<=0) return;
+      try{ jsonpRequest_({ action:'score', student: playerName, course: playerCourse, xpEarned: score }); }catch(e){}
+    }
+    async function fetchClassLeaderboard(){
+      if(!BACKEND_URL) return null;
+      try{ return await jsonpRequest_({ action:'leaderboard' }, 7000); }catch(e){ return null; }
+    }
 
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playSound(freq, type, duration) {
@@ -640,6 +671,7 @@
 
     function saveScoreLocally() {
         if(score <= 0) return;
+        postScoreToBackend();
         const precision = totalAttempts > 0 ? Math.round((totalSuccess / totalAttempts) * 100) : 0;
         let stored = JSON.parse(localStorage.getItem(LEADERBOARD_KEY) || '[]');
         stored.push({
@@ -665,6 +697,18 @@
         rawLeaderboardData = JSON.parse(localStorage.getItem(LEADERBOARD_KEY) || '[]')
             .sort((a, b) => b.puntuacion - a.puntuacion);
         renderLeaderboard('TODOS');
+        refreshClassLeaderboard();
+    }
+
+    async function refreshClassLeaderboard() {
+        const data = await fetchClassLeaderboard();
+        if(!data || !data.ok || !Array.isArray(data.leaderboard)) return;
+        classLeaderboardData = data.leaderboard
+            .filter(r => r && r.student)
+            .map(r => ({ nombre: r.student, curso: '', puntuacion: r.xp || 0, precision: null, fecha: '', global: true }))
+            .sort((a, b) => b.puntuacion - a.puntuacion);
+        const activeTab = document.querySelector('.tab-chip.active');
+        renderLeaderboard(activeTab ? (activeTab.textContent.trim() === 'ALL' ? 'TODOS' : activeTab.textContent.trim()) : 'TODOS');
     }
 
     function filterLeaderboard(course, btn) {
@@ -675,6 +719,17 @@
 
     function renderLeaderboard(course) {
         const list = document.getElementById('leaderboard'); list.innerHTML = '';
+
+        // Prefer the shared, cross-device class ranking (from the school backend) when we have it;
+        // it is not split by curso since the backend aggregates by student name only.
+        if(classLeaderboardData && classLeaderboardData.length > 0){
+            classLeaderboardData.forEach((item, index) => {
+                const isMe = playerName && item.nombre.toLowerCase() === playerName.toLowerCase();
+                list.innerHTML += `<li class="ranking-item${isMe ? ' me' : ''}"><span>${index + 1}. ${item.nombre.toUpperCase()}</span><strong>${item.puntuacion} PTS</strong></li>`;
+            });
+            return;
+        }
+
         let filtered = course === 'TODOS' ? rawLeaderboardData : rawLeaderboardData.filter(i => i.curso === course);
 
         if(!filtered || filtered.length === 0) { list.innerHTML = '<li class="ranking-item"><span>NO RECORDS YET — be the first pilot!</span></li>'; return; }
