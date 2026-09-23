@@ -127,6 +127,16 @@
   .card:hover.mission{border-color:rgba(56,189,248,0.5);}
 
   .card .top-row{position:relative; z-index:1; display:flex; align-items:flex-start; justify-content:space-between; gap:10px;}
+  .top-row-right{position:relative; z-index:1; display:flex; align-items:center; gap:7px; flex:none;}
+  .card-assign{
+    flex:none; width:26px; height:26px; border-radius:8px;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(255,255,255,0.06); border:1px solid var(--line);
+    color:var(--text-sub); font-size:12px; cursor:pointer; padding:0;
+  }
+  .card-assign:hover{border-color:var(--gold); color:var(--gold); background:rgba(255,204,102,0.15);}
+  .unit-row-wrap{display:flex; align-items:center; gap:7px;}
+  .unit-row-wrap .unit-row{flex:1;}
   .card .kicker{
     font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700;
     letter-spacing:0.12em; text-transform:uppercase; color:var(--glow);
@@ -295,7 +305,10 @@
       <a class="card levlup" href="levlup.html" target="_blank" rel="noopener">
         <div class="top-row">
           <span class="kicker">Full course</span>
-          <span class="level all">1º ESO → 2º Bach</span>
+          <span class="top-row-right">
+            <span class="level all">1º ESO → 2º Bach</span>
+            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('levlup.html','Levlup')" title="Asignar en Google Classroom">📋</button>
+          </span>
         </div>
         <span class="glyph">🧭</span>
         <h3>Levlup</h3>
@@ -311,7 +324,10 @@
       <a class="card striker" href="verb-striker.html" target="_blank" rel="noopener">
         <div class="top-row">
           <span class="kicker">Space arcade</span>
-          <span class="level all">All levels</span>
+          <span class="top-row-right">
+            <span class="level all">All levels</span>
+            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('verb-striker.html','Verb Striker: Galaxy Showdown')" title="Asignar en Google Classroom">📋</button>
+          </span>
         </div>
         <span class="glyph">🚀</span>
         <h3>Verb Striker: Galaxy Showdown</h3>
@@ -322,7 +338,10 @@
       <a class="card blaster" href="preposition-blaster.html" target="_blank" rel="noopener">
         <div class="top-row">
           <span class="kicker">Space arcade</span>
-          <span class="level all">All levels</span>
+          <span class="top-row-right">
+            <span class="level all">All levels</span>
+            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('preposition-blaster.html','Preposition Blaster')" title="Asignar en Google Classroom">📋</button>
+          </span>
         </div>
         <span class="glyph">💥</span>
         <h3>Preposition Blaster</h3>
@@ -333,7 +352,10 @@
       <a class="card tweet" href="verb-tense-challenge.html" target="_blank" rel="noopener">
         <div class="top-row">
           <span class="kicker">Tweets · 20 tenses</span>
-          <span class="level bach">Bachillerato only</span>
+          <span class="top-row-right">
+            <span class="level bach">Bachillerato only</span>
+            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('verb-tense-challenge.html','Verb Tense Challenge')" title="Asignar en Google Classroom">📋</button>
+          </span>
         </div>
         <span class="glyph">🐦</span>
         <h3>Verb Tense Challenge</h3>
@@ -349,7 +371,10 @@
       <a class="card vocab" href="vocabulary-sheets.html" target="_blank" rel="noopener">
         <div class="top-row">
           <span class="kicker">PAU/EBAU · 8 topics</span>
-          <span class="level bach">2º Bach · PAU/EBAU</span>
+          <span class="top-row-right">
+            <span class="level bach">2º Bach · PAU/EBAU</span>
+            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('vocabulary-sheets.html','Vocabulary Sheets')" title="Asignar en Google Classroom">📋</button>
+          </span>
         </div>
         <span class="glyph">🎓</span>
         <h3>Vocabulary Sheets</h3>
@@ -360,7 +385,10 @@
       <a class="card lab" href="phonetics-lab.html" target="_blank" rel="noopener">
         <div class="top-row">
           <span class="kicker">Sound lab · IPA &amp; TTS</span>
-          <span class="level all">All levels</span>
+          <span class="top-row-right">
+            <span class="level all">All levels</span>
+            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('phonetics-lab.html','Phonetics Lab')" title="Asignar en Google Classroom">📋</button>
+          </span>
         </div>
         <span class="glyph">🔊</span>
         <h3>Phonetics Lab</h3>
@@ -371,7 +399,10 @@
       <a class="card trap" href="trap-zone.html" target="_blank" rel="noopener">
         <div class="top-row">
           <span class="kicker">Danger zone</span>
-          <span class="level all">All levels</span>
+          <span class="top-row-right">
+            <span class="level all">All levels</span>
+            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('trap-zone.html','Trap Zone')" title="Asignar en Google Classroom">📋</button>
+          </span>
         </div>
         <span class="glyph">⚠️</span>
         <h3>Trap Zone</h3>
@@ -413,12 +444,18 @@
           </div>
         </div>
         <div class="grade-units">
-          <a class="unit-row" href="unit0-1eso.html" target="_blank" rel="noopener">
-            <span>Unit 0 · Welcome</span><span class="go">→</span>
-          </a>
-          <a class="unit-row vocab-row" href="vocab-rush.html?course=1eso" target="_blank" rel="noopener">
-            <span>🧠 Vocab Rush · Unit 1</span><span class="go">→</span>
-          </a>
+          <div class="unit-row-wrap">
+            <a class="unit-row" href="unit0-1eso.html" target="_blank" rel="noopener">
+              <span>Unit 0 · Welcome</span><span class="go">→</span>
+            </a>
+            <button class="card-assign" onclick="shareToClassroom('unit0-1eso.html','Unit 0 · Welcome — 1º ESO')" title="Asignar en Google Classroom">📋</button>
+          </div>
+          <div class="unit-row-wrap">
+            <a class="unit-row vocab-row" href="vocab-rush.html?course=1eso" target="_blank" rel="noopener">
+              <span>🧠 Vocab Rush · Unit 1</span><span class="go">→</span>
+            </a>
+            <button class="card-assign" onclick="shareToClassroom('vocab-rush.html?course=1eso','Vocab Rush · Unit 1 — 1º ESO')" title="Asignar en Google Classroom">📋</button>
+          </div>
           <span class="unit-row locked">Units 2–8 · Coming soon</span>
         </div>
       </div>
@@ -433,12 +470,18 @@
           </div>
         </div>
         <div class="grade-units">
-          <a class="unit-row" href="unit0-2eso.html" target="_blank" rel="noopener">
-            <span>Unit 0 · Welcome</span><span class="go">→</span>
-          </a>
-          <a class="unit-row vocab-row" href="vocab-rush.html?course=2eso" target="_blank" rel="noopener">
-            <span>🧠 Vocab Rush</span><span class="go">→</span>
-          </a>
+          <div class="unit-row-wrap">
+            <a class="unit-row" href="unit0-2eso.html" target="_blank" rel="noopener">
+              <span>Unit 0 · Welcome</span><span class="go">→</span>
+            </a>
+            <button class="card-assign" onclick="shareToClassroom('unit0-2eso.html','Unit 0 · Welcome — 2º ESO')" title="Asignar en Google Classroom">📋</button>
+          </div>
+          <div class="unit-row-wrap">
+            <a class="unit-row vocab-row" href="vocab-rush.html?course=2eso" target="_blank" rel="noopener">
+              <span>🧠 Vocab Rush</span><span class="go">→</span>
+            </a>
+            <button class="card-assign" onclick="shareToClassroom('vocab-rush.html?course=2eso','Vocab Rush — 2º ESO')" title="Asignar en Google Classroom">📋</button>
+          </div>
           <span class="unit-row locked">Units 1–7 · Coming soon</span>
         </div>
       </div>
@@ -453,12 +496,18 @@
           </div>
         </div>
         <div class="grade-units">
-          <a class="unit-row" href="unit0-3eso.html" target="_blank" rel="noopener">
-            <span>Unit 0 · Welcome</span><span class="go">→</span>
-          </a>
-          <a class="unit-row vocab-row" href="vocab-rush.html?course=3eso" target="_blank" rel="noopener">
-            <span>🧠 Vocab Rush</span><span class="go">→</span>
-          </a>
+          <div class="unit-row-wrap">
+            <a class="unit-row" href="unit0-3eso.html" target="_blank" rel="noopener">
+              <span>Unit 0 · Welcome</span><span class="go">→</span>
+            </a>
+            <button class="card-assign" onclick="shareToClassroom('unit0-3eso.html','Unit 0 · Welcome — 3º ESO')" title="Asignar en Google Classroom">📋</button>
+          </div>
+          <div class="unit-row-wrap">
+            <a class="unit-row vocab-row" href="vocab-rush.html?course=3eso" target="_blank" rel="noopener">
+              <span>🧠 Vocab Rush</span><span class="go">→</span>
+            </a>
+            <button class="card-assign" onclick="shareToClassroom('vocab-rush.html?course=3eso','Vocab Rush — 3º ESO')" title="Asignar en Google Classroom">📋</button>
+          </div>
           <span class="unit-row locked">Units 1–8 · Coming soon</span>
         </div>
       </div>
@@ -473,12 +522,18 @@
           </div>
         </div>
         <div class="grade-units">
-          <a class="unit-row" href="unit0-4eso.html" target="_blank" rel="noopener">
-            <span>Unit 0 · Welcome</span><span class="go">→</span>
-          </a>
-          <a class="unit-row vocab-row" href="vocab-rush.html?course=4eso" target="_blank" rel="noopener">
-            <span>🧠 Vocab Rush</span><span class="go">→</span>
-          </a>
+          <div class="unit-row-wrap">
+            <a class="unit-row" href="unit0-4eso.html" target="_blank" rel="noopener">
+              <span>Unit 0 · Welcome</span><span class="go">→</span>
+            </a>
+            <button class="card-assign" onclick="shareToClassroom('unit0-4eso.html','Unit 0 · Welcome — 4º ESO')" title="Asignar en Google Classroom">📋</button>
+          </div>
+          <div class="unit-row-wrap">
+            <a class="unit-row vocab-row" href="vocab-rush.html?course=4eso" target="_blank" rel="noopener">
+              <span>🧠 Vocab Rush</span><span class="go">→</span>
+            </a>
+            <button class="card-assign" onclick="shareToClassroom('vocab-rush.html?course=4eso','Vocab Rush — 4º ESO')" title="Asignar en Google Classroom">📋</button>
+          </div>
           <span class="unit-row locked">Units 1–7 · Coming soon</span>
         </div>
       </div>
@@ -514,6 +569,13 @@
     requestAnimationFrame(draw);
   }
   draw();
+
+  /* Share-to-Classroom: opens Google Classroom's assignment composer pre-filled with this link */
+  function shareToClassroom(path, title){
+    var fullUrl = new URL(path, window.location.href).href;
+    var shareUrl = 'https://classroom.google.com/share?url=' + encodeURIComponent(fullUrl) + '&title=' + encodeURIComponent(title);
+    window.open(shareUrl, '_blank', 'noopener,width=680,height=760');
+  }
 
   /* Highlight + scroll to the course card recommended by the level test */
   if(location.hash && location.hash.indexOf('#grade-') === 0){
