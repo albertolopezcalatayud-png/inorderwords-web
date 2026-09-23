@@ -183,6 +183,12 @@
     border:1px solid var(--line); border-radius:20px; padding:20px 20px 18px;
     display:flex; flex-direction:column; gap:14px;
   }
+  .grade-card.js-landed{animation:gradeLanded 2.2s ease-out 1;}
+  @keyframes gradeLanded{
+    0%{box-shadow:0 0 0 0 rgba(255,204,102,0); border-color:var(--line);}
+    15%{box-shadow:0 0 0 4px rgba(255,204,102,0.35); border-color:var(--gold);}
+    100%{box-shadow:0 0 0 0 rgba(255,204,102,0); border-color:var(--line);}
+  }
   .grade-head{display:flex; align-items:center; gap:12px;}
   .grade-badge{
     width:44px; height:44px; border-radius:13px; flex-shrink:0;
@@ -258,6 +264,7 @@
     <span class="eyebrow">Mission Control · English</span>
     <h1 class="title">INORDERWORDS</h1>
     <p class="tagline">Eight tools, one mission: <b>level up your English</b>. Course, games, vocabulary, pronunciation, and progress tracking — all in one place.</p>
+    <a href="start.html" style="display:inline-flex; align-items:center; gap:8px; margin-top:22px; font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--bg); background:linear-gradient(120deg,var(--gold),var(--coral)); padding:12px 22px; border-radius:99px;">🧭 New here? Take the 2-minute level test <span>→</span></a>
   </section>
 
   <div class="capsule-row">
@@ -396,7 +403,7 @@
       <p>Pick your grade below. Each card is labeled so you always know exactly which course and unit you're opening — <b>Unit 0 · Welcome</b> is live for every grade, with icebreakers, rules, survival phrases and materials. The rest of the units are being built one by one.</p>
     </div>
     <div class="grade-grid">
-      <div class="grade-card">
+      <div class="grade-card" id="grade-1eso">
         <div class="grade-head">
           <span class="grade-badge">🌟</span>
           <div>
@@ -416,7 +423,7 @@
         </div>
       </div>
 
-      <div class="grade-card">
+      <div class="grade-card" id="grade-2eso">
         <div class="grade-head">
           <span class="grade-badge">🚀</span>
           <div>
@@ -436,7 +443,7 @@
         </div>
       </div>
 
-      <div class="grade-card">
+      <div class="grade-card" id="grade-3eso">
         <div class="grade-head">
           <span class="grade-badge">⚡</span>
           <div>
@@ -456,7 +463,7 @@
         </div>
       </div>
 
-      <div class="grade-card">
+      <div class="grade-card" id="grade-4eso">
         <div class="grade-head">
           <span class="grade-badge">🎓</span>
           <div>
@@ -507,6 +514,17 @@
     requestAnimationFrame(draw);
   }
   draw();
+
+  /* Highlight + scroll to the course card recommended by the level test */
+  if(location.hash && location.hash.indexOf('#grade-') === 0){
+    var landedCard = document.querySelector(location.hash);
+    if(landedCard){
+      setTimeout(function(){
+        landedCard.scrollIntoView({behavior:'smooth', block:'center'});
+        landedCard.classList.add('js-landed');
+      }, 250);
+    }
+  }
 
   /* WORD OF THE DAY / IDIOM OF THE WEEK / CULTURE CORNER */
   const WORDS = [

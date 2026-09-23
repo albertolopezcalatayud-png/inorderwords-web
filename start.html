@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Start Here — Level Test</title>
+<meta name="description" content="Not sure where to start? Take a 2-minute English level test and get routed to the right Inorderwords course, from A1 to B1+.">
+<link rel="canonical" href="https://albertolopezcalatayud-png.github.io/inorderwords-web/start.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Inorderwords">
+<meta property="og:title" content="Start Here — Level Test — Inorderwords">
+<meta property="og:description" content="Take a 2-minute English level test and get routed to the right course, from A1 to B1+.">
+<meta property="og:url" content="https://albertolopezcalatayud-png.github.io/inorderwords-web/start.html">
+<meta property="og:image" content="https://albertolopezcalatayud-png.github.io/inorderwords-web/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Start Here — Level Test — Inorderwords">
+<meta name="twitter:description" content="Take a 2-minute English level test and get routed to the right course, from A1 to B1+.">
+<meta name="twitter:image" content="https://albertolopezcalatayud-png.github.io/inorderwords-web/og-image.png">
+<meta name="theme-color" content="#0b0e1a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230b0e1a'/%3E%3Ctext x='50' y='68' font-size='58' text-anchor='middle' fill='%23ffcc66'%3E%F0%9F%9A%80%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800;900&family=Manrope:wght@400;500;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0e1a; --bg-panel:#12172c; --bg-panel-2:#161c36;
+    --line:rgba(255,255,255,0.09); --text:#f4f2ec; --text-sub:#9aa1ba;
+    --coral:#ff6b4a; --coral-dim:rgba(255,107,74,0.16); --teal:#2dd4bf; --gold:#ffcc66;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{background:var(--bg); color:var(--text); font-family:'Manrope',sans-serif; width:100%; overflow-x:hidden;}
+  body{line-height:1.5;}
+  a{color:inherit;}
+  #stars{position:fixed; inset:0; z-index:0; opacity:0.55;}
+  .wrap{position:relative; z-index:1; max-width:760px; margin:0 auto; padding:0 24px 80px;}
+
+  .ow-home-fab{
+    position:fixed; top:14px; left:14px; z-index:999999;
+    display:flex; align-items:center; gap:7px;
+    background:rgba(20,20,25,0.88);
+    border:1px solid rgba(255,255,255,0.18); border-radius:999px;
+    padding:9px 14px 9px 11px; text-decoration:none;
+    color:#fff; font-family:-apple-system,BlinkMacSystemFont,sans-serif; font-weight:700; font-size:12.5px;
+  }
+  .ow-home-fab:hover{border-color:#ffcc66; background:rgba(255,204,102,0.22);}
+  .ow-home-fab .ic{font-size:15px; line-height:1;}
+  @media (max-width:420px){
+    .ow-home-fab{top:10px; left:10px; padding:8px 12px 8px 10px; font-size:0;}
+    .ow-home-fab .ic{font-size:16px;}
+    .ow-home-fab .lbl{display:none;}
+  }
+
+  .hero{padding:88px 0 32px; text-align:center;}
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:10px;
+    font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700;
+    letter-spacing:0.16em; text-transform:uppercase; color:var(--gold);
+    background:rgba(255,204,102,0.08); border:1px solid rgba(255,204,102,0.35);
+    padding:7px 16px; border-radius:99px;
+  }
+  .title{
+    font-family:'Unbounded',sans-serif; font-weight:900; font-size:clamp(34px,7vw,54px);
+    line-height:1.05; letter-spacing:-0.01em; margin-top:20px;
+    background:linear-gradient(120deg,#fff 30%,var(--gold) 65%,var(--coral) 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .tagline{color:var(--text-sub); font-size:16px; max-width:520px; margin:16px auto 0;}
+
+  .card{
+    background:linear-gradient(135deg,var(--bg-panel-2),var(--bg-panel));
+    border:1px solid var(--line); border-radius:22px; padding:28px 26px;
+    margin-top:28px;
+  }
+
+  /* PROGRESS */
+  .progress-row{display:flex; align-items:center; gap:12px; margin-bottom:22px;}
+  .progress-label{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-sub); white-space:nowrap;}
+  .progress-track{flex:1; height:6px; background:rgba(255,255,255,0.08); border-radius:99px; overflow:hidden;}
+  .progress-fill{height:100%; width:0%; background:linear-gradient(90deg,var(--teal),var(--gold)); border-radius:99px; transition:width 0.35s ease;}
+
+  .q-text{font-family:'Unbounded',sans-serif; font-weight:700; font-size:19px; line-height:1.4; margin-bottom:20px;}
+  .options{display:flex; flex-direction:column; gap:10px;}
+  .opt{
+    display:flex; align-items:center; gap:12px; text-align:left;
+    background:rgba(255,255,255,0.03); border:1px solid var(--line); border-radius:14px;
+    padding:14px 16px; font-family:'Manrope',sans-serif; font-size:15px; font-weight:600; color:var(--text);
+    cursor:pointer; width:100%;
+  }
+  .opt:hover{border-color:rgba(255,204,102,0.5); background:rgba(255,204,102,0.06);}
+  .opt .letter{
+    flex-shrink:0; width:26px; height:26px; border-radius:8px; display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; color:var(--text-sub);
+    background:rgba(255,255,255,0.06); border:1px solid var(--line);
+  }
+  .opt.correct{border-color:var(--teal); background:rgba(45,212,191,0.12);}
+  .opt.correct .letter{background:var(--teal); color:var(--bg); border-color:var(--teal);}
+  .opt.wrong{border-color:var(--coral); background:rgba(255,107,74,0.12);}
+  .opt.wrong .letter{background:var(--coral); color:var(--bg); border-color:var(--coral);}
+  .opt.disabled{pointer-events:none;}
+
+  .start-row{text-align:center;}
+  .btn{
+    display:inline-flex; align-items:center; gap:8px; justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase;
+    color:var(--bg); background:linear-gradient(120deg,var(--gold),var(--coral));
+    padding:14px 26px; border-radius:99px; border:none; cursor:pointer;
+  }
+  .btn.ghost{
+    color:var(--text); background:rgba(255,255,255,0.06); border:1px solid var(--line);
+  }
+  .btn-row{display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:6px;}
+
+  /* RESULT */
+  .result{display:none; text-align:center;}
+  .result.show{display:block;}
+  .result-band{
+    font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--teal);
+  }
+  .result-grade{
+    font-family:'Unbounded',sans-serif; font-weight:900; font-size:clamp(30px,6vw,44px);
+    margin:10px 0 6px;
+    background:linear-gradient(120deg,#fff 30%,var(--gold) 65%,var(--coral) 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .result-desc{color:var(--text-sub); font-size:15px; max-width:440px; margin:0 auto 22px;}
+  .result-score{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--text-sub); margin-bottom:22px;}
+
+  .quiz-block{display:none;}
+  .quiz-block.show{display:block;}
+
+  .intro-list{display:flex; flex-direction:column; gap:10px; margin:22px 0 26px; text-align:left;}
+  .intro-item{display:flex; gap:10px; align-items:flex-start; font-size:14.5px; color:var(--text-sub);}
+  .intro-item b{color:var(--text);}
+
+  footer{text-align:center; color:var(--text-sub); font-size:12.5px; margin-top:40px; font-family:'JetBrains Mono',monospace;}
+</style>
+</head>
+<body>
+<canvas id="stars" width="1440" height="1400"></canvas>
+<a class="ow-home-fab" href="index.html" title="Back to home"><span class="ic">🏠</span><span class="lbl">Home</span></a>
+
+<div class="wrap">
+  <section class="hero">
+    <span class="eyebrow">Mission Control · English</span>
+    <h1 class="title">FIND YOUR LEVEL</h1>
+    <p class="tagline">Not sure where to start? Answer 12 quick questions and we'll point you to the right course and CEFR band — A1 to B1+.</p>
+  </section>
+
+  <div class="card">
+
+    <div id="introBlock">
+      <div class="intro-list">
+        <div class="intro-item">⏱️ <span><b>2 minutes</b>, 12 questions, no login.</span></div>
+        <div class="intro-item">📈 <span>We estimate a <b>CEFR band</b> (A1–B1+) from your answers.</span></div>
+        <div class="intro-item">🧭 <span>You'll get a <b>recommended course card</b> and a game to try first.</span></div>
+        <div class="intro-item">🔁 <span>Just an estimate — you can always retake it or pick your own course.</span></div>
+      </div>
+      <div class="start-row">
+        <button class="btn" onclick="startQuiz()">Start the test <span>→</span></button>
+      </div>
+    </div>
+
+    <div id="quizBlock" class="quiz-block">
+      <div class="progress-row">
+        <span class="progress-label" id="progressLabel">Question 1 / 12</span>
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+      <div class="q-text" id="qText"></div>
+      <div class="options" id="qOptions"></div>
+    </div>
+
+    <div id="resultBlock" class="result">
+      <div class="result-band" id="resultBand">Estimated level</div>
+      <div class="result-grade" id="resultGrade">A2 – B1</div>
+      <p class="result-desc" id="resultDesc"></p>
+      <p class="result-score" id="resultScore"></p>
+      <div class="btn-row">
+        <a class="btn" id="resultCourseLink" href="index.html">Go to my course <span>→</span></a>
+        <a class="btn ghost" id="resultGameLink" href="vocab-rush.html">Try a game first <span>→</span></a>
+      </div>
+      <div class="btn-row">
+        <button class="btn ghost" onclick="startQuiz()">Retake the test</button>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>Made by <b>Alberto López</b> & <b>Yaiza Tormo</b> · Inorderwords · A living space, always under construction 🚧</footer>
+</div>
+
+<script>
+  var canvas = document.getElementById('stars');
+  var ctx = canvas.getContext('2d');
+  function size(){ canvas.width = window.innerWidth; canvas.height = document.body.scrollHeight; }
+  size();
+  window.addEventListener('resize', size);
+  var stars = Array.from({length: 90}, function(){ return {
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    r: Math.random() * 1.3 + 0.3,
+    s: Math.random() * 0.015 + 0.003,
+    p: Math.random() * Math.PI * 2
+  };});
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    for(var i=0;i<stars.length;i++){
+      var st = stars[i];
+      st.p += st.s;
+      var alpha = 0.25 + Math.abs(Math.sin(st.p)) * 0.55;
+      ctx.beginPath();
+      ctx.arc(st.x, st.y, st.r, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(244,242,236,' + alpha + ')';
+      ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+
+  var QUESTIONS = [
+    { q:"My sister ___ two dogs.", opts:["have","has","having","is have"], correct:1 },
+    { q:"___ you like pizza?", opts:["Does","Do","Is","Are"], correct:1 },
+    { q:"There ___ a lot of people at the party.", opts:["is","are","was","were"], correct:1 },
+    { q:"I ___ my homework yet.", opts:["haven't finished","didn't finished","don't finish","not finished"], correct:0 },
+    { q:"She's been learning English ___ five years.", opts:["since","for","from","during"], correct:1 },
+    { q:"He ___ to the cinema last Saturday.", opts:["go","goes","went","has gone"], correct:2 },
+    { q:"This exercise is ___ than the last one.", opts:["more difficult","difficulter","most difficult","more difficulter"], correct:0 },
+    { q:"By the time we arrived, the film ___.", opts:["already started","had already started","has already started","was already starting"], correct:1 },
+    { q:"If I ___ more time, I would learn French too.", opts:["have","had","will have","would have"], correct:1 },
+    { q:"The Eiffel Tower ___ in 1889.", opts:["build","built","was built","has built"], correct:2 },
+    { q:"You ___ be tired after such a long trip.", opts:["must","can","should","might not"], correct:0 },
+    { q:"I wish I ___ more time to study for the exam.", opts:["have","had","will have","would have"], correct:1 }
+  ];
+
+  var current = 0;
+  var score = 0;
+  var locked = false;
+
+  function startQuiz(){
+    current = 0;
+    score = 0;
+    locked = false;
+    document.getElementById('introBlock').style.display = 'none';
+    document.getElementById('resultBlock').classList.remove('show');
+    document.getElementById('quizBlock').classList.add('show');
+    renderQuestion();
+  }
+
+  function renderQuestion(){
+    locked = false;
+    var item = QUESTIONS[current];
+    document.getElementById('progressLabel').textContent = 'Question ' + (current+1) + ' / ' + QUESTIONS.length;
+    document.getElementById('progressFill').style.width = Math.round((current/QUESTIONS.length)*100) + '%';
+    document.getElementById('qText').textContent = item.q;
+    var lettersArr = ['A','B','C','D'];
+    var wrap = document.getElementById('qOptions');
+    wrap.innerHTML = '';
+    item.opts.forEach(function(opt, i){
+      var btn = document.createElement('button');
+      btn.className = 'opt';
+      btn.innerHTML = '<span class="letter">' + lettersArr[i] + '</span><span>' + opt + '</span>';
+      btn.addEventListener('click', function(){ selectOption(i, btn); });
+      wrap.appendChild(btn);
+    });
+  }
+
+  function selectOption(i, btn){
+    if(locked) return;
+    locked = true;
+    var item = QUESTIONS[current];
+    var allOpts = document.querySelectorAll('#qOptions .opt');
+    allOpts.forEach(function(o){ o.classList.add('disabled'); });
+    if(i === item.correct){
+      score++;
+      btn.classList.add('correct');
+    } else {
+      btn.classList.add('wrong');
+      allOpts[item.correct].classList.add('correct');
+    }
+    setTimeout(function(){
+      current++;
+      if(current < QUESTIONS.length){
+        renderQuestion();
+      } else {
+        document.getElementById('progressFill').style.width = '100%';
+        showResult();
+      }
+    }, 700);
+  }
+
+  var BANDS = [
+    { min:0, max:3, name:'A1 – A2', grade:'1º ESO', anchor:'grade-1eso', game:'vocab-rush.html?course=1eso',
+      desc:"You're building the basics — articles, present tenses, everyday vocabulary. 1º ESO is the right starting point." },
+    { min:4, max:6, name:'A2 – A2+', grade:'2º ESO', anchor:'grade-2eso', game:'vocab-rush.html?course=2eso',
+      desc:"Solid A2 foundations. Time to work on past tenses, comparatives and everyday fluency with 2º ESO." },
+    { min:7, max:9, name:'A2 – B1', grade:'3º ESO', anchor:'grade-3eso', game:'vocab-rush.html?course=3eso',
+      desc:"You're moving into B1 territory — perfect tenses, conditionals, passive voice. 3º ESO will stretch you further." },
+    { min:10, max:12, name:'B1 – B1+', grade:'4º ESO', anchor:'grade-4eso', game:'vocab-rush.html?course=4eso',
+      desc:"Strong B1+ grammar control. 4º ESO (and beyond) is where you'll keep sharpening exam-level English." }
+  ];
+
+  function showResult(){
+    document.getElementById('quizBlock').classList.remove('show');
+    var band = BANDS[0];
+    for(var i=0;i<BANDS.length;i++){
+      if(score >= BANDS[i].min && score <= BANDS[i].max){ band = BANDS[i]; break; }
+    }
+    document.getElementById('resultBand').textContent = 'Estimated level · ' + band.grade;
+    document.getElementById('resultGrade').textContent = 'CEFR ' + band.name;
+    document.getElementById('resultDesc').textContent = band.desc;
+    document.getElementById('resultScore').textContent = score + ' / ' + QUESTIONS.length + ' correct';
+    document.getElementById('resultCourseLink').href = 'index.html#' + band.anchor;
+    document.getElementById('resultGameLink').href = band.game;
+    document.getElementById('resultBlock').classList.add('show');
+  }
+</script>
+</body></html>
