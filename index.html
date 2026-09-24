@@ -125,6 +125,7 @@
   .card:hover.blaster{border-color:rgba(255,47,135,0.5);}
   .card:hover.trap{border-color:rgba(255,59,92,0.5);}
   .card:hover.mission{border-color:rgba(56,189,248,0.5);}
+  .card:hover.dock{border-color:rgba(255,107,74,0.5);}
 
   .card .top-row{position:relative; z-index:1; display:flex; align-items:flex-start; justify-content:space-between; gap:10px;}
   .top-row-right{position:relative; z-index:1; display:flex; align-items:center; gap:7px; flex:none;}
@@ -148,6 +149,7 @@
   }
   .level.all{color:var(--teal); border-color:rgba(45,212,191,0.4); background:rgba(45,212,191,0.1);}
   .level.bach{color:var(--coral); border-color:rgba(255,107,74,0.4); background:rgba(255,107,74,0.12);}
+  .level.eso12{color:var(--gold); border-color:rgba(255,204,102,0.4); background:rgba(255,204,102,0.12);}
   .card .glyph{
     position:relative; z-index:1; font-size:34px; line-height:1;
     filter:drop-shadow(0 0 14px var(--glow));
@@ -361,6 +363,20 @@
         <h3>Verb Tense Challenge</h3>
         <p>Spot the verb tense hiding in 100 realistic tweets, then reveal the grammar note to check your answer.</p>
         <span class="cta">Play now <span>→</span></span>
+      </a>
+
+      <a class="card dock" href="docking-sequence.html" target="_blank" rel="noopener">
+        <div class="top-row">
+          <span class="kicker">Memory game · no timer</span>
+          <span class="top-row-right">
+            <span class="level eso12">1º–2º ESO ideal</span>
+            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('docking-sequence.html','Docking Sequence')" title="Asignar en Google Classroom">📋</button>
+          </span>
+        </div>
+        <span class="glyph">🧩</span>
+        <h3>Docking Sequence</h3>
+        <p>Match base, past and past participle to dock each irregular verb — a calm, untimed memory game to lock in the forms that trip everyone up.</p>
+        <span class="cta">Start docking <span>→</span></span>
       </a>
     </div>
   </div>
