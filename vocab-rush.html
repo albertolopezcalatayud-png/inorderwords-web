@@ -330,7 +330,8 @@ async function loadVisibility(){
         if(!course) return;
         const unit = course.units.find(u=>u.id===row.unit);
         if(!unit) return;
-        unit.live = (row.live === true || row.live === 'TRUE' || row.live === 'true');
+        // Every unit with vocabulary is playable; the sheet can still switch a unit ON, but no longer locks one.
+        if(row.live === true || row.live === 'TRUE' || row.live === 'true') unit.live = true;
       });
     }
   }catch(e){ /* keep static live flags on failure */ }
@@ -406,7 +407,7 @@ const DATA = {
             {en:'wardrobe', es:'armario'}
           ]}
         ]},
-        { id:'u2', name:'Unit 2', title:'School life', live:false, groups:[
+        { id:'u2', name:'Unit 2', title:'School life', live:true, groups:[
           { id:'places', title:'Places in a school', words:[
             {en:'art room', es:'aula de arte'},
             {en:'cafeteria', es:'cafetería'},
@@ -441,7 +442,7 @@ const DATA = {
             {en:'walk to school', es:'ir al colegio andando'}
           ]}
         ]},
-        { id:'u3', name:'Unit 3', title:'My home city', live:false, groups:[
+        { id:'u3', name:'Unit 3', title:'My home city', live:true, groups:[
           { id:'places-town', title:'Places in a town', words:[
             {en:'bridge', es:'puente'},
             {en:'car park', es:'aparcamiento'},
@@ -477,7 +478,7 @@ const DATA = {
             {en:'wet', es:'húmedo / mojado'}
           ]}
         ]},
-        { id:'u4', name:'Unit 4', title:'Come and join us!', live:false, groups:[
+        { id:'u4', name:'Unit 4', title:'Come and join us!', live:true, groups:[
           { id:'free-time', title:'Free-time activities', words:[
             {en:'dance', es:'bailar'},
             {en:'do crafts', es:'hacer manualidades'},
@@ -515,7 +516,7 @@ const DATA = {
             {en:'volleyball', es:'voleibol'}
           ]}
         ]},
-        { id:'u5', name:'Unit 5', title:'How do you make it?', live:false, groups:[
+        { id:'u5', name:'Unit 5', title:'How do you make it?', live:true, groups:[
           { id:'celebrating', title:'Verb phrases for celebrating', words:[
             {en:'cook / make special dishes', es:'cocinar / preparar platos especiales'},
             {en:'decorate a room', es:'decorar una habitación'},
@@ -555,7 +556,7 @@ const DATA = {
             {en:'water', es:'agua'}
           ]}
         ]},
-        { id:'u6', name:'Unit 6', title:'A visit to a market', live:false, groups:[
+        { id:'u6', name:'Unit 6', title:'A visit to a market', live:true, groups:[
           { id:'clothes', title:'Clothes', words:[
             {en:'boots', es:'botas'},
             {en:'cap', es:'gorra'},
@@ -592,7 +593,7 @@ const DATA = {
             {en:'thin', es:'fino'}
           ]}
         ]},
-        { id:'u7', name:'Unit 7', title:'She was born in 1996', live:false, groups:[
+        { id:'u7', name:'Unit 7', title:'She was born in 1996', live:true, groups:[
           { id:'tv-films', title:'TV shows and films', words:[
             {en:'action', es:'(película de) acción'},
             {en:'animation', es:'animación / dibujos animados'},
@@ -625,7 +626,7 @@ const DATA = {
             {en:'terrible', es:'terrible'}
           ]}
         ]},
-        { id:'u8', name:'Unit 8', title:'Can I ask you for some information?', live:false, groups:[
+        { id:'u8', name:'Unit 8', title:'Can I ask you for some information?', live:true, groups:[
           { id:'places-nature', title:'Places in nature', words:[
             {en:'beach', es:'playa'},
             {en:'coast', es:'costa'},
@@ -661,7 +662,7 @@ const DATA = {
     },
     { id:'2eso', name:'2º ESO', emoji:'🚀', book:'Synchronize 2',
       units:[
-        { id:'u1', name:'Unit 1', title:'Then and now', live:false, groups:[
+        { id:'u1', name:'Unit 1', title:'Then and now', live:true, groups:[
           { id:'verbs-opposites', title:'Verbs and their opposites', words:[
             {en:'agree', es:'estar de acuerdo'},
             {en:'disagree', es:'estar en desacuerdo'},
@@ -705,7 +706,7 @@ const DATA = {
             {en:'safe', es:'caja fuerte'}
           ]}
         ]},
-        { id:'u2', name:'Unit 2', title:'Art and design', live:false, groups:[
+        { id:'u2', name:'Unit 2', title:'Art and design', live:true, groups:[
           { id:'adjectives-synonyms', title:'Adjectives and synonyms', words:[
             {en:'attractive', es:'atractivo'},
             {en:'pretty', es:'bonito'},
@@ -750,7 +751,7 @@ const DATA = {
             {en:'street artist', es:'artista urbano/a'}
           ]}
         ]},
-        { id:'u3', name:'Unit 3', title:'Fresh air', live:false, groups:[
+        { id:'u3', name:'Unit 3', title:'Fresh air', live:true, groups:[
           { id:'outdoor-activities', title:'Outdoor leisure activities', words:[
             {en:'cycling', es:'ciclismo'},
             {en:'drone flying', es:'volar drones'},
@@ -789,7 +790,7 @@ const DATA = {
             {en:'skatepark', es:'pista de skate'}
           ]}
         ]},
-        { id:'u4', name:'Unit 4', title:'A helping hand', live:false, groups:[
+        { id:'u4', name:'Unit 4', title:'A helping hand', live:true, groups:[
           { id:'personality-adjectives', title:'Personality adjectives', words:[
             {en:'impatient', es:'impaciente'},
             {en:'patient', es:'paciente'},
@@ -827,7 +828,7 @@ const DATA = {
             {en:'write a thank you message', es:'escribir un mensaje de agradecimiento'}
           ]}
         ]},
-        { id:'u5', name:'Unit 5', title:"Let's play", live:false, groups:[
+        { id:'u5', name:'Unit 5', title:"Let's play", live:true, groups:[
           { id:'senses', title:'Senses', words:[
             {en:'ears', es:'oídos'},
             {en:'hearing', es:'oído (sentido)'},
@@ -877,7 +878,7 @@ const DATA = {
             {en:'word game', es:'juego de palabras'}
           ]}
         ]},
-        { id:'u6', name:'Unit 6', title:'Move it!', live:false, groups:[
+        { id:'u6', name:'Unit 6', title:'Move it!', live:true, groups:[
           { id:'exercise-body', title:'Exercise and the body', words:[
             {en:'bones', es:'huesos'},
             {en:'brain', es:'cerebro'},
@@ -915,7 +916,7 @@ const DATA = {
             {en:'wake up', es:'despertarse'}
           ]}
         ]},
-        { id:'u7', name:'Unit 7', title:'Skills for life', live:false, groups:[
+        { id:'u7', name:'Unit 7', title:'Skills for life', live:true, groups:[
           { id:'learning-verbs-nouns', title:'Verbs and nouns related to learning', words:[
             {en:'achieve', es:'lograr'},
             {en:'achievement', es:'logro'},
@@ -967,7 +968,7 @@ const DATA = {
     },
     { id:'3eso', name:'3º ESO', emoji:'⚡', book:'Inspo 3',
       units:[
-        { id:'u1', name:'Unit 1', title:'Identity', live:false, groups:[
+        { id:'u1', name:'Unit 1', title:'Identity', live:true, groups:[
           { id:'personal-qualities', title:'Personal qualities', words:[
             {en:'brave', es:'valiente'},
             {en:'calm', es:'tranquilo/a'},
@@ -1004,7 +1005,7 @@ const DATA = {
             {en:'start school', es:'empezar el colegio'}
           ]}
         ]},
-        { id:'u2', name:'Unit 2', title:'Explore', live:false, groups:[
+        { id:'u2', name:'Unit 2', title:'Explore', live:true, groups:[
           { id:'tourism', title:'Tourism', words:[
             {en:'accommodation', es:'alojamiento'},
             {en:'budget', es:'presupuesto'},
@@ -1042,7 +1043,7 @@ const DATA = {
             {en:'woodland', es:'bosque'}
           ]}
         ]},
-        { id:'u3', name:'Unit 3', title:'Citizens', live:false, groups:[
+        { id:'u3', name:'Unit 3', title:'Citizens', live:true, groups:[
           { id:'collocations', title:'Collocations', words:[
             {en:'fight for equality', es:'luchar por la igualdad'},
             {en:'fight for justice', es:'luchar por la justicia'},
@@ -1071,7 +1072,7 @@ const DATA = {
             {en:'update', es:'actualizar / actualización'}
           ]}
         ]},
-        { id:'u4', name:'Unit 4', title:'Technology', live:false, groups:[
+        { id:'u4', name:'Unit 4', title:'Technology', live:true, groups:[
           { id:'technology-verbs', title:'Technology (verbs)', words:[
             {en:'block', es:'bloquear'},
             {en:'bookmark', es:'guardar en marcadores'},
@@ -1100,7 +1101,7 @@ const DATA = {
             {en:'turn to', es:'recurrir a'}
           ]}
         ]},
-        { id:'u5', name:'Unit 5', title:'Feeling good', live:false, groups:[
+        { id:'u5', name:'Unit 5', title:'Feeling good', live:true, groups:[
           { id:'free-time', title:'Free-time activities', words:[
             {en:'bowling', es:'bolos'},
             {en:'chess', es:'ajedrez'},
@@ -1134,7 +1135,7 @@ const DATA = {
             {en:'jealousy', es:'celos'}
           ]}
         ]},
-        { id:'u6', name:'Unit 6', title:'Shopping', live:false, groups:[
+        { id:'u6', name:'Unit 6', title:'Shopping', live:true, groups:[
           { id:'money-shopping', title:'Money and shopping', words:[
             {en:'afford', es:'permitirse (económicamente)'},
             {en:'bargain', es:'ganga'},
@@ -1171,7 +1172,7 @@ const DATA = {
             {en:'turn down', es:'rechazar'}
           ]}
         ]},
-        { id:'u7', name:'Unit 7', title:'Express yourself!', live:false, groups:[
+        { id:'u7', name:'Unit 7', title:'Express yourself!', live:true, groups:[
           { id:'music-dance', title:'Music and dance', words:[
             {en:'album', es:'álbum'},
             {en:'audience', es:'público'},
@@ -1206,7 +1207,7 @@ const DATA = {
             {en:'sound system', es:'equipo de sonido'}
           ]}
         ]},
-        { id:'u8', name:'Unit 8', title:'Plot twist', live:false, groups:[
+        { id:'u8', name:'Unit 8', title:'Plot twist', live:true, groups:[
           { id:'describing-stories', title:'Describing stories', words:[
             {en:'character', es:'personaje'},
             {en:'confusing', es:'confuso/a'},
@@ -1244,7 +1245,7 @@ const DATA = {
     },
     { id:'4eso', name:'4º ESO', emoji:'🎓', book:'Synchronize 4',
       units:[
-        { id:'u1', name:'Unit 1', title:'Teen spirit', live:false, groups:[
+        { id:'u1', name:'Unit 1', title:'Teen spirit', live:true, groups:[
           { id:'society', title:'Society', words:[
             {en:'(be) addicted to', es:'ser adicto/a a'},
             {en:'(be) dependent on', es:'depender de'},
@@ -1282,7 +1283,7 @@ const DATA = {
             {en:'volunteer', es:'voluntario/a, ofrecerse voluntario/a'}
           ]}
         ]},
-        { id:'u2', name:'Unit 2', title:'In business', live:false, groups:[
+        { id:'u2', name:'Unit 2', title:'In business', live:true, groups:[
           { id:'money-business', title:'Money and business', words:[
             {en:'(bank) account', es:'cuenta (bancaria)'},
             {en:'cash machine', es:'cajero automático'},
@@ -1320,7 +1321,7 @@ const DATA = {
             {en:'practical', es:'práctico/a'}
           ]}
         ]},
-        { id:'u3', name:'Unit 3', title:'Planet Earth', live:false, groups:[
+        { id:'u3', name:'Unit 3', title:'Planet Earth', live:true, groups:[
           { id:'fundraising', title:'Fundraising (verb-noun collocations)', words:[
             {en:'achieve a goal', es:'alcanzar un objetivo'},
             {en:'give your time', es:'dedicar tu tiempo'},
@@ -1359,7 +1360,7 @@ const DATA = {
             {en:'transform', es:'transformar'}
           ]}
         ]},
-        { id:'u4', name:'Unit 4', title:'Picture this', live:false, groups:[
+        { id:'u4', name:'Unit 4', title:'Picture this', live:true, groups:[
           { id:'photography', title:'Photography', words:[
             {en:'angle', es:'ángulo'},
             {en:'close-up', es:'primer plano'},
@@ -1404,7 +1405,7 @@ const DATA = {
             {en:'valuable', es:'valioso/a'}
           ]}
         ]},
-        { id:'u5', name:'Unit 5', title:'Survival', live:false, groups:[
+        { id:'u5', name:'Unit 5', title:'Survival', live:true, groups:[
           { id:'survival-equipment', title:'Survival equipment', words:[
             {en:'compass', es:'brújula'},
             {en:'first-aid kit', es:'botiquín de primeros auxilios'},
@@ -1439,7 +1440,7 @@ const DATA = {
             {en:'task', es:'tarea'}
           ]}
         ]},
-        { id:'u6', name:'Unit 6', title:'News travels fast', live:false, groups:[
+        { id:'u6', name:'Unit 6', title:'News travels fast', live:true, groups:[
           { id:'news-media', title:'News and media', words:[
             {en:'breaking news', es:'noticia de última hora'},
             {en:'eyewitness', es:'testigo presencial'},
@@ -1473,7 +1474,7 @@ const DATA = {
             {en:'extremely weird', es:'extremadamente raro/a'}
           ]}
         ]},
-        { id:'u7', name:'Unit 7', title:'Future living', live:false, groups:[
+        { id:'u7', name:'Unit 7', title:'Future living', live:true, groups:[
           { id:'tech-adjectives', title:'Adjectives to describe technology', words:[
             {en:'affordable', es:'asequible'},
             {en:'adaptable', es:'adaptable'},
