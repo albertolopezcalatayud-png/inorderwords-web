@@ -183,12 +183,13 @@
 
     <div class="panel-box">
         <div class="leaderboard-title"><span>🏆 HALL OF FAME</span></div>
-        <div class="leaderboard-subtitle">Saved on this device/browser only. On a shared classroom computer everyone's runs stack up here; on personal phones/laptops each pilot sees their own scores.</div>
+        <div class="leaderboard-subtitle">🏫 Class ranking for this game — every student's XP, from any device. Tap a grade to see just that class. Chill-mode runs don't count.</div>
         <div class="course-tabs" id="course-tabs"></div>
         <ul class="ranking-list" id="leaderboard"><li class="ranking-item"><span>Scanning data...</span></li></ul>
     </div>
 </div>
 
+<script src="class-sync.js"></script>
 <script>
     const starCanvas = document.getElementById('starfield');
     const starCtx = starCanvas.getContext('2d');
@@ -280,7 +281,7 @@
     }
     function escapeHtml(t) { return String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
-    window.onload = function() { renderCourseTabs(); loadLeaderboard(); };
+    window.onload = function() { if(window.IOW) IOW.prefill('player-name', 'player-course'); renderCourseTabs(); loadLeaderboard(); };
 
     function renderCourseTabs(){
         const courses = ['TODOS','1º ESO','2º ESO','3º ESO','4º ESO','1º Bach','2º Bach'];
@@ -297,6 +298,7 @@
         const nameInput = document.getElementById('player-name').value.trim();
         if(!nameInput) return alert("Enter your Pilot Callsign!");
         playerName = nameInput; playerCourse = document.getElementById('player-course').value;
+        if(window.IOW) IOW.setIdentity(playerName, playerCourse);
         const lvl = document.getElementById('level-group').value;
 
         chillMode = document.getElementById('chill-mode-toggle').checked;
@@ -435,6 +437,7 @@
     function saveScoreLocally() {
         if(chillMode) return; // chill runs are for practice, not the leaderboard
         if(score <= 0) return;
+        if(window.IOW) IOW.postScore('Question Control', score, { name: playerName, grade: playerCourse, correct: Math.max(0, roundIndex - missedItems.length), wrong: missedItems.length });
         let stored = JSON.parse(localStorage.getItem(LEADERBOARD_KEY) || '[]');
         stored.push({ nombre: playerName, curso: playerCourse, puntuacion: score, fecha: new Date().toISOString() });
         const bestByKey = {};
@@ -456,6 +459,7 @@
 
     function renderLeaderboard(course) {
         const list = document.getElementById('leaderboard'); list.innerHTML = '';
+        if(window.IOW) IOW.fillBoard(list, 'Question Control', course, playerName);
         let filtered = course === 'TODOS' ? rawLeaderboardData : rawLeaderboardData.filter(i => i.curso === course);
         if(!filtered || filtered.length === 0) { list.innerHTML = '<li class="ranking-item"><span>NO RECORDS YET</span></li>'; return; }
         filtered.forEach((item, index) => {

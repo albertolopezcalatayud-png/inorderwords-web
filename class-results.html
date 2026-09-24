@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Class Rankings</title>
+<meta name="description" content="Teacher view: see each game's class ranking separately, grade by grade.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0b0e1a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230b0e1a'/%3E%3Ctext x='50' y='68' font-size='58' text-anchor='middle'%3E%F0%9F%8F%AB%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Manrope:wght@400;500;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0e1a; --panel:#12172c; --panel2:#161c36; --line:rgba(255,255,255,0.09); --text:#f4f2ec; --sub:#9aa1ba; --gold:#ffcc66; --teal:#2dd4bf;}
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{background:var(--bg); color:var(--text); font-family:'Manrope',system-ui,sans-serif; min-height:100%;}
+body{padding:18px 16px 48px; display:flex; justify-content:center;}
+.wrap{width:100%; max-width:860px; margin-top:44px; display:flex; flex-direction:column; gap:16px;}
+h1{font-family:'Unbounded',system-ui,sans-serif; font-size:clamp(22px,5vw,30px); font-weight:800;}
+.lede{color:var(--sub); font-size:14px; line-height:1.55; max-width:640px;}
+.panel{background:linear-gradient(135deg,var(--panel2),var(--panel)); border:1px solid var(--line); border-radius:18px; padding:18px;}
+.lbl{font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--gold); margin-bottom:10px;}
+.games{display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:8px;}
+.chip{background:rgba(255,255,255,0.04); border:1px solid var(--line); border-radius:12px; padding:10px 12px; color:var(--text); font:inherit; font-weight:700; font-size:13.5px; cursor:pointer; text-align:left;}
+.chip:hover{border-color:rgba(255,204,102,0.5);}
+.chip.on{background:var(--gold); color:#1a1300; border-color:var(--gold);}
+.chip:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
+.grades{display:flex; flex-wrap:wrap; gap:8px;}
+.grades .chip{border-radius:99px; padding:8px 14px;}
+.head{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px;}
+.head h2{font-family:'Unbounded',system-ui,sans-serif; font-size:17px;}
+.head .meta{font-size:12.5px; color:var(--sub);}
+.actions{display:flex; gap:8px;}
+.btn{background:rgba(255,255,255,0.06); border:1px solid var(--line); color:var(--text); border-radius:10px; padding:8px 12px; font:inherit; font-weight:700; font-size:12.5px; cursor:pointer;}
+.btn:hover{border-color:var(--gold);}
+.table-wrap{overflow-x:auto;}
+table{width:100%; border-collapse:collapse; font-size:14px;}
+th{text-align:left; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.06em; text-transform:uppercase; color:var(--sub); padding:8px 10px; border-bottom:1px solid var(--line);}
+td{padding:10px; border-bottom:1px solid var(--line);}
+td.n{font-family:'JetBrains Mono',monospace; font-variant-numeric:tabular-nums; color:var(--gold); font-weight:700; text-align:right;}
+th.n{text-align:right;}
+td.rank{font-family:'JetBrains Mono',monospace; color:var(--sub); width:48px;}
+tr:first-child td.rank{color:var(--gold);}
+.empty{color:var(--sub); font-size:14px; padding:18px 4px;}
+.note{font-size:12px; color:var(--sub); line-height:1.55;}
+.home-fab{position:fixed; top:14px; left:14px; z-index:60; display:flex; align-items:center; gap:7px; background:linear-gradient(135deg,var(--panel2),var(--panel)); border:1px solid var(--line); border-radius:999px; padding:9px 14px 9px 11px; text-decoration:none; color:var(--text); font-weight:700; font-size:12.5px;}
+@media (max-width:420px){ .home-fab{top:10px; left:10px; font-size:0;} .home-fab .ic{font-size:16px;} }
+</style>
+</head>
+<body>
+<a class="home-fab" href="index.html" title="Back to home"><span class="ic">🏠</span><span class="lbl">Home</span></a>
+<div class="wrap">
+  <div>
+    <h1>🏫 Class rankings</h1>
+    <p class="lede" style="margin-top:8px;">Every game keeps its own ranking, split by grade, so you can follow each class game by game. XP adds up across all the runs a student plays. Chill-mode runs don't count.</p>
+  </div>
+
+  <div class="panel">
+    <div class="lbl">1 · Game</div>
+    <div class="games" id="games"></div>
+  </div>
+
+  <div class="panel">
+    <div class="lbl">2 · Grade</div>
+    <div class="grades" id="grades"></div>
+  </div>
+
+  <div class="panel">
+    <div class="head">
+      <div><h2 id="title">—</h2><div class="meta" id="meta"></div></div>
+      <div class="actions">
+        <button class="btn" onclick="load()">↻ Refresh</button>
+        <button class="btn" onclick="downloadCsv()">⬇ CSV</button>
+      </div>
+    </div>
+    <div class="table-wrap" id="out"><p class="empty">Choose a game and a grade.</p></div>
+  </div>
+
+  <p class="note">Students are grouped by the name they type, so ask them to always write their full name the same way (the games save it in capitals). Vocab Rush keeps its own ranking per course, as before.</p>
+</div>
+
+<script src="class-sync.js"></script>
+<script>
+var GAMES = [
+  {id:'Verb Striker', em:'🚀'}, {id:'Docking Sequence', em:'🧩'}, {id:'Question Control', em:'🎛️'},
+  {id:'Debug the Transmission', em:'🐛'}, {id:'Collocation Match', em:'🔗'}, {id:'Phrasal Command', em:'🕹️'},
+  {id:'Preposition Blaster', em:'💥'}, {id:'Idiom Detective', em:'🕵️'}, {id:'Missing Signal', em:'📻'},
+  {id:'Boss Checkpoint', em:'👾'}, {id:'Vocab Rush', em:'🧠', vr:true}
+];
+var VR = {'1º ESO':'1eso', '2º ESO':'2eso', '3º ESO':'3eso', '4º ESO':'4eso'};
+var sel = {game:'Verb Striker', grade:'1º ESO'}, rows = [];
+
+function esc(t){ return String(t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+try{ var saved = JSON.parse(localStorage.getItem('owClassResultsSel') || 'null'); if(saved && saved.game) sel = saved; }catch(e){}
+
+function renderChips(){
+  document.getElementById('games').innerHTML = GAMES.map(function(g){
+    return '<button class="chip' + (g.id === sel.game ? ' on' : '') + '" data-g="' + esc(g.id) + '">' + g.em + ' ' + esc(g.id) + '</button>';
+  }).join('');
+  var grades = currentGame().vr ? Object.keys(VR) : IOW.GRADES;
+  if(grades.indexOf(sel.grade) === -1 && sel.grade !== 'ALL') sel.grade = grades[0];
+  document.getElementById('grades').innerHTML = grades.concat(['ALL']).map(function(g){
+    return '<button class="chip' + (g === sel.grade ? ' on' : '') + '" data-gr="' + esc(g) + '">' + (g === 'ALL' ? 'All grades' : esc(g)) + '</button>';
+  }).join('');
+  document.querySelectorAll('[data-g]').forEach(function(b){ b.onclick = function(){ sel.game = b.getAttribute('data-g'); renderChips(); load(); }; });
+  document.querySelectorAll('[data-gr]').forEach(function(b){ b.onclick = function(){ sel.grade = b.getAttribute('data-gr'); renderChips(); load(); }; });
+  try{ localStorage.setItem('owClassResultsSel', JSON.stringify(sel)); }catch(e){}
+}
+function currentGame(){ return GAMES.filter(function(g){ return g.id === sel.game; })[0] || GAMES[0]; }
+
+function fetchVocabRush(grade){
+  var list = grade === 'ALL' ? Object.keys(VR) : [grade];
+  return Promise.all(list.map(function(g){
+    return IOW.jsonp({action:'leaderboard', course:VR[g]}, 9000).then(function(d){
+      if(!d || !d.ok || !Array.isArray(d.leaderboard)) return null;
+      return d.leaderboard.filter(function(r){ return r.student && r.xp > 0; }).map(function(r){ return {student:r.student, xp:r.xp, grade:g}; });
+    });
+  })).then(function(parts){
+    if(parts.every(function(p){ return p === null; })) return null;
+    var all = []; parts.forEach(function(p){ if(p) all = all.concat(p); });
+    return all.sort(function(a, b){ return b.xp - a.xp; });
+  });
+}
+
+var token = 0;
+function load(){
+  var t = ++token, g = currentGame();
+  document.getElementById('title').textContent = g.em + ' ' + g.id + ' · ' + (sel.grade === 'ALL' ? 'all grades' : sel.grade);
+  document.getElementById('meta').textContent = 'Loading…';
+  document.getElementById('out').innerHTML = '<p class="empty">Loading the ranking…</p>';
+  var p = g.vr ? fetchVocabRush(sel.grade) : IOW.leaderboardAll(g.id, sel.grade === 'ALL' ? null : sel.grade);
+  p.then(function(r){
+    if(t !== token) return;
+    if(r === null){ rows = []; document.getElementById('meta').textContent = ''; document.getElementById('out').innerHTML = '<p class="empty">⚠️ Couldn\'t reach the school backend. Check the connection and press Refresh.</p>'; return; }
+    rows = r;
+    var total = r.reduce(function(s, x){ return s + x.xp; }, 0);
+    document.getElementById('meta').textContent = r.length + ' student' + (r.length === 1 ? '' : 's') + ' · ' + total + ' XP in total · updated ' + new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    if(!r.length){ document.getElementById('out').innerHTML = '<p class="empty">No scores yet for this game and grade.</p>'; return; }
+    var showGrade = sel.grade === 'ALL';
+    document.getElementById('out').innerHTML = '<table><thead><tr><th>#</th><th>Student</th>' + (showGrade ? '<th>Grade</th>' : '') + '<th class="n">XP</th></tr></thead><tbody>' +
+      r.map(function(x, i){ return '<tr><td class="rank">' + (i + 1) + '</td><td>' + esc(x.student) + '</td>' + (showGrade ? '<td>' + esc(x.grade) + '</td>' : '') + '<td class="n">' + x.xp + '</td></tr>'; }).join('') +
+      '</tbody></table>';
+  });
+}
+
+function downloadCsv(){
+  if(!rows.length) return;
+  var csv = 'Rank,Student,Grade,XP\n' + rows.map(function(x, i){ return (i + 1) + ',"' + String(x.student).replace(/"/g, '""') + '","' + x.grade + '",' + x.xp; }).join('\n');
+  var blob = new Blob(['﻿' + csv], {type:'text/csv;charset=utf-8'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = (sel.game + ' ' + (sel.grade === 'ALL' ? 'all grades' : sel.grade)).replace(/[^\w\s·º-]/g, '').replace(/\s+/g, '_') + '.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+
+renderChips();
+load();
+</script>
+</body>
+</html>

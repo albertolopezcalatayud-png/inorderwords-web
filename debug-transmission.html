@@ -113,13 +113,14 @@ h1,h2,h3{font-family:'Unbounded',system-ui,sans-serif; text-wrap:balance;}
       <span class="badge">🧘 No timer · read carefully</span>
       <h2>A corrupted message has reached mission control</h2>
       <p class="lede">Each transmission is a short text written by a student — and it's full of the grammar bugs Spanish speakers make most often. Find them, fix them, and file a clean copy.</p>
+      <div id="iowId"></div>
       <div class="howto">
         <b>Click any word or phrase</b> you think is wrong. If it really is a bug, you choose the correct version. If it was fine, that's a <b>false alarm</b> (−3 points), so read before you click. The counter tells you how many bugs are left. Stuck? <b>End transmission</b> reveals the ones you missed, with an explanation.
       </div>
       <div class="levels">
-        <button class="lvl" onclick="startLevel('A')"><span><span class="t">🟢 Cadet — 1º–2º ESO</span><br><span class="d">4 transmissions · present &amp; past simple, there is/are, can, adjectives</span></span><span class="arr">→</span></button>
-        <button class="lvl" onclick="startLevel('B')"><span><span class="t">🟡 Officer — 3º–4º ESO</span><br><span class="d">4 transmissions · present perfect, conditionals, prepositions, uncountables</span></span><span class="arr">→</span></button>
-        <button class="lvl" onclick="startLevel('C')"><span><span class="t">🔴 Commander — Bachillerato</span><br><span class="d">4 transmissions · connectors, inversion, reported speech, 3rd conditional</span></span><span class="arr">→</span></button>
+        <button class="lvl" onclick="play('A')"><span><span class="t">🟢 Cadet — 1º–2º ESO</span><br><span class="d">4 transmissions · present &amp; past simple, there is/are, can, adjectives</span></span><span class="arr">→</span></button>
+        <button class="lvl" onclick="play('B')"><span><span class="t">🟡 Officer — 3º–4º ESO</span><br><span class="d">4 transmissions · present perfect, conditionals, prepositions, uncountables</span></span><span class="arr">→</span></button>
+        <button class="lvl" onclick="play('C')"><span><span class="t">🔴 Commander — Bachillerato</span><br><span class="d">4 transmissions · connectors, inversion, reported speech, 3rd conditional</span></span><span class="arr">→</span></button>
       </div>
     </div>
   </div>
@@ -165,6 +166,7 @@ h1,h2,h3{font-family:'Unbounded',system-ui,sans-serif; text-wrap:balance;}
   <button class="cancel" onclick="closePop()">Cancel</button>
 </div>
 
+<script src="class-sync.js"></script>
 <script>
 // Bugs are written {wrong|right|distractor1,distractor2|explanation}
 var TRANSMISSIONS = {
@@ -353,6 +355,7 @@ function showResult(){
   document.getElementById('rScore').textContent = S.score;
   document.getElementById('rFixed').textContent = S.fixedFirst + '/' + S.totalBugs;
   document.getElementById('rFalse').textContent = S.falses;
+  if(!S.posted && window.IOW){ S.posted = true; IOW.postScore('Debug the Transmission', S.score, {correct:S.fixedFirst, wrong:S.totalBugs - S.fixedFirst, falseAlarms:S.falses, level:S.level}); }
   try{ var k='debugTransmissionBest_' + S.level, best = parseInt(localStorage.getItem(k) || '0', 10); if(S.score > best) localStorage.setItem(k, S.score); }catch(e){}
   show('result');
 }
@@ -363,6 +366,8 @@ function sendToMissionLog(){
   window.open('mission-log.html?import=' + encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(payload))))), '_blank', 'noopener');
 }
 
+function play(level){ if(window.IOW) IOW.ensureIdentity(function(){ startLevel(level); }); else startLevel(level); }
+if(window.IOW) IOW.mountIdentity(document.getElementById('iowId'));
 document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closePop(); });
 document.addEventListener('click', function(e){
   var pop = document.getElementById('pop');

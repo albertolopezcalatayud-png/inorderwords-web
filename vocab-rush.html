@@ -1554,7 +1554,11 @@ function refreshTopStats(){
 async function loadRanking(){
   if(!BACKEND_URL) return;
   try{
-    const data = await jsonpRequest_({ action:'leaderboard' }, 7000);
+    // Vocab Rush keeps its own ranking: merge only its four course boards (other games file their scores separately)
+    const parts = await Promise.all(['1eso','2eso','3eso','4eso'].map(c => jsonpRequest_({ action:'leaderboard', course:c }, 7000)));
+    const merged = {};
+    parts.forEach(d => { if(d && d.ok && Array.isArray(d.leaderboard)) d.leaderboard.forEach(r => { if(r && r.student) merged[r.student] = (merged[r.student]||0) + (r.xp||0); }); });
+    const data = { ok: parts.some(d => d && d.ok), leaderboard: Object.keys(merged).map(k => ({ student:k, xp:merged[k] })) };
     const panel = document.getElementById('rankingPanel');
     const list = document.getElementById('rankingList');
     if(!data || !data.ok || !Array.isArray(data.leaderboard) || data.leaderboard.length===0){

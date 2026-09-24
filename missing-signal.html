@@ -117,13 +117,14 @@ h1,h2,h3{font-family:'Unbounded',system-ui,sans-serif; text-wrap:balance;}
       <span class="badge">🎧 Listening · no timer</span>
       <h2>Static on the line</h2>
       <p class="lede">Each transmission is one English sentence read aloud — but interference has wiped out one word and left a <b>beep</b> in its place. Listen to what's around the beep and work out the missing word.</p>
+      <div id="iowId"></div>
       <div class="howto">
         Press <b>▶ Play</b> as many times as you like, or <b>🐢 Slow</b> for a slower version. Type the missing word and press Enter. Really stuck? <b>Show transcript</b> lets you read the sentence, but the answer is then worth fewer points. Use headphones if you're in class. Works best in Chrome, Edge or Safari.
       </div>
       <div class="levels">
-        <button class="lvl" onclick="startLevel(1)"><span><span class="t">🟢 Channel 1 — 1º–2º ESO</span><br><span class="d">10 transmissions · to be, there are, can, past simple, prepositions</span></span><span class="arr">→</span></button>
-        <button class="lvl" onclick="startLevel(2)"><span><span class="t">🟡 Channel 2 — 3º–4º ESO</span><br><span class="d">10 transmissions · present perfect, conditionals, passive, relatives</span></span><span class="arr">→</span></button>
-        <button class="lvl" onclick="startLevel(3)"><span><span class="t">🔴 Channel 3 — Bachillerato</span><br><span class="d">10 transmissions · 3rd conditional, inversion, modals of deduction</span></span><span class="arr">→</span></button>
+        <button class="lvl" onclick="startChannel(1)"><span><span class="t">🟢 Channel 1 — 1º–2º ESO</span><br><span class="d">10 transmissions · to be, there are, can, past simple, prepositions</span></span><span class="arr">→</span></button>
+        <button class="lvl" onclick="startChannel(2)"><span><span class="t">🟡 Channel 2 — 3º–4º ESO</span><br><span class="d">10 transmissions · present perfect, conditionals, passive, relatives</span></span><span class="arr">→</span></button>
+        <button class="lvl" onclick="startChannel(3)"><span><span class="t">🔴 Channel 3 — Bachillerato</span><br><span class="d">10 transmissions · 3rd conditional, inversion, modals of deduction</span></span><span class="arr">→</span></button>
       </div>
       <p class="note" id="noVoice" hidden>⚠ Your browser can't read text aloud, so the transcript will be shown for every sentence.</p>
     </div>
@@ -174,6 +175,7 @@ h1,h2,h3{font-family:'Unbounded',system-ui,sans-serif; text-wrap:balance;}
   </div>
 </div>
 
+<script src="class-sync.js"></script>
 <script>
 // [answer|also accepted] marks the word that is replaced by the beep
 var BANK = {
@@ -365,11 +367,15 @@ function resolve(ok, typed){
   speakFull(it);
   var nb = document.getElementById('nextBtn');
   nb.textContent = S.i === S.items.length - 1 ? 'See results →' : 'Next transmission →';
-  nb.style.display = 'block'; nb.focus();
+  nb.style.display = 'block';
+  S.resolvedAt = Date.now();
+  // focus after the Enter key that submitted the answer has finished, so it doesn't also press "Next"
+  setTimeout(function(){ nb.focus(); }, 350);
   updateTop();
 }
 
 function nextQ(){
+  if(S.resolvedAt && Date.now() - S.resolvedAt < 300) return;
   if(S.i >= S.items.length - 1){ finish(); return; }
   S.i++; render();
   setTimeout(function(){ play(1); }, 250);
@@ -387,6 +393,7 @@ function finish(){
   document.getElementById('review').innerHTML = n ? S.log.map(function(l){
     return '<div>' + (l.ok ? '✅ ' : '❌ ') + esc(l.it.before) + '<b>' + esc(l.it.answer) + '</b>' + esc(l.it.after) + '</div>';
   }).join('') : '<div style="color:var(--sub)">No transmissions answered yet.</div>';
+  if(!S.posted && n && window.IOW){ S.posted = true; IOW.postScore('Missing Signal', S.score, {correct:S.right, wrong:n - S.right, level:S.level}); }
   try{ var k = 'missingSignalBest_' + S.level, best = parseInt(localStorage.getItem(k) || '0', 10); if(S.score > best) localStorage.setItem(k, S.score); }catch(e){}
   show('result');
 }
@@ -396,6 +403,8 @@ function sendToMissionLog(){
   var pl = pilot(); var payload = {kind:'game', tool:'Missing Signal', name:pl.name || 'Pilot', course:pl.course || '', score:S.score, date:new Date().toISOString()};
   window.open('mission-log.html?import=' + encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(payload))))), '_blank', 'noopener');
 }
+function startChannel(level){ if(window.IOW) IOW.ensureIdentity(function(){ startLevel(level); }); else startLevel(level); }
+if(window.IOW) IOW.mountIdentity(document.getElementById('iowId'));
 </script>
 </body>
 </html>

@@ -167,6 +167,7 @@
     <div class="section-label">🎮 My games</div>
     <div class="games-grid" id="gamesGrid"></div>
     <a class="link-out" href="index.html#explore">🎮 Browse all games</a>
+    <a class="link-out" href="class-results.html">🏫 Class rankings, game by game</a>
   </section>
 
   <section>
@@ -190,6 +191,7 @@
   <footer>Everything you see here lives only in this browser — switch device and you start a fresh log.</footer>
 </div>
 
+<script src="class-sync.js"></script>
 <script>
   const K = { pilot:'missionLogPilot', imports:'missionLogImports', units:'missionLogUnits' };
   function loadJSON(key, fallback){ try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch(e){ return fallback; } }
@@ -198,8 +200,8 @@
   const pilot = loadJSON(K.pilot, { name:'', course:'' });
   document.getElementById('pilotName').value = pilot.name || '';
   document.getElementById('pilotCourse').value = pilot.course || '';
-  document.getElementById('pilotName').addEventListener('input', e => { pilot.name = e.target.value; saveJSON(K.pilot, pilot); });
-  document.getElementById('pilotCourse').addEventListener('change', e => { pilot.course = e.target.value; saveJSON(K.pilot, pilot); });
+  document.getElementById('pilotName').addEventListener('change', e => { pilot.name = e.target.value; saveJSON(K.pilot, pilot); if(window.IOW) IOW.setIdentity(pilot.name, pilot.course); });
+  document.getElementById('pilotCourse').addEventListener('change', e => { pilot.course = e.target.value; saveJSON(K.pilot, pilot); if(window.IOW) IOW.setIdentity(pilot.name, pilot.course); });
 
   function showToast(msg){
     const t = document.getElementById('toast');

@@ -107,6 +107,7 @@ h1,h2,h3{font-family:'Unbounded',system-ui,sans-serif; text-wrap:balance;}
       <span class="badge">👾 End-of-level challenge · no timer</span>
       <h2>Boss Checkpoint</h2>
       <p class="lede">Each grade has a boss guarding the checkpoint. The battle mixes <b>grammar</b>, <b>vocabulary</b> and <b>listening</b> from that level: 12 questions, and the boss has 10 HP. Every right answer is a hit. Every wrong answer costs you a shield. You have 3 shields.</p>
+      <div id="iowId"></div>
       <div class="howto">Beat the boss and you earn that level's <b>badge</b>. It's saved on this device and appears in your <b>Mission Log</b>. Listening questions read a sentence aloud, so switch your sound on (or grab headphones in class).</div>
       <div class="bosses" id="bosses"></div>
       <div class="shelf">
@@ -155,6 +156,7 @@ h1,h2,h3{font-family:'Unbounded',system-ui,sans-serif; text-wrap:balance;}
   </div>
 </div>
 
+<script src="class-sync.js"></script>
 <script>
 // type: g = grammar, v = vocabulary, l = listening (say = sentence read aloud; the options are what you might have heard)
 var BOSSES = [
@@ -244,7 +246,7 @@ if(hasTTS){ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
 function renderIntro(){
   var badges = loadBadges();
   document.getElementById('bosses').innerHTML = BOSSES.map(function(b){
-    return '<button class="boss-card" onclick="startBoss(\'' + b.id + '\')">' +
+    return '<button class="boss-card" onclick="play(\'' + b.id + '\')">' +
       (badges[b.id] ? '<span class="won">✓ Defeated</span>' : '') +
       '<span class="em">' + b.em + '</span><span class="g">' + b.grade + ' · CEFR ' + b.cefr + '</span>' +
       '<span class="bn">' + esc(b.name) + '</span><span class="bd">' + esc(b.desc) + '</span></button>';
@@ -348,6 +350,7 @@ function finish(){
     medal.hidden = true;
     document.getElementById('rSub').textContent = 'You landed ' + right + ' hits — the boss needed 10. Review the questions below, then try again: the questions come in a different order each time.';
   }
+  if(!S.posted && window.IOW){ S.posted = true; IOW.postScore('Boss Checkpoint', right * 5 + (won ? 50 : 0), {correct:right, wrong:S.log.length - right, boss:b.grade, badge: won ? b.medal : ''}); }
   document.getElementById('review').innerHTML = S.log.map(function(l){
     var text = l.q.t === 'l' ? '🎧 ' + esc(l.q.say) :
       (l.q.q.indexOf('___') > -1 ? esc(l.q.q).replace('___', '<b>' + esc(l.q.a) + '</b>') : esc(l.q.q) + ' <b>' + esc(l.q.a) + '</b>');
@@ -356,6 +359,8 @@ function finish(){
   show('result');
 }
 
+function play(id){ if(window.IOW) IOW.ensureIdentity(function(){ startBoss(id); }); else startBoss(id); }
+if(window.IOW) IOW.mountIdentity(document.getElementById('iowId'));
 renderIntro();
 </script>
 </body>

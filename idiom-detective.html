@@ -114,14 +114,11 @@ h1,h2,h3{font-family:'Unbounded',system-ui,sans-serif; text-wrap:balance;}
       <span class="badge">🧘 No timer · think like a detective</span>
       <h2>Every idiom hides a secret meaning</h2>
       <p class="lede">English speakers say <i>it's raining cats and dogs</i> without a single animal in sight. Each case file gives you 10 clues from our bank of 30 idioms — including every <b>Idiom of the week</b> from the home page. Work out what they really mean, or rebuild the word that's gone missing.</p>
-      <div class="field">
-        <label for="detName">Detective name (optional)</label>
-        <input id="detName" type="text" autocomplete="off" placeholder="e.g. Inspector Lucía">
-      </div>
+      <div id="iowId"></div>
       <div class="modes">
-        <button class="mode-btn" onclick="startCase('mixed')"><span><span class="t">🗂️ Mixed case — 10 clues</span><br><span class="d">Meanings and missing words, shuffled</span></span><span class="arr">→</span></button>
-        <button class="mode-btn" onclick="startCase('meaning')"><span><span class="t">🔎 What does it really mean?</span><br><span class="d">Pick the Spanish meaning of each idiom</span></span><span class="arr">→</span></button>
-        <button class="mode-btn" onclick="startCase('complete')"><span><span class="t">🧩 Rebuild the idiom</span><br><span class="d">One word is missing from the evidence — find it</span></span><span class="arr">→</span></button>
+        <button class="mode-btn" onclick="play('mixed')"><span><span class="t">🗂️ Mixed case — 10 clues</span><br><span class="d">Meanings and missing words, shuffled</span></span><span class="arr">→</span></button>
+        <button class="mode-btn" onclick="play('meaning')"><span><span class="t">🔎 What does it really mean?</span><br><span class="d">Pick the Spanish meaning of each idiom</span></span><span class="arr">→</span></button>
+        <button class="mode-btn" onclick="play('complete')"><span><span class="t">🧩 Rebuild the idiom</span><br><span class="d">One word is missing from the evidence — find it</span></span><span class="arr">→</span></button>
       </div>
     </div>
   </div>
@@ -159,6 +156,7 @@ h1,h2,h3{font-family:'Unbounded',system-ui,sans-serif; text-wrap:balance;}
   </div>
 </div>
 
+<script src="class-sync.js"></script>
 <script>
 // idiom · Spanish meaning · example · key word (removed in "rebuild" clues) · 3 wrong words
 var IDIOMS = [
@@ -306,16 +304,19 @@ function finishCase(){
   S.log.forEach(function(l){ html += '<li>' + (l.ok ? '✅ ' : '❌ ') + '<b>' + esc(l.item.i) + '</b> <span>— ' + esc(l.item.es) + '</span></li>'; });
   html += '</ul>';
   document.getElementById('review').innerHTML = n ? html : '<p style="color:var(--sub)">No clues answered yet.</p>';
+  if(!S.posted && n && window.IOW){ S.posted = true; IOW.postScore('Idiom Detective', S.score, {correct:S.right, wrong:n - S.right}); }
   try{ var best = parseInt(localStorage.getItem(LB_KEY) || '0', 10); if(S.score > best) localStorage.setItem(LB_KEY, S.score); }catch(e){}
   show('result');
 }
 
 function pilot(){ try{ return JSON.parse(localStorage.getItem('missionLogPilot')) || {}; }catch(e){ return {}; } }
 function sendToMissionLog(){
-  var pl = pilot(); var name = (document.getElementById('detName').value || '').trim() || pl.name || 'Detective';
+  var pl = pilot(); var name = pl.name || 'Detective';
   var payload = {kind:'game', tool:'Idiom Detective', name:name, course:pl.course || '', score:S.score, date:new Date().toISOString()};
   window.open('mission-log.html?import=' + encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(payload))))), '_blank', 'noopener');
 }
+function play(mode){ if(window.IOW) IOW.ensureIdentity(function(){ startCase(mode); }); else startCase(mode); }
+if(window.IOW) IOW.mountIdentity(document.getElementById('iowId'));
 </script>
 </body>
 </html>

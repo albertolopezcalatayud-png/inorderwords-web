@@ -265,7 +265,7 @@
             <span>🏆 HALL OF FAME</span>
             <button onclick="openTeacherPanel()" style="background:none; border:1px solid var(--text-sub); color:var(--text-sub); border-radius:4px; padding:4px 8px; cursor:pointer; font-size:0.8rem; font-weight:700;">🔒 TEACHER</button>
         </div>
-        <div class="leaderboard-subtitle">Saved on THIS device/browser only. On a shared classroom computer everyone's runs stack up here; on personal phones/laptops each pilot sees their own scores.</div>
+        <div class="leaderboard-subtitle">🏫 Class ranking for this game — every student's XP, from any device. Tap a grade to see just that class. Chill-mode runs don't count.</div>
 
         <div class="course-tabs">
             <button class="tab-chip active" onclick="filterLeaderboard('TODOS', this)">ALL</button>
@@ -281,6 +281,7 @@
     </div>
 </div>
 
+<script src="class-sync.js"></script>
 <script>
     // STARFIELD
     const starCanvas = document.getElementById('starfield');
@@ -431,7 +432,7 @@
     }
     function postScoreToBackend(){
       if(!BACKEND_URL || score<=0) return;
-      try{ jsonpRequest_({ action:'score', student: playerName, course: playerCourse, xpEarned: score }); }catch(e){}
+      if(window.IOW) IOW.postScore('Verb Striker', score, { name: playerName, grade: playerCourse, correct: totalSuccess, wrong: totalAttempts - totalSuccess });
     }
     async function fetchClassLeaderboard(){
       if(!BACKEND_URL) return null;
@@ -447,6 +448,7 @@
     }
 
     window.onload = function() {
+        if(window.IOW) IOW.prefill('player-name', 'player-course');
         coins = parseInt(localStorage.getItem('verbCoins') || '0');
         updateCoinDisplay();
         loadLeaderboard();
@@ -469,6 +471,7 @@
         if(!nameInput) return alert("Enter your Pilot Callsign!");
 
         playerName = nameInput; playerCourse = document.getElementById('player-course').value;
+        if(window.IOW) IOW.setIdentity(playerName, playerCourse);
         const selectedGroup = document.getElementById('phonetic-group').value;
         chillMode = document.getElementById('chill-mode-toggle').checked;
 
@@ -727,7 +730,6 @@
         rawLeaderboardData = JSON.parse(localStorage.getItem(LEADERBOARD_KEY) || '[]')
             .sort((a, b) => b.puntuacion - a.puntuacion);
         renderLeaderboard('TODOS');
-        refreshClassLeaderboard();
     }
 
     async function refreshClassLeaderboard() {
@@ -749,6 +751,7 @@
 
     function renderLeaderboard(course) {
         const list = document.getElementById('leaderboard'); list.innerHTML = '';
+        if(window.IOW) IOW.fillBoard(list, 'Verb Striker', course, playerName);
 
         // Prefer the shared, cross-device class ranking (from the school backend) when we have it;
         // it is not split by curso since the backend aggregates by student name only.

@@ -177,19 +177,20 @@ h1,h2,h3{font-family:'Unbounded',sans-serif; text-wrap:balance;}
       <span class="chill-badge">🧘 Chill mode · no timer pressure</span>
       <h2>Dock every irregular verb</h2>
       <p class="lede">Find the three matching pieces — base, past simple and past participle — to complete each ship's docking sequence. There's no clock working against you: take your time, this is pure memory and knowledge practice.</p>
+      <div id="iowId"></div>
       <div class="howto">
         Click a card to flip it. Flip <b>three cards</b> at a time — if they're the same verb (e.g. <b>go · went · gone</b>), they dock and stay revealed. If not, they flip back down and you try again. Great for <b>1º–2º ESO</b>, but anyone brushing up on irregular verbs will get something out of it.
       </div>
       <div class="levels">
-        <button class="lvl-btn" onclick="startLevel(6,'Fácil')">
+        <button class="lvl-btn" onclick="playLevel(6,'Fácil')">
           <span><span class="lname">🟢 Fácil — 6 naves</span><br><span class="ldesc">18 cartas · verbos muy comunes</span></span>
           <span class="larrow">→</span>
         </button>
-        <button class="lvl-btn" onclick="startLevel(9,'Normal')">
+        <button class="lvl-btn" onclick="playLevel(9,'Normal')">
           <span><span class="lname">🟡 Normal — 9 naves</span><br><span class="ldesc">27 cartas · un reto medio</span></span>
           <span class="larrow">→</span>
         </button>
-        <button class="lvl-btn" onclick="startLevel(12,'Difícil')">
+        <button class="lvl-btn" onclick="playLevel(12,'Difícil')">
           <span><span class="lname">🔴 Difícil — 12 naves</span><br><span class="ldesc">36 cartas · para memorias entrenadas</span></span>
           <span class="larrow">→</span>
         </button>
@@ -228,6 +229,7 @@ h1,h2,h3{font-family:'Unbounded',sans-serif; text-wrap:balance;}
 
 </div>
 
+<script src="class-sync.js"></script>
 <script>
 var VERBS = [
   {base:'go', past:'went', pp:'gone'},
@@ -396,8 +398,11 @@ function finishLevel(){
   document.getElementById('resultSub').textContent = 'Nivel ' + state.level + ' · ' + state.totalGroups + ' naves';
   document.getElementById('resMoves').textContent = state.moves;
   document.getElementById('resTime').textContent = formatTime(elapsed);
+  if(window.IOW) IOW.postScore('Docking Sequence', state.totalGroups * 5, {moves: state.moves, seconds: elapsed, level: state.level});
   setTimeout(function(){ showScreen('result'); }, 500);
 }
+function playLevel(n, label){ if(window.IOW) IOW.ensureIdentity(function(){ startLevel(n, label); }); else startLevel(n, label); }
+if(window.IOW) IOW.mountIdentity(document.getElementById('iowId'));
 </script>
 </body>
 </html>

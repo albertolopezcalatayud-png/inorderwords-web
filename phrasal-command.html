@@ -261,7 +261,7 @@
             <span>🏆 HALL OF FAME</span>
             <button onclick="openTeacherPanel()" style="background:none; border:1px solid var(--text-sub); color:var(--text-sub); border-radius:4px; padding:4px 8px; cursor:pointer; font-size:0.8rem; font-weight:700;">🔒 TEACHER</button>
         </div>
-        <div class="leaderboard-subtitle">Saved on THIS device/browser only. On a shared classroom computer everyone's runs stack up here; on personal phones/laptops each pilot sees their own scores.</div>
+        <div class="leaderboard-subtitle">🏫 Class ranking for this game — every student's XP, from any device. Tap a grade to see just that class. Chill-mode runs don't count.</div>
 
         <div class="course-tabs">
             <button class="tab-chip active" onclick="filterLeaderboard('TODOS', this)">ALL</button>
@@ -277,6 +277,7 @@
     </div>
 </div>
 
+<script src="class-sync.js"></script>
 <script>
     // STARFIELD
     const starCanvas = document.getElementById('starfield');
@@ -397,7 +398,7 @@
     }
     function postScoreToBackend(){
       if(!BACKEND_URL || score<=0) return;
-      try{ jsonpRequest_({ action:'score', student: playerName, course: playerCourse, xpEarned: score }); }catch(e){}
+      if(window.IOW) IOW.postScore('Phrasal Command', score, { name: playerName, grade: playerCourse, correct: totalSuccess, wrong: totalAttempts - totalSuccess });
     }
 
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -409,6 +410,7 @@
     }
 
     window.onload = function() {
+        if(window.IOW) IOW.prefill('player-name', 'player-course');
         coins = parseInt(localStorage.getItem('phrasalCoins') || '0');
         updateCoinDisplay();
         loadLeaderboard();
@@ -431,6 +433,7 @@
         if(!nameInput) return alert("Enter your Pilot Callsign!");
 
         playerName = nameInput; playerCourse = document.getElementById('player-course').value;
+        if(window.IOW) IOW.setIdentity(playerName, playerCourse);
         const selectedGroup = document.getElementById('phrasal-group').value;
         chillMode = document.getElementById('chill-mode-toggle').checked;
 
@@ -698,6 +701,7 @@
 
     function renderLeaderboard(course) {
         const list = document.getElementById('leaderboard'); list.innerHTML = '';
+        if(window.IOW) IOW.fillBoard(list, 'Phrasal Command', course, playerName);
         let filtered = course === 'TODOS' ? rawLeaderboardData : rawLeaderboardData.filter(i => i.curso === course);
 
         if(!filtered || filtered.length === 0) { list.innerHTML = '<li class="ranking-item"><span>NO RECORDS YET — be the first pilot!</span></li>'; return; }
