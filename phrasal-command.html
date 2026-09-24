@@ -1,0 +1,759 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>PHRASAL COMMAND</title>
+<meta name="description" content="Blast through English phrasal verbs — the trickiest, most exam-relevant vocabulary — in this galaxy-themed shooting game.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Inorderwords">
+<meta property="og:title" content="PHRASAL COMMAND — Inorderwords">
+<meta property="og:description" content="Blast through English phrasal verbs — the trickiest, most exam-relevant vocabulary — in this galaxy-themed shooting game.">
+<meta property="og:url" content="https://albertolopezcalatayud-png.github.io/inorderwords-web/phrasal-command.html">
+<meta property="og:image" content="https://albertolopezcalatayud-png.github.io/inorderwords-web/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="PHRASAL COMMAND — Inorderwords">
+<meta name="twitter:description" content="Blast through English phrasal verbs — the trickiest, most exam-relevant vocabulary — in this galaxy-themed shooting game.">
+<meta name="twitter:image" content="https://albertolopezcalatayud-png.github.io/inorderwords-web/og-image.png">
+<meta name="theme-color" content="#0b0e1a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230b0e1a'/%3E%3Ctext x='50' y='68' font-size='58' text-anchor='middle' fill='%23ffcc66'%3E%F0%9F%9A%80%3C/text%3E%3C/svg%3E">
+<link rel="canonical" href="https://albertolopezcalatayud-png.github.io/inorderwords-web/phrasal-command.html">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@700&display=swap" rel="stylesheet">
+<style>
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-pink: #ff0055;
+            --neon-purple: #b000ff;
+            --neon-yellow: #ffe600;
+            --neon-green: #00ff66;
+            --neon-amber: #ffb703;
+            --bg-dark: #050612;
+            --panel-bg: rgba(10, 14, 35, 0.90);
+            --panel-border: var(--neon-amber);
+            --text-main: #ffffff;
+            --text-sub: #a5b4fc;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Rajdhani', sans-serif; }
+        html, body { width: 100vw; height: 100vh; overflow: hidden; background-color: var(--bg-dark); color: var(--text-main); }
+        #starfield { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+
+        .app-viewport {
+            position: relative; z-index: 2; width: 100vw; height: 100vh;
+            padding: 24px; display: grid; grid-template-columns: 2.3fr 1fr; gap: 24px;
+        }
+
+        .panel-box {
+            background: var(--panel-bg); border: 3px solid var(--panel-border);
+            border-radius: 16px; padding: 24px;
+            box-shadow: 0 0 35px rgba(255, 183, 3, 0.2), inset 0 0 20px rgba(255, 183, 3, 0.1);
+            backdrop-filter: blur(10px); display: flex; flex-direction: column;
+            justify-content: space-between; position: relative;
+        }
+
+        .header-bar { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid rgba(255, 183, 3, 0.3); padding-bottom: 10px; }
+        h1 { font-family: 'Orbitron', sans-serif; font-size: 2rem; color: var(--neon-yellow); text-shadow: 0 0 12px var(--neon-yellow); }
+        .ai-status-pill { background: rgba(176, 0, 255, 0.3); border: 2px solid var(--neon-purple); color: #e2aeff; font-family: 'Orbitron'; padding: 6px 14px; border-radius: 20px; font-size: 0.95rem; font-weight: 800; }
+
+        .hud-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 10px 0; }
+        .hud-card { background: rgba(0, 0, 0, 0.7); border: 2px solid rgba(255, 255, 255, 0.15); border-left: 5px solid var(--neon-amber); padding: 8px 12px; border-radius: 8px; }
+        .hud-card label { display: block; font-size: 0.85rem; color: var(--text-sub); font-family: 'Orbitron'; font-weight: 700; }
+        .hud-card span { font-size: 1.8rem; font-weight: 800; font-family: 'Orbitron'; }
+
+        .energy-timer-wrapper { width: 100%; height: 14px; background: #000; border: 2px solid var(--neon-amber); border-radius: 7px; padding: 2px; margin-bottom: 10px; }
+        .energy-timer-fill { height: 100%; width: 100%; background: linear-gradient(90deg, var(--neon-green), var(--neon-yellow), var(--neon-pink)); border-radius: 4px; transition: width 0.1s linear; }
+
+        .battle-display { background: radial-gradient(circle, rgba(255,183,3,0.15) 0%, rgba(0,0,0,0.85) 100%); border: 2px dashed rgba(255, 183, 3, 0.4); border-radius: 12px; padding: 18px; text-align: center; margin-bottom: 10px; }
+        .target-word { font-family: 'Orbitron', sans-serif; font-size: 2.6rem; font-weight: 900; color: #fff; text-shadow: 0 0 18px var(--neon-amber); margin-bottom: 4px; letter-spacing: 0.02em; }
+        .infinitive-hint { font-size: 1.4rem; font-weight: 700; color: var(--text-sub); }
+        .infinitive-hint strong { color: var(--neon-yellow); font-size: 1.6rem; }
+
+        .action-inputs { margin-bottom: 10px; }
+        .input-group label { display: block; font-family: 'Orbitron'; font-size: 1rem; font-weight: 800; color: var(--neon-amber); margin-bottom: 4px; }
+        .input-wrapper { position: relative; }
+        .input-group input { width: 100%; background: rgba(0, 0, 0, 0.85); border: 2px solid rgba(255, 183, 3, 0.4); border-radius: 8px; padding: 14px 46px 14px 16px; color: #fff; font-size: 1.6rem; font-weight: 700; outline: none; text-align: center; }
+        .voice-btn { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 1.2rem; cursor: pointer; opacity: 0.7; }
+        .voice-btn:hover { opacity: 1; }
+
+        .controls-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; }
+        .sci-btn { background: linear-gradient(135deg, var(--neon-amber), #ff6b00); border: none; color: #000; font-family: 'Orbitron'; font-weight: 900; padding: 14px; border-radius: 8px; cursor: pointer; font-size: 1.1rem; transition: all 0.2s; box-shadow: 0 0 14px rgba(255, 183, 3, 0.3); }
+        .sci-btn:hover { transform: scale(1.02); filter: brightness(1.2); }
+        .sci-btn-amber { background: linear-gradient(135deg, var(--neon-yellow), #ff9900); }
+        .sci-btn-red { background: linear-gradient(135deg, var(--neon-pink), #990033); color: #fff; }
+        .sci-btn-purple { background: linear-gradient(135deg, var(--neon-purple), #660099); color: #fff; }
+
+        .status-msg { padding: 8px; border-radius: 6px; text-align: center; font-family: 'Orbitron'; font-size: 1.1rem; font-weight: 800; display: none; margin-top: 8px; }
+        .status-msg.correct { background: rgba(0, 255, 102, 0.25); border: 2px solid var(--neon-green); color: var(--neon-green); }
+        .status-msg.incorrect { background: rgba(255, 0, 85, 0.25); border: 2px solid var(--neon-pink); color: var(--neon-pink); }
+
+        .leaderboard-title { font-family: 'Orbitron'; font-size: 1.2rem; color: var(--neon-yellow); margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; }
+        .leaderboard-subtitle { font-size: 0.78rem; color: var(--text-sub); margin-bottom: 10px; line-height: 1.4; }
+        .course-tabs { display: flex; gap: 4px; margin-bottom: 10px; overflow-x: auto; }
+        .tab-chip { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.25); color: var(--text-sub); padding: 6px 10px; font-size: 0.85rem; font-weight: 700; border-radius: 6px; cursor: pointer; white-space: nowrap; }
+        .tab-chip.active { background: var(--neon-amber); color: #000; }
+
+        .ranking-list { list-style: none; overflow-y: auto; max-height: calc(100vh - 260px); }
+        .ranking-item { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255,255,255,0.12); padding: 10px 12px; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; font-size: 1rem; font-weight: 700; }
+        .ranking-item.me { border-color: var(--neon-yellow); box-shadow: 0 0 10px rgba(255,230,0,0.25); }
+
+        .modal-screen { position: absolute; inset: 0; background: rgba(5, 6, 18, 0.96); z-index: 20; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 16px; padding: 24px; text-align: center; }
+        .modal-screen input, .modal-screen select { width: 85%; max-width: 420px; padding: 14px; margin-bottom: 12px; background: #000; border: 2px solid var(--neon-amber); color: #fff; border-radius: 8px; outline: none; font-family: 'Orbitron'; font-size: 1.1rem; }
+        canvas#confetti { position: fixed; inset: 0; pointer-events: none; z-index: 99; }
+
+        .store-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 85%; max-width: 450px; margin: 15px 0; }
+        .store-item { background: rgba(0,0,0,0.8); border: 2px solid var(--neon-amber); padding: 12px; border-radius: 8px; cursor: pointer; }
+        .store-item:hover { border-color: var(--neon-yellow); }
+
+        .sentence-box { background: rgba(0,0,0,0.9); border: 2px solid var(--neon-yellow); padding: 15px; border-radius: 10px; margin-top: 10px; display: none; }
+        .sentence-box p { font-size: 1.3rem; margin-bottom: 8px; }
+        .sentence-box input { width: 60%; padding: 8px; background: #000; border: 1px solid var(--neon-yellow); color: #fff; font-family: 'Orbitron'; font-size: 1.1rem; }
+
+        @media (max-width: 900px) { .app-viewport { grid-template-columns: 1fr; overflow-y: auto; height: auto; } body { overflow-y: auto; } }
+
+        .ow-home-fab{
+          position:fixed; top:14px; left:14px; z-index:9999;
+          display:flex; align-items:center; gap:7px;
+          background:rgba(10,14,35,0.92);
+          border:1px solid rgba(255,183,3,0.4); border-radius:999px;
+          padding:9px 14px 9px 11px; text-decoration:none;
+          color:#fff; font-family:'Rajdhani',sans-serif; font-weight:700; font-size:12.5px;
+          box-shadow:0 4px 14px rgba(0,0,0,0.45); transition:all .15s ease;
+        }
+        .ow-home-fab:hover{border-color:var(--neon-yellow); background:rgba(255,230,0,0.16);}
+        .ow-home-fab .ic{font-size:15px; line-height:1;}
+        @media (max-width:420px){
+          .ow-home-fab{top:10px; left:10px; padding:8px 12px 8px 10px; font-size:0;}
+          .ow-home-fab .ic{font-size:16px;}
+          .ow-home-fab .lbl{display:none;}
+        }
+    </style>
+<a class="ow-home-fab" href="index.html" title="Back to home"><span class="ic">🏠</span><span class="lbl">Home</span></a>
+<canvas id="starfield"></canvas>
+<canvas id="confetti"></canvas>
+
+<div class="app-viewport">
+    <div class="panel-box">
+        <div id="player-modal" class="modal-screen">
+            <h2 style="font-family:'Orbitron'; color: var(--neon-yellow); font-size: 2.2rem; margin-bottom: 6px;">PHRASAL COMMAND</h2>
+            <p style="color: var(--text-sub); margin-bottom: 18px; font-size: 1.1rem;">PILOT CONFIGURATION</p>
+            <input type="text" id="player-name" placeholder="CALLSIGN / NAME" required>
+            <select id="player-course">
+                <option value="1º ESO">GRADE 7 (1º ESO)</option>
+                <option value="2º ESO">GRADE 8 (2º ESO)</option>
+                <option value="3º ESO">GRADE 9 (3º ESO)</option>
+                <option value="4º ESO">GRADE 10 (4º ESO)</option>
+                <option value="1º Bach">1º Bach</option>
+                <option value="2º Bach">2º Bach</option>
+            </select>
+            <select id="phrasal-group">
+                <option value="ALL">ALL PHRASAL GROUPS (FULL DATABASE)</option>
+                <option value="ON_OFF">ON / OFF (turn on, take off...)</option>
+                <option value="UP_DOWN">UP / DOWN (give up, calm down...)</option>
+                <option value="OUT">OUT (find out, work out...)</option>
+                <option value="TOGETHER_APART">PEOPLE (break up, look after...)</option>
+                <option value="MOTION">MOTION (get up, come back...)</option>
+                <option value="SELECTIVIDAD">SELECTIVIDAD CLASSICS (look forward to...)</option>
+            </select>
+
+            <label style="display:flex; align-items:center; gap:9px; width:85%; max-width:420px; margin:6px 0 4px; padding:10px 12px; background:rgba(0,255,102,0.08); border:1px solid rgba(0,255,102,0.35); border-radius:8px; color:#c9ffdc; font-size:0.92rem; font-weight:700; cursor:pointer; text-align:left;">
+                <input type="checkbox" id="chill-mode-toggle" style="width:18px; height:18px; accent-color: var(--neon-green); flex:none;">
+                🧘 CHILL MODE — no timer, just practice
+            </label>
+
+            <div style="display:flex; gap:10px; width:85%; max-width:420px; margin-top:5px;">
+                <button class="sci-btn" onclick="startGame(false)" style="flex:2;">LAUNCH</button>
+                <button class="sci-btn sci-btn-purple" onclick="startGame(true)" id="btn-revenge" style="flex:1;">🔥 REVENGE</button>
+                <button class="sci-btn sci-btn-amber" onclick="openStore()" style="flex:1;">🛒 STORE</button>
+            </div>
+        </div>
+
+        <div id="store-modal" class="modal-screen" style="display:none;">
+            <h2 style="font-family:'Orbitron'; color: var(--neon-yellow); font-size: 2rem;">ARMORY STORE</h2>
+            <p style="color:var(--text-sub)">SPEND YOUR SPACE COINS (🪙 <span id="store-coins">0</span>)</p>
+            <div class="store-grid">
+                <div class="store-item" onclick="buyItem('shield', 50)">
+                    <h4>🛡️ SHIELD +1</h4>
+                    <p style="font-size:0.8rem; color:var(--text-sub)">Extra life for mission</p>
+                    <strong style="color:var(--neon-yellow)">50 COINS</strong>
+                </div>
+                <div class="store-item" onclick="buyItem('theme_purple', 100)">
+                    <h4>🎨 PURPLE NEON</h4>
+                    <p style="font-size:0.8rem; color:var(--text-sub)">HUD Skin</p>
+                    <strong style="color:var(--neon-yellow)">100 COINS</strong>
+                </div>
+            </div>
+            <button class="sci-btn sci-btn-red" onclick="closeStore()" style="width: 85%; max-width: 420px;">BACK</button>
+        </div>
+
+        <div id="report-modal" class="modal-screen" style="display:none;">
+            <h2 style="font-family:'Orbitron'; color: var(--neon-pink); font-size: 2.2rem;">MISSION DEBRIEF</h2>
+            <p id="report-score" style="margin: 10px 0; font-size: 1.3rem; font-family:'Orbitron'; color: var(--neon-yellow);"></p>
+            <div id="report-errors" style="width:85%; max-height: 180px; overflow-y:auto; background: #000; padding:14px; border-radius:8px; border:2px solid var(--neon-amber); margin-bottom:15px; font-size:1rem; text-align:left;"></div>
+            <div style="display:flex; gap:10px; width:85%; max-width:420px;">
+                <button class="sci-btn" onclick="closeReport()" style="flex:1;">RETRY MISSION</button>
+                <button class="sci-btn sci-btn-purple" onclick="sendToMissionLog()" style="flex:1;">📡 MISSION LOG</button>
+            </div>
+        </div>
+
+        <div class="header-bar">
+            <h1>🕹️ PHRASAL COMMAND</h1>
+            <span class="ai-status-pill" id="ai-status">⚡ LEVEL: NORMAL</span>
+        </div>
+
+        <div class="hud-stats">
+            <div class="hud-card" style="border-left-color: var(--neon-yellow);">
+                <label>SCORE</label>
+                <span id="score" style="color: var(--neon-yellow);">0</span>
+            </div>
+            <div class="hud-card" style="border-left-color: var(--neon-green);">
+                <label>COMBO</label>
+                <span id="streak" style="color: var(--neon-green);">0 🔥</span>
+            </div>
+            <div class="hud-card" style="border-left-color: var(--neon-pink);">
+                <label>SHIELD</label>
+                <span id="lives">⚡⚡⚡</span>
+            </div>
+            <div class="hud-card" style="border-left-color: var(--neon-amber);">
+                <label>COINS</label>
+                <span id="coins" style="color: var(--neon-amber);">🪙 0</span>
+            </div>
+        </div>
+
+        <div class="energy-timer-wrapper">
+            <div class="energy-timer-fill" id="timer-bar"></div>
+        </div>
+
+        <div class="battle-display">
+            <div class="target-word" id="target-es">LOADING...</div>
+            <div class="infinitive-hint">
+                COMPLETE: <strong id="target-inf">-</strong>
+                <button onclick="speakVerb()" style="background:none; border:none; cursor:pointer; font-size:1.6rem; margin-left:8px;" title="Listen Audio">🔊</button>
+            </div>
+        </div>
+
+        <div id="sentence-box" class="sentence-box">
+            <p id="sentence-text">Complete context...</p>
+            <input type="text" id="sentence-input" autocomplete="off" placeholder="Full phrasal verb (right tense!)...">
+            <button class="sci-btn" onclick="checkSentenceBonus()" style="padding:6px 12px; font-size:0.9rem;">FIRE</button>
+        </div>
+
+        <form id="verb-form" onsubmit="checkAnswer(event)">
+            <div class="action-inputs">
+                <div class="input-group">
+                    <label>MISSING WORD(S)</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="input-particle" autocomplete="off" required>
+                        <button type="button" class="voice-btn" onclick="listenVoice('input-particle')">🎙️</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls-grid">
+                <button type="submit" class="sci-btn">STRIKE! (ENTER)</button>
+                <button type="button" class="sci-btn sci-btn-amber" onclick="getHint()">💡 HINT</button>
+                <button type="button" class="sci-btn sci-btn-red" onclick="endGame()">ABORT</button>
+            </div>
+        </form>
+
+        <div id="feedback" class="status-msg"></div>
+    </div>
+
+    <div class="panel-box">
+        <div class="leaderboard-title">
+            <span>🏆 HALL OF FAME</span>
+            <button onclick="openTeacherPanel()" style="background:none; border:1px solid var(--text-sub); color:var(--text-sub); border-radius:4px; padding:4px 8px; cursor:pointer; font-size:0.8rem; font-weight:700;">🔒 TEACHER</button>
+        </div>
+        <div class="leaderboard-subtitle">Saved on THIS device/browser only. On a shared classroom computer everyone's runs stack up here; on personal phones/laptops each pilot sees their own scores.</div>
+
+        <div class="course-tabs">
+            <button class="tab-chip active" onclick="filterLeaderboard('TODOS', this)">ALL</button>
+            <button class="tab-chip" onclick="filterLeaderboard('1º ESO', this)">1º ESO</button>
+            <button class="tab-chip" onclick="filterLeaderboard('2º ESO', this)">2º ESO</button>
+            <button class="tab-chip" onclick="filterLeaderboard('3º ESO', this)">3º ESO</button>
+            <button class="tab-chip" onclick="filterLeaderboard('4º ESO', this)">4º ESO</button>
+        </div>
+
+        <ul class="ranking-list" id="leaderboard">
+            <li class="ranking-item"><span>Scanning data...</span></li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    // STARFIELD
+    const starCanvas = document.getElementById('starfield');
+    const starCtx = starCanvas.getContext('2d');
+    let stars = [];
+
+    function resizeStarfield() {
+        starCanvas.width = window.innerWidth; starCanvas.height = window.innerHeight;
+        stars = Array.from({length: 150}, () => ({
+            x: Math.random() * starCanvas.width, y: Math.random() * starCanvas.height,
+            size: Math.random() * 2.2, speed: Math.random() * 0.6 + 0.2
+        }));
+    }
+    window.addEventListener('resize', resizeStarfield); resizeStarfield();
+
+    function animateStars() {
+        starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height); starCtx.fillStyle = '#ffffff';
+        stars.forEach(star => {
+            star.y += star.speed; if(star.y > starCanvas.height) star.y = 0;
+            starCtx.beginPath(); starCtx.arc(star.x, star.y, star.size, 0, Math.PI * 2); starCtx.fill();
+        });
+        requestAnimationFrame(animateStars);
+    }
+    animateStars();
+
+    // PHRASAL VERBS DATABASE
+    const phrasalDB = [
+        // --- ON / OFF ---
+        { base:"turn", particle:["on"], full:"turn on", es:"encender", group:"ON_OFF", sentence:"Can you ___ the lights? It's dark in here.", sentenceAns:"turn on" },
+        { base:"turn", particle:["off"], full:"turn off", es:"apagar", group:"ON_OFF", sentence:"Please ___ the TV before you go to bed.", sentenceAns:"turn off" },
+        { base:"put", particle:["on"], full:"put on", es:"ponerse (ropa)", group:"ON_OFF", sentence:"It's cold outside — ___ your jacket.", sentenceAns:"put on" },
+        { base:"take", particle:["off"], full:"take off", es:"quitarse (ropa) / despegar", group:"ON_OFF", sentence:"The plane will ___ in ten minutes.", sentenceAns:"take off" },
+        { base:"try", particle:["on"], full:"try on", es:"probarse (ropa)", group:"ON_OFF", sentence:"Can I ___ this jacket before I buy it?", sentenceAns:"try on" },
+        { base:"switch", particle:["on"], full:"switch on", es:"encender (un aparato)", group:"ON_OFF", sentence:"I always ___ the radio in the morning.", sentenceAns:"switch on" },
+        { base:"switch", particle:["off"], full:"switch off", es:"apagar (un aparato)", group:"ON_OFF", sentence:"Remember to ___ your phone during the exam.", sentenceAns:"switch off" },
+        { base:"put", particle:["out"], full:"put out", es:"apagar (fuego / cigarro)", group:"ON_OFF", sentence:"Firefighters managed to ___ the fire quickly.", sentenceAns:"put out" },
+
+        // --- UP / DOWN ---
+        { base:"give", particle:["up"], full:"give up", es:"rendirse / dejar de hacer algo", group:"UP_DOWN", sentence:"Don't ___! You're almost finished.", sentenceAns:"give up" },
+        { base:"grow", particle:["up"], full:"grow up", es:"crecer / hacerse mayor", group:"UP_DOWN", sentence:"I ___ in a small village near the coast.", sentenceAns:"grew up" },
+        { base:"calm", particle:["down"], full:"calm down", es:"calmarse", group:"UP_DOWN", sentence:"Please ___, everything is going to be fine.", sentenceAns:"calm down" },
+        { base:"sit", particle:["down"], full:"sit down", es:"sentarse", group:"UP_DOWN", sentence:"Please ___ and make yourself comfortable.", sentenceAns:"sit down" },
+        { base:"stand", particle:["up"], full:"stand up", es:"ponerse de pie", group:"UP_DOWN", sentence:"Everyone had to ___ when the judge entered.", sentenceAns:"stand up" },
+        { base:"wake", particle:["up"], full:"wake up", es:"despertarse", group:"UP_DOWN", sentence:"I usually ___ at seven o'clock.", sentenceAns:"wake up" },
+        { base:"cheer", particle:["up"], full:"cheer up", es:"animarse", group:"UP_DOWN", sentence:"___! Things will get better soon.", sentenceAns:"cheer up" },
+        { base:"break", particle:["down"], full:"break down", es:"averiarse / venirse abajo", group:"UP_DOWN", sentence:"Our car ___ on the motorway last night.", sentenceAns:"broke down" },
+
+        // --- OUT ---
+        { base:"find", particle:["out"], full:"find out", es:"descubrir / averiguar", group:"OUT", sentence:"I need to ___ what time the train leaves.", sentenceAns:"find out" },
+        { base:"run", particle:["out of","out"], full:"run out of", es:"quedarse sin (algo)", group:"OUT", sentence:"We ___ milk, so I have to go to the shop.", sentenceAns:"ran out of" },
+        { base:"work", particle:["out"], full:"work out", es:"hacer ejercicio / resolverse", group:"OUT", sentence:"I try to ___ at the gym three times a week.", sentenceAns:"work out" },
+        { base:"figure", particle:["out"], full:"figure out", es:"entender / resolver", group:"OUT", sentence:"I can't ___ how this machine works.", sentenceAns:"figure out" },
+        { base:"point", particle:["out"], full:"point out", es:"señalar / hacer notar", group:"OUT", sentence:"The teacher ___ several mistakes in my essay.", sentenceAns:"pointed out" },
+        { base:"check", particle:["out"], full:"check out", es:"fijarse en algo / dejar el hotel", group:"OUT", sentence:"You should ___ that new restaurant downtown.", sentenceAns:"check out" },
+        { base:"hang", particle:["out"], full:"hang out", es:"pasar el rato (con amigos)", group:"OUT", sentence:"We usually ___ at the park after school.", sentenceAns:"hang out" },
+        { base:"carry", particle:["out"], full:"carry out", es:"llevar a cabo", group:"OUT", sentence:"Scientists ___ the experiment three times.", sentenceAns:"carried out" },
+
+        // --- PEOPLE (TOGETHER / APART) ---
+        { base:"break", particle:["up"], full:"break up", es:"romper (una pareja)", group:"TOGETHER_APART", sentence:"They ___ after being together for two years.", sentenceAns:"broke up" },
+        { base:"split", particle:["up"], full:"split up", es:"separarse", group:"TOGETHER_APART", sentence:"My parents ___ when I was six.", sentenceAns:"split up" },
+        { base:"get", particle:["together"], full:"get together", es:"reunirse", group:"TOGETHER_APART", sentence:"Let's ___ this weekend and catch up.", sentenceAns:"get together" },
+        { base:"fall", particle:["out"], full:"fall out with", es:"pelearse con alguien", group:"TOGETHER_APART", sentence:"She ___ with her best friend last week.", sentenceAns:"fell out" },
+        { base:"get", particle:["on"], full:"get on with", es:"llevarse bien con alguien", group:"TOGETHER_APART", sentence:"I really ___ with my new classmates.", sentenceAns:"get on" },
+        { base:"look", particle:["after"], full:"look after", es:"cuidar de", group:"TOGETHER_APART", sentence:"Can you ___ my dog this weekend?", sentenceAns:"look after" },
+        { base:"get", particle:["along"], full:"get along with", es:"llevarse bien", group:"TOGETHER_APART", sentence:"He doesn't ___ with his older brother.", sentenceAns:"get along" },
+        { base:"hang", particle:["on"], full:"hang on", es:"esperar un momento", group:"TOGETHER_APART", sentence:"___ a second, I'll be right with you.", sentenceAns:"hang on" },
+
+        // --- MOTION ---
+        { base:"get", particle:["up"], full:"get up", es:"levantarse (de la cama)", group:"MOTION", sentence:"I ___ early every morning to go running.", sentenceAns:"get up" },
+        { base:"go", particle:["on"], full:"go on", es:"continuar", group:"MOTION", sentence:"Please ___ with your story, it's fascinating.", sentenceAns:"go on" },
+        { base:"go", particle:["away"], full:"go away", es:"irse / marcharse", group:"MOTION", sentence:"We're going to ___ for the weekend.", sentenceAns:"go away" },
+        { base:"come", particle:["back"], full:"come back", es:"volver", group:"MOTION", sentence:"What time will you ___ tonight?", sentenceAns:"come back" },
+        { base:"set", particle:["off"], full:"set off", es:"ponerse en marcha", group:"MOTION", sentence:"We ___ at dawn to avoid the traffic.", sentenceAns:"set off" },
+        { base:"drop", particle:["off"], full:"drop off", es:"dejar a alguien (en un sitio)", group:"MOTION", sentence:"Can you ___ me at the station?", sentenceAns:"drop off" },
+        { base:"pick", particle:["up"], full:"pick up", es:"recoger", group:"MOTION", sentence:"I'll ___ you from school at five.", sentenceAns:"pick up" },
+        { base:"come", particle:["across"], full:"come across", es:"encontrarse con algo por casualidad", group:"MOTION", sentence:"I ___ an old photo while cleaning my room.", sentenceAns:"came across" },
+
+        // --- SELECTIVIDAD CLASSICS ---
+        { base:"look", particle:["forward to","forward"], full:"look forward to", es:"tener ganas de / esperar con ilusión", group:"SELECTIVIDAD", sentence:"I ___ seeing you this summer.", sentenceAns:"look forward to" },
+        { base:"put", particle:["up with","up"], full:"put up with", es:"aguantar / soportar", group:"SELECTIVIDAD", sentence:"I can't ___ this noise any longer.", sentenceAns:"put up with" },
+        { base:"come", particle:["up with","up"], full:"come up with", es:"se me ocurrió (una idea)", group:"SELECTIVIDAD", sentence:"She ___ a brilliant solution to the problem.", sentenceAns:"came up with" },
+        { base:"deal", particle:["with"], full:"deal with", es:"lidiar con / encargarse de", group:"SELECTIVIDAD", sentence:"I'll ___ this problem myself.", sentenceAns:"deal with" },
+        { base:"rely", particle:["on"], full:"rely on", es:"confiar en / depender de", group:"SELECTIVIDAD", sentence:"You can always ___ your family for support.", sentenceAns:"rely on" },
+        { base:"count", particle:["on"], full:"count on", es:"contar con (alguien)", group:"SELECTIVIDAD", sentence:"You can always ___ me if you need help.", sentenceAns:"count on" },
+        { base:"look", particle:["up"], full:"look up", es:"buscar (información)", group:"SELECTIVIDAD", sentence:"I don't know this word — I'll ___ it.", sentenceAns:"look up" },
+        { base:"take", particle:["after"], full:"take after", es:"parecerse a (un familiar)", group:"SELECTIVIDAD", sentence:"Everyone says I ___ my mother.", sentenceAns:"take after" }
+    ];
+
+    let currentPool = [], currentVerb = null, score = 0, streak = 0, lives = 3, coins = 0;
+    let playerName = "", playerCourse = "", rawLeaderboardData = [];
+    let failedVerbs = [], totalAttempts = 0, totalSuccess = 0;
+    let wordStartTime = 0, timerInterval = null, timeLimitSeconds = 30, chillMode = false;
+
+    const LEADERBOARD_KEY = 'phrasalCommandLeaderboard';
+    const TEACHER_PIN = "1234";
+
+    // Shared class backend (same Google Sheet used across all games)
+    const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbxE10u2B5PrXLWXkYAZ31h_ZDVlVmPOmqzaDmGPmhZ2UBFg_-DhGFEYktwIa0o5ixB5/exec';
+    function jsonpRequest_(params, timeoutMs){
+      return new Promise((resolve)=>{
+        const cbName = 'cb_' + Math.random().toString(36).slice(2);
+        let done = false;
+        const script = document.createElement('script');
+        const cleanup = ()=>{
+          if(done) return;
+          done = true;
+          try{ delete window[cbName]; }catch(e){ window[cbName] = undefined; }
+          if(script.parentNode) script.parentNode.removeChild(script);
+        };
+        window[cbName] = (data)=>{ cleanup(); resolve(data); };
+        script.onerror = ()=>{ cleanup(); resolve(null); };
+        const qs = new URLSearchParams(params);
+        qs.set('callback', cbName);
+        script.src = BACKEND_URL + '?' + qs.toString();
+        setTimeout(()=>{ cleanup(); resolve(null); }, timeoutMs || 6000);
+        document.head.appendChild(script);
+      });
+    }
+    function postScoreToBackend(){
+      if(!BACKEND_URL || score<=0) return;
+      try{ jsonpRequest_({ action:'score', student: playerName, course: playerCourse, xpEarned: score }); }catch(e){}
+    }
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(freq, type, duration) {
+        if(audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+        osc.type = type; osc.frequency.value = freq; osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(); gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration); osc.stop(audioCtx.currentTime + duration);
+    }
+
+    window.onload = function() {
+        coins = parseInt(localStorage.getItem('phrasalCoins') || '0');
+        updateCoinDisplay();
+        loadLeaderboard();
+        checkRevengeButton();
+    };
+
+    function updateCoinDisplay() {
+        document.getElementById('coins').innerText = `🪙 ${coins}`;
+        document.getElementById('store-coins').innerText = coins;
+        localStorage.setItem('phrasalCoins', coins);
+    }
+
+    function checkRevengeButton() {
+        const storedErrors = JSON.parse(localStorage.getItem('phrasalFailedStorage') || '[]');
+        document.getElementById('btn-revenge').style.display = storedErrors.length > 0 ? 'inline-block' : 'none';
+    }
+
+    function startGame(isRevenge = false) {
+        const nameInput = document.getElementById('player-name').value.trim();
+        if(!nameInput) return alert("Enter your Pilot Callsign!");
+
+        playerName = nameInput; playerCourse = document.getElementById('player-course').value;
+        const selectedGroup = document.getElementById('phrasal-group').value;
+        chillMode = document.getElementById('chill-mode-toggle').checked;
+
+        document.getElementById('player-modal').style.display = 'none';
+        score = 0; streak = 0; lives = 3; failedVerbs = []; totalAttempts = 0; totalSuccess = 0; timeLimitSeconds = 30;
+
+        const statusPill = document.getElementById('ai-status');
+        if(chillMode) { statusPill.innerText = '🧘 CHILL MODE'; statusPill.style.background = 'rgba(0,255,102,0.25)'; statusPill.style.borderColor = 'var(--neon-green)'; statusPill.style.color = '#c9ffdc'; }
+        else { statusPill.innerText = '⚡ LEVEL: NORMAL'; statusPill.style.background = ''; statusPill.style.borderColor = ''; statusPill.style.color = ''; }
+
+        if(isRevenge) {
+            const storedErrors = JSON.parse(localStorage.getItem('phrasalFailedStorage') || '[]');
+            currentPool = phrasalDB.filter(v => storedErrors.includes(v.full));
+        } else {
+            currentPool = selectedGroup === 'ALL' ? [...phrasalDB] : phrasalDB.filter(v => v.group === selectedGroup);
+        }
+
+        currentPool.sort(() => Math.random() - 0.5);
+        nextVerb();
+    }
+
+    function startTimer() {
+        clearInterval(timerInterval);
+        const timerBar = document.getElementById('timer-bar');
+        timerBar.style.width = '100%';
+        if(chillMode) { timerBar.style.background = 'var(--neon-green)'; return; }
+        timerBar.style.background = '';
+        let timeLeft = timeLimitSeconds;
+
+        timerInterval = setInterval(() => {
+            timeLeft -= 0.1;
+            timerBar.style.width = `${Math.max(0, (timeLeft / timeLimitSeconds) * 100)}%`;
+            if(timeLeft <= 0) { clearInterval(timerInterval); handleTimeout(); }
+        }, 100);
+    }
+
+    function handleTimeout() {
+        totalAttempts++; streak = 0; if(!chillMode) lives--;
+        playSound(120, 'sawtooth', 0.4);
+        recordFailure(currentVerb.full);
+
+        const fb = document.getElementById('feedback');
+        fb.style.display = 'block'; fb.className = 'status-msg incorrect'; fb.innerText = `⏱️ TIME EXPIRED! (${currentVerb.full.toUpperCase()})`;
+        setTimeout(nextVerb, 1500);
+        updateStats();
+    }
+
+    function recordFailure(fullPhrasal) {
+        if(!failedVerbs.includes(fullPhrasal)) failedVerbs.push(fullPhrasal);
+        let stored = JSON.parse(localStorage.getItem('phrasalFailedStorage') || '[]');
+        if(!stored.includes(fullPhrasal)) stored.push(fullPhrasal);
+        localStorage.setItem('phrasalFailedStorage', JSON.stringify(stored));
+        checkRevengeButton();
+    }
+
+    function speakVerb() {
+        if(!currentVerb) return;
+        const msg = new SpeechSynthesisUtterance(currentVerb.full);
+        msg.lang = 'en-GB'; window.speechSynthesis.speak(msg);
+    }
+
+    function listenVoice(inputId) {
+        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+            return alert("Voice recognition not supported in this browser.");
+        }
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'en-US';
+        recognition.start();
+
+        recognition.onresult = function(event) {
+            document.getElementById(inputId).value = event.results[0][0].transcript.toLowerCase().trim();
+        };
+    }
+
+    function updateStats() {
+        document.getElementById('score').innerText = score;
+        document.getElementById('streak').innerText = streak;
+        document.getElementById('lives').innerText = '⚡'.repeat(Math.max(0,lives));
+        updateCoinDisplay();
+    }
+
+    function nextVerb() {
+        clearInterval(timerInterval);
+        document.getElementById('sentence-box').style.display = 'none';
+        document.getElementById('verb-form').style.display = 'block';
+
+        if(currentPool.length === 0 || lives <= 0) { endGame(); return; }
+
+        currentVerb = currentPool.pop();
+        document.getElementById('target-es').innerText = currentVerb.es.toUpperCase();
+        document.getElementById('target-inf').innerText = currentVerb.base.toUpperCase() + ' ___';
+        document.getElementById('input-particle').value = '';
+        document.getElementById('feedback').style.display = 'none';
+        document.getElementById('input-particle').focus();
+
+        wordStartTime = Date.now();
+        startTimer();
+        updateStats();
+    }
+
+    function checkAnswer(e) {
+        e.preventDefault();
+        clearInterval(timerInterval);
+        totalAttempts++;
+
+        const p = document.getElementById('input-particle').value.trim().toLowerCase();
+
+        if(currentVerb.particle.includes(p)) {
+            totalSuccess++;
+            const pointsGained = 5 + (streak * 1);
+            score += pointsGained; streak++; coins += 5;
+
+            let stored = JSON.parse(localStorage.getItem('phrasalFailedStorage') || '[]');
+            localStorage.setItem('phrasalFailedStorage', JSON.stringify(stored.filter(v => v !== currentVerb.full)));
+
+            playSound(600, 'square', 0.15);
+            if(streak % 5 === 0) triggerConfetti();
+
+            if(Math.random() > 0.4 && currentVerb.sentence) {
+                triggerSentenceBonus();
+            } else {
+                const fb = document.getElementById('feedback');
+                fb.style.display = 'block'; fb.className = 'status-msg correct';
+                fb.innerText = `HIT! +${pointsGained} PTS`;
+                setTimeout(nextVerb, 800);
+            }
+        } else {
+            streak = 0; if(!chillMode) lives--;
+            playSound(150, 'sawtooth', 0.3);
+            recordFailure(currentVerb.full);
+
+            const fb = document.getElementById('feedback');
+            fb.style.display = 'block'; fb.className = 'status-msg incorrect';
+            fb.innerHTML = `MISSED! ${currentVerb.full.toUpperCase()}`;
+            currentPool.unshift(currentVerb);
+            setTimeout(nextVerb, 2000);
+        }
+        updateStats();
+    }
+
+    function triggerSentenceBonus() {
+        document.getElementById('verb-form').style.display = 'none';
+        const box = document.getElementById('sentence-box');
+        box.style.display = 'block';
+        document.getElementById('sentence-text').innerText = '⭐ BONUS — type the full phrasal verb in the right tense: ' + currentVerb.sentence;
+        document.getElementById('sentence-input').value = '';
+        document.getElementById('sentence-input').focus();
+    }
+
+    function checkSentenceBonus() {
+        const ans = document.getElementById('sentence-input').value.trim().toLowerCase();
+        if(ans === currentVerb.sentenceAns.toLowerCase()) {
+            score += 10; coins += 5;
+            playSound(800, 'square', 0.2);
+            alert("BONUS COMPLETE! +10 PTS");
+        } else {
+            alert(`MISSED! Correct: ${currentVerb.sentenceAns}`);
+        }
+        nextVerb();
+    }
+
+    function getHint() {
+        if(!currentVerb) return;
+        document.getElementById('input-particle').value = currentVerb.particle[0].substring(0, 1);
+    }
+
+    function openStore() {
+        document.getElementById('player-modal').style.display = 'none';
+        document.getElementById('store-modal').style.display = 'flex';
+    }
+
+    function closeStore() {
+        document.getElementById('store-modal').style.display = 'none';
+        document.getElementById('player-modal').style.display = 'flex';
+    }
+
+    function buyItem(item, price) {
+        if(coins < price) return alert("Not enough Space Coins!");
+        coins -= price;
+        updateCoinDisplay();
+
+        if(item === 'shield') { lives += 1; alert("Extra Shield Purchased!"); }
+        if(item === 'theme_purple') {
+            document.documentElement.style.setProperty('--panel-border', '#b000ff');
+            alert("Purple Neon Theme Applied!");
+        }
+    }
+
+    function endGame() {
+        clearInterval(timerInterval);
+        saveScoreLocally();
+        showReport();
+    }
+
+    function showReport() {
+        const reportModal = document.getElementById('report-modal');
+        const precision = totalAttempts > 0 ? Math.round((totalSuccess / totalAttempts) * 100) : 0;
+        document.getElementById('report-score').innerText = chillMode
+            ? `🧘 CHILL MODE — ACCURACY: ${precision}% (not saved to Hall of Fame)`
+            : `SCORE: ${score} | ACCURACY: ${precision}%`;
+
+        const reportErrors = document.getElementById('report-errors');
+        if(failedVerbs.length === 0) {
+            reportErrors.innerHTML = '<p style="color:var(--neon-green)">PERFECT RUN! ZERO ERRORS DETECTED.</p>';
+        } else {
+            let html = '<strong>TARGETS FOR REVENGE MODE:</strong><br>';
+            failedVerbs.forEach(v => { html += `• ${v.toUpperCase()}<br>`; });
+            reportErrors.innerHTML = html;
+        }
+        reportModal.style.display = 'flex';
+    }
+
+    function closeReport() {
+        document.getElementById('report-modal').style.display = 'none';
+        document.getElementById('player-modal').style.display = 'flex';
+        checkRevengeButton();
+    }
+
+    const MISSION_LOG_URL = 'mission-log.html';
+    function sendToMissionLog() {
+        const payload = { kind:'game', tool:'Phrasal Command', name: playerName, course: playerCourse, score: score, date: new Date().toISOString() };
+        const encoded = encodeURIComponent(btoa(JSON.stringify(payload)));
+        window.open(`${MISSION_LOG_URL}?import=${encoded}`, '_blank', 'noopener');
+    }
+
+    // ---- LOCAL HALL OF FAME (localStorage, per device/browser) ----
+
+    function saveScoreLocally() {
+        if(chillMode) return; // chill runs are for practice, not the leaderboard
+        if(score <= 0) return;
+        postScoreToBackend();
+        const precision = totalAttempts > 0 ? Math.round((totalSuccess / totalAttempts) * 100) : 0;
+        let stored = JSON.parse(localStorage.getItem(LEADERBOARD_KEY) || '[]');
+        stored.push({
+            nombre: playerName,
+            curso: playerCourse,
+            puntuacion: score,
+            precision: precision,
+            fecha: new Date().toISOString()
+        });
+        const bestByKey = {};
+        stored.forEach(entry => {
+            const key = entry.nombre.toLowerCase() + '|' + entry.curso;
+            if(!bestByKey[key] || entry.puntuacion > bestByKey[key].puntuacion) bestByKey[key] = entry;
+        });
+        stored = Object.values(bestByKey).sort((a, b) => b.puntuacion - a.puntuacion).slice(0, 100);
+        localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(stored));
+        rawLeaderboardData = stored;
+        const activeTab = document.querySelector('.tab-chip.active');
+        renderLeaderboard(activeTab ? activeTab.textContent.trim() === 'ALL' ? 'TODOS' : activeTab.textContent.trim() : 'TODOS');
+    }
+
+    function loadLeaderboard() {
+        rawLeaderboardData = JSON.parse(localStorage.getItem(LEADERBOARD_KEY) || '[]')
+            .sort((a, b) => b.puntuacion - a.puntuacion);
+        renderLeaderboard('TODOS');
+    }
+
+    function filterLeaderboard(course, btn) {
+        document.querySelectorAll('.tab-chip').forEach(b => b.classList.remove('active'));
+        if(btn) btn.classList.add('active');
+        renderLeaderboard(course);
+    }
+
+    function renderLeaderboard(course) {
+        const list = document.getElementById('leaderboard'); list.innerHTML = '';
+        let filtered = course === 'TODOS' ? rawLeaderboardData : rawLeaderboardData.filter(i => i.curso === course);
+
+        if(!filtered || filtered.length === 0) { list.innerHTML = '<li class="ranking-item"><span>NO RECORDS YET — be the first pilot!</span></li>'; return; }
+        filtered.forEach((item, index) => {
+            const isMe = playerName && item.nombre.toLowerCase() === playerName.toLowerCase() && item.curso === playerCourse;
+            list.innerHTML += `<li class="ranking-item${isMe ? ' me' : ''}"><span>${index + 1}. ${item.nombre.toUpperCase()} (${item.curso})</span><strong>${item.puntuacion} PTS</strong></li>`;
+        });
+    }
+
+    function openTeacherPanel() {
+        if(prompt("TEACHER PIN:") === TEACHER_PIN) exportToCSV();
+    }
+
+    async function exportToCSV() {
+        let csvContent = "Rank,Name,Grade,Score,Accuracy,Date\n";
+        rawLeaderboardData.forEach((row, index) => { csvContent += `${index + 1},"${row.nombre}","${row.curso}",${row.puntuacion},${row.precision || ''},${row.fecha || ''}\n`; });
+        const filename = `Grades_${new Date().toISOString().slice(0,10)}.csv`;
+
+        const downloads = (window.claude && window.claude.use) ? await window.claude.use("downloads") : null;
+        if(!downloads) {
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = filename;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            return;
+        }
+        try {
+            await downloads.save({ filename, data: csvContent });
+        } catch(err) {
+            if(err && err.code === 'declined') return;
+            alert("Couldn't save the file: " + (err && err.message ? err.message : 'unknown error'));
+        }
+    }
+
+    function triggerConfetti() {
+        const canvas = document.getElementById('confetti'), ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particles = Array.from({length: 40}, () => ({
+            x: Math.random() * canvas.width, y: 0, r: Math.random() * 6 + 2, d: Math.random() * 10,
+            color: `hsl(${Math.random() * 360}, 100%, 50%)`
+        })), angle = 0;
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fillStyle = p.color; ctx.fill();
+                p.y += Math.cos(angle + p.d) + 1 + p.r / 2; p.x += Math.sin(angle) * 2;
+            });
+            angle += 0.01;
+            if (particles.some(p => p.y < canvas.height)) requestAnimationFrame(draw);
+            else ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        draw();
+    }
+</script>
+
+</body></html>

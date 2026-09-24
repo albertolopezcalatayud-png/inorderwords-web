@@ -41,6 +41,7 @@
     --vocab:#a78bfa;
     --trap:#ff3b5c;
     --mission:#38bdf8;
+    --collo:#c026d3;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   html,body{background:var(--bg); color:var(--text); font-family:'Manrope',sans-serif; width:100%; overflow-x:hidden;}
@@ -120,6 +121,9 @@
   .card.trap{--glow:var(--trap);}
   .card.mission{--glow:var(--mission);}
   .card.dock{--glow:var(--coral);}
+  .card.phrasal{--glow:var(--quest-2);}
+  .card.qcontrol{--glow:var(--quest);}
+  .card.collo{--glow:var(--collo);}
   .card:hover.tweet{border-color:rgba(29,155,240,0.5);}
   .card:hover.vocab{border-color:rgba(167,139,250,0.5);}
   .card:hover.lab{border-color:rgba(45,212,191,0.5);}
@@ -127,6 +131,9 @@
   .card:hover.trap{border-color:rgba(255,59,92,0.5);}
   .card:hover.mission{border-color:rgba(56,189,248,0.5);}
   .card:hover.dock{border-color:rgba(255,107,74,0.5);}
+  .card:hover.phrasal{border-color:rgba(255,183,3,0.5);}
+  .card:hover.qcontrol{border-color:rgba(63,174,92,0.5);}
+  .card:hover.collo{border-color:rgba(192,38,211,0.5);}
 
   .card .top-row{position:relative; z-index:1; display:flex; align-items:flex-start; justify-content:space-between; gap:10px;}
   .top-row-right{position:relative; z-index:1; display:flex; align-items:center; gap:7px; flex:none;}
@@ -322,7 +329,7 @@
   </div>
 
   <div class="group">
-    <div class="group-label">🎮 Practice games <span class="n">4</span></div>
+    <div class="group-label">🎮 Practice games <span class="n">7</span></div>
     <div class="portals">
       <a class="card striker" href="verb-striker.html" target="_blank" rel="noopener">
         <div class="top-row">
@@ -378,6 +385,48 @@
         <h3>Docking Sequence</h3>
         <p>Match base, past and past participle to dock each irregular verb — a calm, untimed memory game to lock in the forms that trip everyone up.</p>
         <span class="cta">Start docking <span>→</span></span>
+      </a>
+
+      <a class="card phrasal" href="phrasal-command.html" target="_blank" rel="noopener">
+        <div class="top-row">
+          <span class="kicker">Space arcade · phrasal verbs</span>
+          <span class="top-row-right">
+            <span class="level all">3º ESO → Bach</span>
+            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('phrasal-command.html','Phrasal Command')" title="Asignar en Google Classroom">📋</button>
+          </span>
+        </div>
+        <span class="glyph">🕹️</span>
+        <h3>Phrasal Command</h3>
+        <p>Turn on, give up, look forward to… Type the missing particle to complete 48 exam-favourite phrasal verbs, then use them in context for bonus points.</p>
+        <span class="cta">Take command <span>→</span></span>
+      </a>
+
+      <a class="card qcontrol" href="question-control.html" target="_blank" rel="noopener">
+        <div class="top-row">
+          <span class="kicker">Grammar · build the question</span>
+          <span class="top-row-right">
+            <span class="level all">All levels</span>
+            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('question-control.html','Question Control')" title="Asignar en Google Classroom">📋</button>
+          </span>
+        </div>
+        <span class="glyph">🎛️</span>
+        <h3>Question Control</h3>
+        <p>You get the answer, you write the question: do, does, did and have/has — plus the subject-question traps (<i>Who broke the window?</i>).</p>
+        <span class="cta">Start transmitting <span>→</span></span>
+      </a>
+
+      <a class="card collo" href="collocation-match.html" target="_blank" rel="noopener">
+        <div class="top-row">
+          <span class="kicker">Collocations · pick the verb</span>
+          <span class="top-row-right">
+            <span class="level all">All levels</span>
+            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('collocation-match.html','Collocation Match')" title="Asignar en Google Classroom">📋</button>
+          </span>
+        </div>
+        <span class="glyph">🔗</span>
+        <h3>Collocation Match</h3>
+        <p>Make a decision or do a decision? Pick the verb that really goes with the word — make/do, take/have/get and the collocations examiners love.</p>
+        <span class="cta">Match them <span>→</span></span>
       </a>
     </div>
   </div>
