@@ -30,7 +30,7 @@ h1{font-family:'Unbounded',system-ui,sans-serif; font-size:clamp(22px,5vw,30px);
 .head{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px;}
 .head h2{font-family:'Unbounded',system-ui,sans-serif; font-size:17px;}
 .head .meta{font-size:12.5px; color:var(--sub);}
-.actions{display:flex; gap:8px;}
+.actions{display:flex; gap:8px; flex-wrap:wrap;}
 .btn{background:rgba(255,255,255,0.06); border:1px solid var(--line); color:var(--text); border-radius:10px; padding:8px 12px; font:inherit; font-weight:700; font-size:12.5px; cursor:pointer;}
 .btn:hover{border-color:var(--gold);}
 .table-wrap{overflow-x:auto;}
@@ -71,6 +71,7 @@ tr:first-child td.rank{color:var(--gold);}
       <div class="actions">
         <button class="btn" onclick="load()">↻ Refresh</button>
         <button class="btn" onclick="downloadCsv()">⬇ CSV</button>
+        <button class="btn" id="xlsBtn" onclick="downloadExcel()">⬇ Excel (all games)</button>
       </div>
     </div>
     <div class="table-wrap" id="out"><p class="empty">Choose a game and a grade.</p></div>
@@ -80,6 +81,7 @@ tr:first-child td.rank{color:var(--gold);}
 </div>
 
 <script src="class-sync.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 var GAMES = [
   {id:'Verb Striker', em:'🚀'}, {id:'Docking Sequence', em:'🧩'}, {id:'Question Control', em:'🎛️'},
@@ -151,6 +153,85 @@ function downloadCsv(){
   a.href = URL.createObjectURL(blob);
   a.download = (sel.game + ' ' + (sel.grade === 'ALL' ? 'all grades' : sel.grade)).replace(/[^\w\s·º-]/g, '').replace(/\s+/g, '_') + '.csv';
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+
+var TEST_NAMES = ['ADMIN', 'TEST ALBERTO', 'DIAGTEST'];
+function boardRows(params, grade){
+  return IOW.jsonp(params, 15000).then(function(d){
+    if(!d || !d.ok || !Array.isArray(d.leaderboard)) return null;
+    return d.leaderboard.filter(function(r){ return r && r.student && TEST_NAMES.indexOf(String(r.student).trim().toUpperCase()) === -1; })
+      .map(function(r){ return {student:String(r.student).trim().toUpperCase(), xp:r.xp || 0, grade:grade}; })
+      .sort(function(a, b){ return b.xp - a.xp || a.student.localeCompare(b.student); });
+  });
+}
+function downloadExcel(){
+  var btn = document.getElementById('xlsBtn');
+  if(typeof XLSX === 'undefined'){ IOW.toast('⚠️ The Excel tool didn\'t load. Check the connection and try again.', 'warn'); return; }
+  if(btn.disabled) return;
+  btn.disabled = true;
+  var data = {}, failed = 0, i = 0;
+  function next(){
+    if(i >= GAMES.length) return Promise.resolve();
+    var g = GAMES[i++], grades = g.vr ? Object.keys(VR) : IOW.GRADES;
+    btn.textContent = 'Loading ' + i + '/' + GAMES.length + '…';
+    return Promise.all(grades.map(function(gr){
+      return boardRows({action:'leaderboard', course: g.vr ? VR[gr] : IOW.boardName(g.id, gr)}, gr);
+    })).then(function(parts){
+      data[g.id] = {};
+      grades.forEach(function(gr, k){ if(parts[k] === null) failed++; data[g.id][gr] = parts[k] || []; });
+      return next();
+    });
+  }
+  next().then(function(){
+    var wb = XLSX.utils.book_new(), stamp = new Date().toLocaleString();
+    var sum = [['Class results by game · In Order Words'], ['Downloaded ' + stamp + '. One tab per game; inside each tab, one block of columns per grade.'], [], ['Game']];
+    var sub = [''];
+    IOW.GRADES.forEach(function(gr){ sum[3].push(gr, ''); sub.push('Students', 'XP'); });
+    sum.push(sub);
+    GAMES.forEach(function(g){
+      var line = [g.id];
+      IOW.GRADES.forEach(function(gr){
+        var r = data[g.id][gr];
+        if(!r){ line.push('n/a', 'n/a'); return; }
+        line.push(r.length, r.reduce(function(s, x){ return s + x.xp; }, 0));
+      });
+      sum.push(line);
+    });
+    sum.push([], ['Test names (ADMIN, TEST ALBERTO, DIAGTEST) are left out. Students are grouped by the name they type.']);
+    if(failed) sum.push(['⚠ ' + failed + ' board(s) could not be loaded — try again for a complete file.']);
+    var ws = XLSX.utils.aoa_to_sheet(sum);
+    ws['!merges'] = IOW.GRADES.map(function(gr, k){ return {s:{r:3, c:1 + k * 2}, e:{r:3, c:2 + k * 2}}; });
+    ws['!cols'] = [{wch:24}].concat(IOW.GRADES.map(function(){ return {wch:9}; }).concat(IOW.GRADES.map(function(){ return {wch:9}; })));
+    XLSX.utils.book_append_sheet(wb, ws, 'Summary');
+    GAMES.forEach(function(g){
+      var grades = g.vr ? Object.keys(VR) : IOW.GRADES;
+      var depth = Math.max.apply(null, grades.map(function(gr){ return data[g.id][gr].length; }).concat([1]));
+      var aoa = [[g.id], ['Total XP per student (all their runs added up). One block per grade.'], [], [], []];
+      var merges = [], cols = [];
+      grades.forEach(function(gr, k){
+        var c = k * 4;
+        aoa[3][c] = gr; merges.push({s:{r:3, c:c}, e:{r:3, c:c + 2}});
+        aoa[4][c] = '#'; aoa[4][c + 1] = 'Student'; aoa[4][c + 2] = 'XP';
+        cols.push({wch:4}, {wch:28}, {wch:8}, {wch:3});
+      });
+      for(var r = 0; r < depth; r++){
+        var row = [];
+        grades.forEach(function(gr, k){
+          var x = data[g.id][gr][r], c = k * 4;
+          if(x){ row[c] = r + 1; row[c + 1] = x.student; row[c + 2] = x.xp; }
+          else if(r === 0){ row[c + 1] = '— no scores yet —'; }
+        });
+        aoa.push(row);
+      }
+      var s = XLSX.utils.aoa_to_sheet(aoa);
+      s['!merges'] = merges; s['!cols'] = cols;
+      XLSX.utils.book_append_sheet(wb, s, g.id.slice(0, 31));
+    });
+    var d = new Date(), pad = function(n){ return (n < 10 ? '0' : '') + n; };
+    XLSX.writeFile(wb, 'Class_results_by_game_' + d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + '.xlsx');
+    IOW.toast(failed ? '⚠️ Excel downloaded, but ' + failed + ' board(s) didn\'t load.' : '✅ Excel downloaded.', failed ? 'warn' : '');
+  }).catch(function(){ IOW.toast('⚠️ Couldn\'t build the Excel. Try again.', 'warn'); })
+  .then(function(){ btn.disabled = false; btn.textContent = '⬇ Excel (all games)'; });
 }
 
 renderChips();
