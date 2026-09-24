@@ -131,6 +131,11 @@
                 <option value="5">1º Bach — PHRASAL COLLOCATIONS</option>
                 <option value="6">2º Bach — PAU/EBAU LEVEL</option>
             </select>
+            <label style="display:flex; align-items:center; gap:9px; width:85%; max-width:420px; margin:6px 0 4px; padding:10px 12px; background:rgba(0,255,102,0.08); border:1px solid rgba(0,255,102,0.35); border-radius:8px; color:#c9ffdc; font-size:0.92rem; font-weight:700; cursor:pointer; text-align:left;">
+                <input type="checkbox" id="chill-mode-toggle" style="width:18px; height:18px; accent-color: var(--neon-green); flex:none;">
+                🧘 CHILL MODE — no timer, just practice
+            </label>
+
             <div style="display:flex; gap:10px; width:85%; max-width:420px; margin-top:5px;">
                 <button class="sci-btn" onclick="startGame()" style="flex:1;">LAUNCH</button>
             </div>
@@ -241,7 +246,7 @@
     let currentPool = [], currentItem = null, score = 0, streak = 0, lives = 3;
     let playerName = "", playerCourse = "", rawLeaderboardData = [];
     let missedItems = [], roundIndex = 0, totalRounds = 0;
-    let timerInterval = null, timeLimitSeconds = 20;
+    let timerInterval = null, timeLimitSeconds = 20, chillMode = false;
 
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playSound(freq, type, duration) {
@@ -270,21 +275,26 @@
         playerName = nameInput; playerCourse = document.getElementById('player-course').value;
         const lvl = document.getElementById('level-group').value;
 
+        chillMode = document.getElementById('chill-mode-toggle').checked;
         document.getElementById('player-modal').style.display = 'none';
         score = 0; streak = 0; lives = 3; missedItems = []; roundIndex = 0;
 
         currentPool = lvl === 'ALL' ? [...PREP_DB] : PREP_DB.filter(p => String(p.level) === lvl);
         currentPool.sort(() => Math.random() - 0.5);
         totalRounds = currentPool.length;
-        document.getElementById('level-pill').textContent = 'LEVEL: ' + (lvl === 'ALL' ? 'ALL' : playerCourse.toUpperCase());
+        const pill = document.getElementById('level-pill');
+        if(chillMode) { pill.textContent = '🧘 CHILL MODE'; pill.style.background = 'rgba(0,255,102,0.25)'; pill.style.borderColor = 'var(--neon-green)'; pill.style.color = '#c9ffdc'; }
+        else { pill.textContent = 'LEVEL: ' + (lvl === 'ALL' ? 'ALL' : playerCourse.toUpperCase()); pill.style.background = ''; pill.style.borderColor = ''; pill.style.color = ''; }
         nextRound();
     }
 
     function startTimer() {
         clearInterval(timerInterval);
-        let timeLeft = timeLimitSeconds;
         const bar = document.getElementById('timer-bar');
         bar.style.width = '100%';
+        if(chillMode) { bar.style.background = 'var(--neon-green)'; return; }
+        bar.style.background = '';
+        let timeLeft = timeLimitSeconds;
         timerInterval = setInterval(() => {
             timeLeft -= 0.1;
             bar.style.width = `${Math.max(0, (timeLeft/timeLimitSeconds)*100)}%`;
@@ -323,7 +333,7 @@
             fb.style.display = 'block'; fb.className = 'status-msg correct'; fb.innerText = `HIT! +${pts} PTS`;
         } else {
             if(el) el.classList.add('wrong-flash');
-            streak = 0; lives--;
+            streak = 0; if(!chillMode) lives--;
             missedItems.push(currentItem.sentence.replace('___', currentItem.answer.toUpperCase()));
             playSound(150, 'sawtooth', 0.3);
             fb.style.display = 'block'; fb.className = 'status-msg incorrect';
@@ -352,7 +362,7 @@
 
     function showReport() {
         const modal = document.getElementById('report-modal');
-        document.getElementById('report-score').innerText = `SCORE: ${score}`;
+        document.getElementById('report-score').innerText = chillMode ? `🧘 CHILL MODE — not saved to Hall of Fame` : `SCORE: ${score}`;
         const box = document.getElementById('report-errors');
         if(missedItems.length === 0) {
             box.innerHTML = '<p style="color:var(--neon-green)">PERFECT RUN! ZERO ERRORS DETECTED.</p>';
@@ -377,6 +387,7 @@
     }
 
     function saveScoreLocally() {
+        if(chillMode) return; // chill runs are for practice, not the leaderboard
         if(score <= 0) return;
         let stored = JSON.parse(localStorage.getItem(LEADERBOARD_KEY) || '[]');
         stored.push({ nombre: playerName, curso: playerCourse, puntuacion: score, fecha: new Date().toISOString() });

@@ -150,6 +150,11 @@
                 <option value="vowel_change">VOWEL CHANGE (find, win...)</option>
             </select>
 
+            <label style="display:flex; align-items:center; gap:9px; width:85%; max-width:420px; margin:6px 0 4px; padding:10px 12px; background:rgba(0,255,102,0.08); border:1px solid rgba(0,255,102,0.35); border-radius:8px; color:#c9ffdc; font-size:0.92rem; font-weight:700; cursor:pointer; text-align:left;">
+                <input type="checkbox" id="chill-mode-toggle" style="width:18px; height:18px; accent-color: var(--neon-green); flex:none;">
+                🧘 CHILL MODE — no timer, just practice
+            </label>
+
             <div style="display:flex; gap:10px; width:85%; max-width:420px; margin-top:5px;">
                 <button class="sci-btn" onclick="startGame(false)" style="flex:2;">LAUNCH</button>
                 <button class="sci-btn sci-btn-purple" onclick="startGame(true)" id="btn-revenge" style="flex:1;">🔥 REVENGE</button>
@@ -397,7 +402,7 @@
     let currentPool = [], currentVerb = null, score = 0, streak = 0, lives = 3, coins = 0;
     let playerName = "", playerCourse = "", rawLeaderboardData = [], classLeaderboardData = [];
     let failedVerbs = [], totalAttempts = 0, totalSuccess = 0;
-    let wordStartTime = 0, timerInterval = null, timeLimitSeconds = 45;
+    let wordStartTime = 0, timerInterval = null, timeLimitSeconds = 45, chillMode = false;
 
     const LEADERBOARD_KEY = 'verbStrikerLeaderboard';
     const TEACHER_PIN = "1234";
@@ -465,9 +470,14 @@
 
         playerName = nameInput; playerCourse = document.getElementById('player-course').value;
         const selectedGroup = document.getElementById('phonetic-group').value;
+        chillMode = document.getElementById('chill-mode-toggle').checked;
 
         document.getElementById('player-modal').style.display = 'none';
         score = 0; streak = 0; lives = 3; failedVerbs = []; totalAttempts = 0; totalSuccess = 0; timeLimitSeconds = 45;
+
+        const statusPill = document.getElementById('ai-status');
+        if(chillMode) { statusPill.innerText = '🧘 CHILL MODE'; statusPill.style.background = 'rgba(0,255,102,0.25)'; statusPill.style.borderColor = 'var(--neon-green)'; statusPill.style.color = '#c9ffdc'; }
+        else { statusPill.innerText = '⚡ LEVEL: NORMAL'; statusPill.style.background = ''; statusPill.style.borderColor = ''; statusPill.style.color = ''; }
 
         if(isRevenge) {
             const storedErrors = JSON.parse(localStorage.getItem('verbFailedStorage') || '[]');
@@ -482,9 +492,11 @@
 
     function startTimer() {
         clearInterval(timerInterval);
-        let timeLeft = timeLimitSeconds;
         const timerBar = document.getElementById('timer-bar');
         timerBar.style.width = '100%';
+        if(chillMode) { timerBar.style.background = 'var(--neon-green)'; return; }
+        timerBar.style.background = '';
+        let timeLeft = timeLimitSeconds;
 
         timerInterval = setInterval(() => {
             timeLeft -= 0.1;
@@ -587,7 +599,7 @@
                 setTimeout(nextVerb, 800);
             }
         } else {
-            streak = 0; lives--;
+            streak = 0; if(!chillMode) lives--;
             playSound(150, 'sawtooth', 0.3);
             recordFailure(currentVerb.inf);
 
@@ -658,7 +670,9 @@
     function showReport() {
         const reportModal = document.getElementById('report-modal');
         const precision = totalAttempts > 0 ? Math.round((totalSuccess / totalAttempts) * 100) : 0;
-        document.getElementById('report-score').innerText = `SCORE: ${score} | ACCURACY: ${precision}%`;
+        document.getElementById('report-score').innerText = chillMode
+            ? `🧘 CHILL MODE — ACCURACY: ${precision}% (not saved to Hall of Fame)`
+            : `SCORE: ${score} | ACCURACY: ${precision}%`;
 
         const reportErrors = document.getElementById('report-errors');
         if(failedVerbs.length === 0) {
@@ -685,6 +699,7 @@
     }
 
     function saveScoreLocally() {
+        if(chillMode) return; // chill runs are for practice, not the leaderboard
         if(score <= 0) return;
         postScoreToBackend();
         const precision = totalAttempts > 0 ? Math.round((totalSuccess / totalAttempts) * 100) : 0;
