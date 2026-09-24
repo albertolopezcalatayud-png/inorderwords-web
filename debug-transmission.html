@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Debug the Transmission</title>
+<meta name="description" content="A corrupted message has reached mission control. Find the grammar bugs hidden in each paragraph and fix them. Proofreading practice, no timer.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Inorderwords">
+<meta property="og:title" content="Debug the Transmission — Inorderwords">
+<meta property="og:description" content="Find the grammar bugs hidden in each paragraph and fix them. Proofreading practice, no timer.">
+<meta property="og:url" content="https://albertolopezcalatayud-png.github.io/inorderwords-web/debug-transmission.html">
+<meta property="og:image" content="https://albertolopezcalatayud-png.github.io/inorderwords-web/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0b0e1a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230b0e1a'/%3E%3Ctext x='50' y='68' font-size='58' text-anchor='middle'%3E%F0%9F%90%9B%3C/text%3E%3C/svg%3E">
+<link rel="canonical" href="https://albertolopezcalatayud-png.github.io/inorderwords-web/debug-transmission.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800;900&family=Manrope:wght@400;500;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0e1a; --panel:#12172c; --panel2:#161c36; --line:rgba(255,255,255,0.09);
+  --text:#f4f2ec; --sub:#9aa1ba; --acc:#84cc16; --acc-dim:rgba(132,204,22,0.14);
+  --ok:#2dd4bf; --bad:#ff3b5c; --warn:#ffb703;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{background:var(--bg); color:var(--text); font-family:'Manrope',system-ui,sans-serif; width:100%; min-height:100%;}
+body{padding:18px 16px 40px; display:flex; flex-direction:column; align-items:center;}
+.wrap{width:100%; max-width:720px; display:flex; flex-direction:column; gap:16px; margin-top:44px;}
+h1,h2,h3{font-family:'Unbounded',system-ui,sans-serif; text-wrap:balance;}
+.topbar{display:flex; align-items:center; justify-content:space-between; gap:10px; background:linear-gradient(135deg,var(--panel2),var(--panel)); border:1px solid var(--line); border-radius:18px; padding:12px 16px;}
+.brand{display:flex; align-items:center; gap:10px;}
+.logo{width:34px; height:34px; border-radius:10px; background:var(--acc-dim); border:1px solid rgba(132,204,22,0.4); display:flex; align-items:center; justify-content:center; font-size:17px; flex:none;}
+.name{font-family:'Unbounded',sans-serif; font-weight:800; font-size:15px;}
+.stats{display:flex; gap:14px;}
+.stat{text-align:right;}
+.stat .n{font-family:'JetBrains Mono',monospace; font-weight:700; font-size:14px; color:var(--acc); font-variant-numeric:tabular-nums;}
+.stat .l{font-size:9.5px; color:var(--sub); text-transform:uppercase; letter-spacing:0.05em;}
+.panel{background:linear-gradient(135deg,var(--panel2),var(--panel)); border:1px solid var(--line); border-radius:20px; padding:22px 20px;}
+.badge{display:inline-flex; align-items:center; gap:6px; background:var(--acc-dim); border:1px solid rgba(132,204,22,0.35); color:var(--acc); font-family:'JetBrains Mono',monospace; font-weight:700; font-size:11px; border-radius:999px; padding:5px 12px; margin-bottom:14px;}
+.panel h2{font-size:21px; margin-bottom:8px;}
+.lede{color:var(--sub); font-size:14px; line-height:1.55; margin-bottom:16px;}
+.howto{background:rgba(255,255,255,0.03); border:1px solid var(--line); border-radius:14px; padding:12px 14px; font-size:13px; color:var(--sub); line-height:1.6; margin-bottom:18px;}
+.howto b{color:var(--text);}
+.levels{display:flex; flex-direction:column; gap:10px;}
+.lvl{display:flex; align-items:center; justify-content:space-between; gap:12px; background:rgba(255,255,255,0.03); border:1px solid var(--line); border-radius:14px; padding:14px 16px; cursor:pointer; color:var(--text); text-align:left; font:inherit;}
+.lvl:hover,.lvl:focus-visible{border-color:var(--acc); background:var(--acc-dim); outline:none;}
+.lvl .t{font-weight:800; font-size:14.5px;}
+.lvl .d{font-size:12px; color:var(--sub);}
+.lvl .arr{color:var(--acc); font-size:18px;}
+.screen{display:none;}
+.screen.active{display:block;}
+.thead{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px;}
+.ttitle{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--sub);}
+.ttitle b{color:var(--acc);}
+.bugs{font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; background:rgba(255,59,92,0.12); border:1px solid rgba(255,59,92,0.4); color:#ff8fa3; padding:5px 11px; border-radius:99px;}
+.bugs.clear{background:rgba(45,212,191,0.12); border-color:rgba(45,212,191,0.4); color:var(--ok);}
+.terminal{background:#05070f; border:1px solid rgba(132,204,22,0.35); border-radius:16px; padding:18px 18px 20px; position:relative;}
+.terminal::before{content:'▌ INCOMING TRANSMISSION'; display:block; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.12em; color:var(--acc); margin-bottom:10px;}
+.msg{font-size:17px; line-height:2.05;}
+.w{cursor:pointer; border-radius:5px; padding:1px 0; transition:background .1s ease;}
+.w:hover{background:rgba(255,255,255,0.1);}
+.w:focus-visible{outline:2px solid var(--acc); outline-offset:1px;}
+.w.false{animation:shake .35s ease; background:rgba(255,183,3,0.2);}
+.w.fixed{background:rgba(45,212,191,0.16); color:var(--ok); cursor:default; font-weight:700;}
+.w.fixed-late{background:rgba(255,183,3,0.16); color:var(--warn); cursor:default; font-weight:700;}
+.w.missed{background:rgba(255,59,92,0.18); color:#ff8fa3; cursor:default; font-weight:700;}
+.w .was{text-decoration:line-through; opacity:0.6; font-weight:500; margin-right:4px;}
+@keyframes shake{0%,100%{transform:translateX(0);}30%{transform:translateX(-3px);}60%{transform:translateX(3px);}}
+.popover{position:fixed; z-index:50; background:var(--panel2); border:1px solid var(--acc); border-radius:14px; padding:12px; box-shadow:0 16px 40px rgba(0,0,0,0.55); width:min(300px, calc(100vw - 32px)); display:none;}
+.popover.show{display:block;}
+.popover .q{font-size:12.5px; color:var(--sub); margin-bottom:8px;}
+.popover .q b{color:var(--text);}
+.popover .choices{display:flex; flex-direction:column; gap:7px;}
+.popover button{background:rgba(255,255,255,0.05); border:1px solid var(--line); color:var(--text); border-radius:10px; padding:10px 12px; font:inherit; font-weight:700; font-size:14px; cursor:pointer; text-align:left;}
+.popover button:hover,.popover button:focus-visible{border-color:var(--acc); outline:none;}
+.popover .cancel{background:none; border:none; color:var(--sub); font-size:12px; font-weight:600; padding:6px 2px 0; text-align:right;}
+.log{margin-top:14px; display:flex; flex-direction:column; gap:8px;}
+.log .entry{font-size:13.5px; line-height:1.5; background:rgba(255,255,255,0.03); border:1px solid var(--line); border-left:3px solid var(--ok); border-radius:10px; padding:9px 12px;}
+.log .entry.late{border-left-color:var(--warn);}
+.log .entry.miss{border-left-color:var(--bad);}
+.log .entry b{color:var(--text);}
+.log .entry span{color:var(--sub);}
+.actions{display:flex; gap:10px; margin-top:16px; flex-wrap:wrap;}
+.btn{flex:1; border:none; border-radius:12px; padding:13px; font:inherit; font-weight:800; font-size:14px; cursor:pointer; text-align:center; min-width:140px;}
+.btn.primary{background:var(--acc); color:#0f1a00;}
+.btn.secondary{background:rgba(255,255,255,0.06); color:var(--text); border:1px solid var(--line);}
+.btn:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
+.toast{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--warn); min-height:18px; margin-top:10px;}
+.rgrid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:16px 0;}
+.tile{background:rgba(255,255,255,0.03); border:1px solid var(--line); border-radius:12px; padding:12px; text-align:center;}
+.tile .n{font-family:'JetBrains Mono',monospace; font-weight:800; font-size:19px; color:var(--acc); font-variant-numeric:tabular-nums;}
+.tile .l{font-size:10.5px; color:var(--sub); text-transform:uppercase; letter-spacing:0.04em; margin-top:2px;}
+.home-fab{position:fixed; top:14px; left:14px; z-index:60; display:flex; align-items:center; gap:7px; background:linear-gradient(135deg,var(--panel2),var(--panel)); border:1px solid var(--line); border-radius:999px; padding:9px 14px 9px 11px; text-decoration:none; color:var(--text); font-weight:700; font-size:12.5px; box-shadow:0 4px 14px rgba(0,0,0,0.35);}
+.home-fab:hover{border-color:var(--acc);}
+@media (max-width:420px){ .home-fab{top:10px; left:10px; font-size:0; padding:8px 12px 8px 10px;} .home-fab .ic{font-size:16px;} .msg{font-size:16px;} }
+@media (prefers-reduced-motion:reduce){ *{animation:none!important; transition:none!important;} }
+</style>
+</head>
+<body>
+<a class="home-fab" href="index.html" title="Back to home"><span class="ic">🏠</span><span class="lbl">Home</span></a>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand"><div class="logo">🐛</div><div class="name">Debug the Transmission</div></div>
+    <div class="stats">
+      <div class="stat"><div class="n" id="topScore">0</div><div class="l">Score</div></div>
+      <div class="stat"><div class="n" id="topFalse">0</div><div class="l">False alarms</div></div>
+    </div>
+  </div>
+
+  <div class="screen active" id="screenIntro">
+    <div class="panel">
+      <span class="badge">🧘 No timer · read carefully</span>
+      <h2>A corrupted message has reached mission control</h2>
+      <p class="lede">Each transmission is a short text written by a student — and it's full of the grammar bugs Spanish speakers make most often. Find them, fix them, and file a clean copy.</p>
+      <div class="howto">
+        <b>Click any word or phrase</b> you think is wrong. If it really is a bug, you choose the correct version. If it was fine, that's a <b>false alarm</b> (−3 points), so read before you click. The counter tells you how many bugs are left. Stuck? <b>End transmission</b> reveals the ones you missed, with an explanation.
+      </div>
+      <div class="levels">
+        <button class="lvl" onclick="startLevel('A')"><span><span class="t">🟢 Cadet — 1º–2º ESO</span><br><span class="d">4 transmissions · present &amp; past simple, there is/are, can, adjectives</span></span><span class="arr">→</span></button>
+        <button class="lvl" onclick="startLevel('B')"><span><span class="t">🟡 Officer — 3º–4º ESO</span><br><span class="d">4 transmissions · present perfect, conditionals, prepositions, uncountables</span></span><span class="arr">→</span></button>
+        <button class="lvl" onclick="startLevel('C')"><span><span class="t">🔴 Commander — Bachillerato</span><br><span class="d">4 transmissions · connectors, inversion, reported speech, 3rd conditional</span></span><span class="arr">→</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="screenGame">
+    <div class="panel">
+      <div class="thead">
+        <div class="ttitle">TRANSMISSION <b id="tNum">1</b>/<span id="tTotal">4</span> · <span id="tName"></span></div>
+        <div class="bugs" id="bugs">🐛 0 bugs left</div>
+      </div>
+      <div class="terminal"><div class="msg" id="msg"></div></div>
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+      <div class="log" id="log"></div>
+      <div class="actions">
+        <button class="btn secondary" id="endBtn" onclick="endTransmission()">End transmission</button>
+        <button class="btn primary" id="nextBtn" style="display:none" onclick="nextTransmission()">Next transmission →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="screenResult">
+    <div class="panel">
+      <div style="font-size:44px; text-align:center;" id="rIcon">📡</div>
+      <h2 style="text-align:center; font-size:20px; margin-top:6px;" id="rTitle">Channel clean</h2>
+      <p class="lede" style="text-align:center; margin:6px 0 0;" id="rSub"></p>
+      <div class="rgrid">
+        <div class="tile"><div class="n" id="rScore">0</div><div class="l">Score</div></div>
+        <div class="tile"><div class="n" id="rFixed">0</div><div class="l">Fixed first try</div></div>
+        <div class="tile"><div class="n" id="rFalse">0</div><div class="l">False alarms</div></div>
+      </div>
+      <div class="actions">
+        <button class="btn secondary" onclick="show('intro')">Change level</button>
+        <button class="btn secondary" onclick="sendToMissionLog()">📡 Mission Log</button>
+        <button class="btn primary" onclick="startLevel(S.level)">Play again</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="popover" id="pop" role="dialog" aria-label="Fix this bug">
+  <div class="q">🐛 Bug found in <b id="popWrong"></b> — choose the fix:</div>
+  <div class="choices" id="popChoices"></div>
+  <button class="cancel" onclick="closePop()">Cancel</button>
+</div>
+
+<script>
+// Bugs are written {wrong|right|distractor1,distractor2|explanation}
+var TRANSMISSIONS = {
+  A: [
+    {name:"Postcard from Scotland", text:"Hi Emma! Last summer my family {go|went|goed,gone|The past simple of GO is WENT.} to Scotland. We {was|were|are,be|With WE the past of BE is WERE.} there for two weeks. The people {is|are|am,be|PEOPLE is plural, so it takes ARE.} very friendly and the landscapes are amazing. My brother {have|has|haves,having|With he/she/it: HAS.} a new camera, so he took hundreds of photos. I {didn't liked|didn't like|didn't likes,don't liked|After DIDN'T we use the base form: didn't LIKE.} the weather, but I loved the castles!"},
+    {name:"About me", text:"My name is Lucas and I {have|am|has,do|For age English uses BE: I AM 13 (years old).} 13 years old. I live in Valencia with my parents and my sister. She {don't|doesn't|isn't,not|With he/she/it the negative is DOESN'T.} like football, but I love it. Every Saturday I {plays|play|playing,am play|With I there's no -s: I PLAY.} with my team. My favourite subject is {the English|English|a English,an English|No article before school subjects: I like ENGLISH.} because the teacher is very funny."},
+    {name:"My town", text:"In my town there {is|are|be,has|Two parks is plural: THERE ARE.} two parks and a big library. My town is {more small|smaller|more smaller,smallest|Short adjectives add -ER: SMALLER (never 'more small').} than Valencia, but it's very nice. In summer the people {goes|go|going,is go|PEOPLE is plural: they GO.} to the beach every day. I {can to swim|can swim|can swimming,cans swim|After CAN use the base form without TO.} very well, so I love it."},
+    {name:"Last weekend", text:"Yesterday I {have seen|saw|seed,seen|A finished time (yesterday) needs the past simple: I SAW.} a great film with my friends. After that we {eated|ate|eaten,eat|EAT is irregular: ATE.} pizza in a small restaurant. And you? {Where did you went|Where did you go|Where you went,Where did you going|After DID use the base form: did you GO.} last weekend? Write soon! I {am agree|agree|am agreed,agreeing|AGREE is a verb, not an adjective: I AGREE.} that we should meet more often."}
+  ],
+  B: [
+    {name:"Exchange trip", text:"Last year I {have been|went|go,have gone|A finished time (last year) needs the past simple: I WENT.} to Dublin on a school exchange. I {am living|have lived|live,lived|From the past up to now + FOR needs the present perfect: I HAVE LIVED.} in the same town for ten years, so it was a big change. My host family were very kind and gave me a lot of useful {advices|advice|advises,an advice|ADVICE is uncountable: no -s, no 'an'.}. If I {will have|have|had,would have|First conditional: IF + present simple (never IF + WILL).} the chance, I will go back next summer. I'm really looking forward to {see|seeing|saw,seen|LOOK FORWARD TO is followed by -ING.} them again."},
+    {name:"Opinion post", text:"Nowadays {the teenagers|teenagers|a teenagers,teenager|General statements about a group take no article: TEENAGERS spend…} spend a lot of time online. Whether that is good or bad depends {of|on|from,in|The verb is DEPEND ON.} how you use it. Social networks can be useful, but {its|it's|it is's,its'|IT'S = it is. ITS is the possessive.} very easy to waste time. That's why I {am agree|agree|am agreed,agreeing|AGREE is a verb: I AGREE.} with limiting screen time on school nights."},
+    {name:"Complaint email", text:"Dear Sir or Madam, I am writing to complain about some headphones I bought {since two weeks|two weeks ago|for two weeks ago,during two weeks|A finished point in the past: TWO WEEKS AGO.}. They {didn't worked|didn't work|don't worked,didn't works|After DIDN'T use the base form: didn't WORK.} from the first day. I {explained him|explained to him|explained he,explained his|We EXPLAIN something TO someone.} the problem, but the shop assistant was very {rude with|rude to|rude for,rude at|We are RUDE TO someone.} me. I would like a full refund. Yours faithfully, Carla"},
+    {name:"Science fair", text:"Our science project {is consisting|consists|consist,is consist|CONSIST is a state verb: no continuous form.} of three experiments. We {have started|started|start,have start|A finished time (in January) needs the past simple: STARTED.} it in January and finished it last week. The experiments {was|were|are been,was been|The subject is plural: they WERE.} difficult but fun. If we win, we {would|will|would to,will to|First conditional: IF + present, WILL + verb.} travel to Madrid for the national final."}
+  ],
+  C: [
+    {name:"For-and-against essay", text:"{In the other hand|On the other hand|At the other hand,By the other hand|The fixed connector is ON THE OTHER HAND.}, technology has made our lives easier in countless ways. However, many people {are used to work|are used to working|used to working,are use to work|BE USED TO (= be accustomed to) is followed by -ING.} long hours in front of a screen. {Despite of|Despite|In spite,Although of|DESPITE takes no OF (or use IN SPITE OF).} the risks, most young people cannot imagine {to live|living|live,to living|IMAGINE is followed by -ING.} without their phones."},
+    {name:"Survey report", text:"The survey, {that|which|what,who|Non-defining relative clauses (between commas) use WHICH, never THAT.} was carried out in May, shows some interesting results. More than half of the students said they {would rather to study|would rather study|would rather studying,had rather study|WOULD RATHER is followed by the base form.} in the morning. The number of students who cycle to school {have|has|haves,are|The subject is THE NUMBER (singular): HAS.} increased. It is therefore recommended that the school {will provide|provide|providing,to provide|Formal recommendations use the subjunctive: that the school PROVIDE.} more bike racks."},
+    {name:"Looking back", text:"If I {would have studied|had studied|would studied,have studied|Third conditional: IF + past perfect.} harder, I would have passed the exam. I wish I {didn't waste|hadn't wasted|haven't wasted,wouldn't wasted|A regret about the past: WISH + past perfect.} so much time last term. {Hardly I had|Hardly had I|Hardly I have,Hardly have I had|After HARDLY at the start we invert: HARDLY HAD I…} started revising when the exams began. My tutor {suggested me to make|suggested that I make|suggested me making,suggested to me make|SUGGEST never takes 'me to': suggest THAT I MAKE / suggest MAKING.} a proper study timetable."},
+    {name:"Tutor meeting", text:"Yesterday my tutor told {to me|me|at me,for me|TELL takes a direct object: told ME.} that I {will|would|shall,am going|In reported speech WILL becomes WOULD.} need to improve my writing. She asked me {what did I want|what I wanted|what I did want,what wanted I|Reported questions use statement word order: what I WANTED.} to study at university. I explained that I {have been|had been|was been,am being|In reported speech the present perfect moves back to the PAST PERFECT.} thinking about Medicine for years."}
+  ]
+};
+
+var S = {level:'A', list:[], t:0, score:0, falses:0, fixedFirst:0, totalBugs:0, bugs:[], active:null, done:false};
+
+function esc(t){ return String(t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var x=a[i]; a[i]=a[j]; a[j]=x; } return a; }
+function show(n){ ['Intro','Game','Result'].forEach(function(s){ document.getElementById('screen'+s).classList.toggle('active', s.toLowerCase()===n); }); closePop(); window.scrollTo(0,0); }
+
+function startLevel(level){
+  S = {level:level, list:TRANSMISSIONS[level], t:0, score:0, falses:0, fixedFirst:0, totalBugs:0, bugs:[], active:null, done:false};
+  document.getElementById('tTotal').textContent = S.list.length;
+  renderTransmission();
+  show('game');
+}
+
+// Split text into plain words and bug chunks
+function parse(text){
+  var parts = [], re = /\{([^|}]+)\|([^|}]+)\|([^|}]*)\|([^}]+)\}/g, last = 0, m;
+  while((m = re.exec(text))){
+    if(m.index > last) parts.push({plain:text.slice(last, m.index)});
+    parts.push({bug:true, wrong:m[1], right:m[2], alts:m[3] ? m[3].split(',') : [], note:m[4], state:'open'});
+    last = re.lastIndex;
+  }
+  if(last < text.length) parts.push({plain:text.slice(last)});
+  return parts;
+}
+
+function renderTransmission(){
+  var tr = S.list[S.t];
+  S.done = false;
+  document.getElementById('tNum').textContent = S.t + 1;
+  document.getElementById('tName').textContent = tr.name;
+  document.getElementById('log').innerHTML = '';
+  document.getElementById('toast').textContent = '';
+  document.getElementById('endBtn').style.display = '';
+  document.getElementById('nextBtn').style.display = 'none';
+  S.bugs = [];
+  var html = '', parts = parse(tr.text);
+  parts.forEach(function(p){
+    if(p.bug){
+      var id = S.bugs.length; S.bugs.push(p);
+      html += '<span class="w" tabindex="0" role="button" data-bug="' + id + '">' + esc(p.wrong) + '</span>';
+    } else {
+      // plain text: every word is clickable (false alarm); keep punctuation/spaces as text
+      html += esc(p.plain).replace(/([A-Za-zÀ-ÿ'’]+)/g, '<span class="w" tabindex="0" role="button">$1</span>');
+    }
+  });
+  S.totalBugs += S.bugs.length;
+  var msg = document.getElementById('msg');
+  msg.innerHTML = html;
+  msg.querySelectorAll('.w').forEach(function(el){
+    el.addEventListener('click', function(e){ onWord(el, e); });
+    el.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); onWord(el, e); } });
+  });
+  updateBugs(); updateTop();
+}
+
+function onWord(el, e){
+  if(S.done) return;
+  if(el.classList.contains('fixed') || el.classList.contains('fixed-late') || el.classList.contains('missed')) return;
+  var id = el.getAttribute('data-bug');
+  if(id === null){
+    S.falses++; S.score = Math.max(0, S.score - 3);
+    el.classList.remove('false'); void el.offsetWidth; el.classList.add('false');
+    setTimeout(function(){ el.classList.remove('false'); }, 600);
+    document.getElementById('toast').textContent = '⚠ False alarm — "' + el.textContent + '" was correct. −3';
+    closePop(); updateTop();
+    return;
+  }
+  openPop(el, S.bugs[+id]);
+}
+
+function openPop(el, bug){
+  S.active = {el:el, bug:bug};
+  document.getElementById('popWrong').textContent = '“' + bug.wrong + '”';
+  var box = document.getElementById('popChoices'); box.innerHTML = '';
+  shuffle([bug.right].concat(bug.alts)).forEach(function(opt){
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = opt;
+    b.addEventListener('click', function(){ choose(opt); });
+    box.appendChild(b);
+  });
+  var pop = document.getElementById('pop'); pop.classList.add('show');
+  var r = el.getBoundingClientRect(), pw = pop.offsetWidth, ph = pop.offsetHeight;
+  var left = Math.min(Math.max(16, r.left), window.innerWidth - pw - 16);
+  var top = r.bottom + 8; if(top + ph > window.innerHeight - 10) top = Math.max(10, r.top - ph - 8);
+  pop.style.left = left + 'px'; pop.style.top = top + 'px';
+  box.querySelector('button').focus();
+}
+function closePop(){ document.getElementById('pop').classList.remove('show'); S.active = null; }
+
+function choose(opt){
+  var a = S.active; if(!a) return;
+  var bug = a.bug, el = a.el, first = bug.state === 'open';
+  if(opt === bug.right){
+    bug.state = first ? 'fixed' : 'late';
+    if(first){ S.score += 10; S.fixedFirst++; }
+    else { S.score += 3; }
+    el.classList.add(first ? 'fixed' : 'fixed-late');
+    el.innerHTML = '<span class="was">' + esc(bug.wrong) + '</span>' + esc(bug.right);
+    el.removeAttribute('tabindex');
+    addLog(bug, first ? '' : 'late', first ? '✅ Fixed' : '🟠 Fixed on second try');
+    document.getElementById('toast').textContent = '';
+    closePop();
+    updateBugs(); updateTop();
+  } else {
+    bug.state = 'tried';
+    document.getElementById('toast').textContent = '✗ "' + opt + '" isn\'t right either — try another fix.';
+    var btns = document.querySelectorAll('#popChoices button');
+    btns.forEach(function(b){ if(b.textContent === opt){ b.disabled = true; b.style.opacity = 0.4; } });
+  }
+}
+
+function addLog(bug, cls, label){
+  var d = document.createElement('div');
+  d.className = 'entry' + (cls ? ' ' + cls : '');
+  d.innerHTML = label + ': <b>' + esc(bug.wrong) + '</b> → <b>' + esc(bug.right) + '</b> <span>· ' + esc(bug.note) + '</span>';
+  document.getElementById('log').appendChild(d);
+}
+
+function openBugs(){ return S.bugs.filter(function(b){ return b.state === 'open' || b.state === 'tried'; }).length; }
+function updateBugs(){
+  var n = openBugs(), el = document.getElementById('bugs');
+  el.textContent = n === 0 ? '✓ Channel clean' : '🐛 ' + n + (n === 1 ? ' bug left' : ' bugs left');
+  el.classList.toggle('clear', n === 0);
+  if(n === 0 && !S.done) finishTransmission();
+}
+function updateTop(){ document.getElementById('topScore').textContent = S.score; document.getElementById('topFalse').textContent = S.falses; }
+
+function endTransmission(){
+  closePop();
+  var els = document.querySelectorAll('#msg .w[data-bug]');
+  els.forEach(function(el){
+    var bug = S.bugs[+el.getAttribute('data-bug')];
+    if(bug.state === 'open' || bug.state === 'tried'){
+      bug.state = 'missed';
+      el.classList.add('missed');
+      el.innerHTML = '<span class="was">' + esc(bug.wrong) + '</span>' + esc(bug.right);
+      el.removeAttribute('tabindex');
+      addLog(bug, 'miss', '❌ Missed');
+    }
+  });
+  updateBugs();
+  finishTransmission();
+}
+
+function finishTransmission(){
+  S.done = true;
+  document.getElementById('endBtn').style.display = 'none';
+  var nb = document.getElementById('nextBtn');
+  nb.textContent = S.t === S.list.length - 1 ? 'See mission report →' : 'Next transmission →';
+  nb.style.display = '';
+  nb.focus();
+}
+
+function nextTransmission(){
+  if(S.t >= S.list.length - 1){ showResult(); return; }
+  S.t++; renderTransmission();
+}
+
+function showResult(){
+  var pct = S.totalBugs ? S.fixedFirst / S.totalBugs : 0;
+  document.getElementById('rIcon').textContent = pct >= 0.85 ? '🏆' : pct >= 0.55 ? '📡' : '🔧';
+  document.getElementById('rTitle').textContent = pct >= 0.85 ? 'Channel crystal clear' : pct >= 0.55 ? 'Signal mostly restored' : 'Still some static on the line';
+  document.getElementById('rSub').textContent = 'You fixed ' + S.fixedFirst + ' of ' + S.totalBugs + ' bugs on the first try.';
+  document.getElementById('rScore').textContent = S.score;
+  document.getElementById('rFixed').textContent = S.fixedFirst + '/' + S.totalBugs;
+  document.getElementById('rFalse').textContent = S.falses;
+  try{ var k='debugTransmissionBest_' + S.level, best = parseInt(localStorage.getItem(k) || '0', 10); if(S.score > best) localStorage.setItem(k, S.score); }catch(e){}
+  show('result');
+}
+
+function pilot(){ try{ return JSON.parse(localStorage.getItem('missionLogPilot')) || {}; }catch(e){ return {}; } }
+function sendToMissionLog(){
+  var pl = pilot(); var payload = {kind:'game', tool:'Debug the Transmission', name:pl.name || 'Pilot', course:pl.course || '', score:S.score, date:new Date().toISOString()};
+  window.open('mission-log.html?import=' + encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(payload))))), '_blank', 'noopener');
+}
+
+document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closePop(); });
+document.addEventListener('click', function(e){
+  var pop = document.getElementById('pop');
+  if(pop.classList.contains('show') && !pop.contains(e.target) && !e.target.classList.contains('w')) closePop();
+});
+window.addEventListener('scroll', closePop, {passive:true});
+</script>
+</body>
+</html>

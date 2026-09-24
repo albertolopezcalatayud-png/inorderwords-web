@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Missing Signal</title>
+<meta name="description" content="Listen to the radio transmission — one word has been replaced by a beep. Work out the missing word from what you hear. Listening practice, no timer.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Inorderwords">
+<meta property="og:title" content="Missing Signal — Inorderwords">
+<meta property="og:description" content="Listen to the transmission — one word has been replaced by a beep. Work out the missing word.">
+<meta property="og:url" content="https://albertolopezcalatayud-png.github.io/inorderwords-web/missing-signal.html">
+<meta property="og:image" content="https://albertolopezcalatayud-png.github.io/inorderwords-web/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0b0e1a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230b0e1a'/%3E%3Ctext x='50' y='68' font-size='58' text-anchor='middle'%3E%F0%9F%93%BB%3C/text%3E%3C/svg%3E">
+<link rel="canonical" href="https://albertolopezcalatayud-png.github.io/inorderwords-web/missing-signal.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800;900&family=Manrope:wght@400;500;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0e1a; --panel:#12172c; --panel2:#161c36; --line:rgba(255,255,255,0.09);
+  --text:#f4f2ec; --sub:#9aa1ba; --acc:#818cf8; --acc-dim:rgba(129,140,248,0.15);
+  --ok:#2dd4bf; --bad:#ff3b5c; --warn:#ffb703;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{background:var(--bg); color:var(--text); font-family:'Manrope',system-ui,sans-serif; width:100%; min-height:100%;}
+body{padding:18px 16px 40px; display:flex; flex-direction:column; align-items:center;}
+.wrap{width:100%; max-width:640px; display:flex; flex-direction:column; gap:16px; margin-top:44px;}
+h1,h2,h3{font-family:'Unbounded',system-ui,sans-serif; text-wrap:balance;}
+.topbar{display:flex; align-items:center; justify-content:space-between; gap:10px; background:linear-gradient(135deg,var(--panel2),var(--panel)); border:1px solid var(--line); border-radius:18px; padding:12px 16px;}
+.brand{display:flex; align-items:center; gap:10px;}
+.logo{width:34px; height:34px; border-radius:10px; background:var(--acc-dim); border:1px solid rgba(129,140,248,0.4); display:flex; align-items:center; justify-content:center; font-size:17px; flex:none;}
+.name{font-family:'Unbounded',sans-serif; font-weight:800; font-size:15px;}
+.stats{display:flex; gap:14px;}
+.stat{text-align:right;}
+.stat .n{font-family:'JetBrains Mono',monospace; font-weight:700; font-size:14px; color:var(--acc); font-variant-numeric:tabular-nums;}
+.stat .l{font-size:9.5px; color:var(--sub); text-transform:uppercase; letter-spacing:0.05em;}
+.panel{background:linear-gradient(135deg,var(--panel2),var(--panel)); border:1px solid var(--line); border-radius:20px; padding:22px 20px;}
+.badge{display:inline-flex; align-items:center; gap:6px; background:var(--acc-dim); border:1px solid rgba(129,140,248,0.35); color:var(--acc); font-family:'JetBrains Mono',monospace; font-weight:700; font-size:11px; border-radius:999px; padding:5px 12px; margin-bottom:14px;}
+.panel h2{font-size:21px; margin-bottom:8px;}
+.lede{color:var(--sub); font-size:14px; line-height:1.55; margin-bottom:16px;}
+.howto{background:rgba(255,255,255,0.03); border:1px solid var(--line); border-radius:14px; padding:12px 14px; font-size:13px; color:var(--sub); line-height:1.6; margin-bottom:18px;}
+.howto b{color:var(--text);}
+.levels{display:flex; flex-direction:column; gap:10px;}
+.lvl{display:flex; align-items:center; justify-content:space-between; gap:12px; background:rgba(255,255,255,0.03); border:1px solid var(--line); border-radius:14px; padding:14px 16px; cursor:pointer; color:var(--text); text-align:left; font:inherit;}
+.lvl:hover,.lvl:focus-visible{border-color:var(--acc); background:var(--acc-dim); outline:none;}
+.lvl .t{font-weight:800; font-size:14.5px;}
+.lvl .d{font-size:12px; color:var(--sub);}
+.lvl .arr{color:var(--acc); font-size:18px;}
+.screen{display:none;}
+.screen.active{display:block;}
+.qhead{display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--sub);}
+.qhead b{color:var(--acc);}
+.progress{height:6px; background:rgba(255,255,255,0.06); border-radius:99px; overflow:hidden; margin-bottom:18px;}
+.progress div{height:100%; background:var(--acc); width:0; transition:width .3s ease;}
+.radio{background:#05070f; border:1px solid rgba(129,140,248,0.35); border-radius:18px; padding:20px 18px; text-align:center;}
+.wave{display:flex; align-items:center; justify-content:center; gap:4px; height:46px; margin-bottom:14px;}
+.wave i{display:block; width:5px; border-radius:3px; background:var(--acc); opacity:0.35; height:12px; transition:height .15s ease;}
+.radio.playing .wave i{opacity:1; animation:bars 0.9s ease-in-out infinite;}
+.radio.beeping .wave i{background:var(--warn); opacity:1;}
+.wave i:nth-child(2){animation-delay:.1s}.wave i:nth-child(3){animation-delay:.2s}.wave i:nth-child(4){animation-delay:.3s}.wave i:nth-child(5){animation-delay:.4s}.wave i:nth-child(6){animation-delay:.3s}.wave i:nth-child(7){animation-delay:.2s}.wave i:nth-child(8){animation-delay:.1s}
+@keyframes bars{0%,100%{height:10px;}50%{height:42px;}}
+.play-row{display:flex; gap:10px; justify-content:center; flex-wrap:wrap;}
+.pbtn{background:var(--acc); color:#0c0e2a; border:none; border-radius:12px; padding:12px 18px; font:inherit; font-weight:800; font-size:14px; cursor:pointer;}
+.pbtn.alt{background:rgba(255,255,255,0.06); color:var(--text); border:1px solid var(--line);}
+.pbtn:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
+.transcript{margin-top:14px; font-size:17px; line-height:1.6; min-height:28px;}
+.transcript .gap{display:inline-block; min-width:64px; border-bottom:2px solid var(--warn); color:var(--warn); font-weight:800;}
+.transcript.hidden-text{color:var(--sub); font-size:13px; font-style:italic;}
+.answer{display:flex; gap:10px; margin-top:18px;}
+.answer input{flex:1; min-width:0; background:rgba(0,0,0,0.3); border:1px solid var(--line); color:var(--text); border-radius:12px; padding:13px 14px; font:inherit; font-size:17px; font-weight:700;}
+.answer input:focus{outline:none; border-color:var(--acc);}
+.btn{border:none; border-radius:12px; padding:13px 16px; font:inherit; font-weight:800; font-size:14px; cursor:pointer; text-align:center;}
+.btn.primary{background:var(--acc); color:#0c0e2a;}
+.btn.secondary{background:rgba(255,255,255,0.06); color:var(--text); border:1px solid var(--line);}
+.btn:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
+.tools{display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;}
+.tools .btn{flex:1; font-size:12.5px; padding:10px;}
+.verdict{margin-top:16px; border-radius:14px; padding:14px 16px; font-size:14px; line-height:1.55; display:none;}
+.verdict.show{display:block;}
+.verdict.ok{background:rgba(45,212,191,0.1); border:1px solid rgba(45,212,191,0.4);}
+.verdict.no{background:rgba(255,59,92,0.08); border:1px solid rgba(255,59,92,0.4);}
+.verdict .full{display:block; margin-top:6px; color:var(--sub);}
+.verdict .full b{color:var(--ok);}
+.next{margin-top:12px; width:100%;}
+.note{font-size:12px; color:var(--warn); margin-top:10px;}
+.rgrid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:16px 0;}
+.tile{background:rgba(255,255,255,0.03); border:1px solid var(--line); border-radius:12px; padding:12px; text-align:center;}
+.tile .n{font-family:'JetBrains Mono',monospace; font-weight:800; font-size:19px; color:var(--acc); font-variant-numeric:tabular-nums;}
+.tile .l{font-size:10.5px; color:var(--sub); text-transform:uppercase; letter-spacing:0.04em; margin-top:2px;}
+.review{background:rgba(0,0,0,0.25); border:1px solid var(--line); border-radius:14px; padding:12px 14px; margin-bottom:16px; max-height:240px; overflow:auto; font-size:13.5px; line-height:1.5;}
+.review div{padding:5px 0; border-bottom:1px solid var(--line);}
+.review div:last-child{border-bottom:none;}
+.review b{color:var(--ok);}
+.ractions{display:flex; gap:10px; flex-wrap:wrap;}
+.ractions .btn{flex:1; min-width:130px;}
+.home-fab{position:fixed; top:14px; left:14px; z-index:60; display:flex; align-items:center; gap:7px; background:linear-gradient(135deg,var(--panel2),var(--panel)); border:1px solid var(--line); border-radius:999px; padding:9px 14px 9px 11px; text-decoration:none; color:var(--text); font-weight:700; font-size:12.5px; box-shadow:0 4px 14px rgba(0,0,0,0.35);}
+.home-fab:hover{border-color:var(--acc);}
+@media (max-width:420px){ .home-fab{top:10px; left:10px; font-size:0; padding:8px 12px 8px 10px;} .home-fab .ic{font-size:16px;} }
+@media (prefers-reduced-motion:reduce){ *{animation:none!important; transition:none!important;} }
+</style>
+</head>
+<body>
+<a class="home-fab" href="index.html" title="Back to home"><span class="ic">🏠</span><span class="lbl">Home</span></a>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand"><div class="logo">📻</div><div class="name">Missing Signal</div></div>
+    <div class="stats">
+      <div class="stat"><div class="n" id="topScore">0</div><div class="l">Score</div></div>
+      <div class="stat"><div class="n" id="topRight">0</div><div class="l">Decoded</div></div>
+    </div>
+  </div>
+
+  <div class="screen active" id="screenIntro">
+    <div class="panel">
+      <span class="badge">🎧 Listening · no timer</span>
+      <h2>Static on the line</h2>
+      <p class="lede">Each transmission is one English sentence read aloud — but interference has wiped out one word and left a <b>beep</b> in its place. Listen to what's around the beep and work out the missing word.</p>
+      <div class="howto">
+        Press <b>▶ Play</b> as many times as you like, or <b>🐢 Slow</b> for a slower version. Type the missing word and press Enter. Really stuck? <b>Show transcript</b> lets you read the sentence, but the answer is then worth fewer points. Use headphones if you're in class. Works best in Chrome, Edge or Safari.
+      </div>
+      <div class="levels">
+        <button class="lvl" onclick="startLevel(1)"><span><span class="t">🟢 Channel 1 — 1º–2º ESO</span><br><span class="d">10 transmissions · to be, there are, can, past simple, prepositions</span></span><span class="arr">→</span></button>
+        <button class="lvl" onclick="startLevel(2)"><span><span class="t">🟡 Channel 2 — 3º–4º ESO</span><br><span class="d">10 transmissions · present perfect, conditionals, passive, relatives</span></span><span class="arr">→</span></button>
+        <button class="lvl" onclick="startLevel(3)"><span><span class="t">🔴 Channel 3 — Bachillerato</span><br><span class="d">10 transmissions · 3rd conditional, inversion, modals of deduction</span></span><span class="arr">→</span></button>
+      </div>
+      <p class="note" id="noVoice" hidden>⚠ Your browser can't read text aloud, so the transcript will be shown for every sentence.</p>
+    </div>
+  </div>
+
+  <div class="screen" id="screenGame">
+    <div class="panel">
+      <div class="qhead"><span>TRANSMISSION <b id="qNum">1</b>/<span id="qTotal">10</span></span><button class="btn secondary" style="padding:7px 12px; font-size:12px;" onclick="finish()">End session</button></div>
+      <div class="progress"><div id="bar"></div></div>
+      <div class="radio" id="radio">
+        <div class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="play-row">
+          <button class="pbtn" id="playBtn" onclick="play(1)">▶ Play</button>
+          <button class="pbtn alt" onclick="play(0.72)">🐢 Slow</button>
+        </div>
+        <div class="transcript hidden-text" id="transcript">Transcript hidden — listen first.</div>
+      </div>
+      <form class="answer" onsubmit="check(event)">
+        <label for="ans" style="position:absolute; left:-9999px;">Missing word</label>
+        <input id="ans" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Missing word…">
+        <button class="btn primary" type="submit">Decode</button>
+      </form>
+      <div class="tools">
+        <button class="btn secondary" id="trBtn" onclick="revealTranscript()">📝 Show transcript (−4 pts)</button>
+        <button class="btn secondary" onclick="giveUp()">⏭ I don't know</button>
+      </div>
+      <div class="verdict" id="verdict"></div>
+      <button class="btn primary next" id="nextBtn" style="display:none" onclick="nextQ()">Next transmission →</button>
+    </div>
+  </div>
+
+  <div class="screen" id="screenResult">
+    <div class="panel">
+      <div style="font-size:44px; text-align:center;" id="rIcon">📻</div>
+      <h2 style="text-align:center; font-size:20px; margin-top:6px;" id="rTitle">Session complete</h2>
+      <div class="rgrid">
+        <div class="tile"><div class="n" id="rScore">0</div><div class="l">Score</div></div>
+        <div class="tile"><div class="n" id="rRight">0</div><div class="l">Decoded</div></div>
+        <div class="tile"><div class="n" id="rEars">0</div><div class="l">By ear only</div></div>
+      </div>
+      <div class="review" id="review"></div>
+      <div class="ractions">
+        <button class="btn secondary" onclick="show('intro')">Change channel</button>
+        <button class="btn secondary" onclick="sendToMissionLog()">📡 Mission Log</button>
+        <button class="btn primary" onclick="startLevel(S.level)">Play again</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// [answer|also accepted] marks the word that is replaced by the beep
+var BANK = {
+  1: [
+    "My birthday is [in] July.",
+    "There [are] three cats in the garden.",
+    "I [can] swim, but I can't dive.",
+    "He [doesn't|does not] like tomatoes. He hates them.",
+    "We went to the beach [last] weekend.",
+    "Where [do] you live?",
+    "They [were] at home yesterday evening.",
+    "My sister is [taller|older|shorter|younger] than me.",
+    "I usually go to school [by] bus.",
+    "She [is] watching TV right now.",
+    "How [many] brothers have you got?",
+    "Look! It's [raining|snowing] outside."
+  ],
+  2: [
+    "I've lived here [since] 2015.",
+    "Have you [ever] been to London?",
+    "If it rains tomorrow, we [will|'ll] stay at home.",
+    "She was reading when the phone [rang].",
+    "This bridge [was] built in 1890.",
+    "I'm looking forward [to] seeing you.",
+    "He has lived in Madrid [for] ten years.",
+    "You [should|must] see a doctor if you feel ill.",
+    "The man [who|that] lives next door is a pilot.",
+    "We haven't finished our homework [yet].",
+    "I [was] having a shower when you called.",
+    "You don't [have] to come if you don't want to."
+  ],
+  3: [
+    "If I [had] known, I would have told you.",
+    "She suggested [going] to the cinema.",
+    "[Despite] the rain, the match went on.",
+    "He is used to [getting|waking] up early.",
+    "Hardly [had] we arrived when it started to snow.",
+    "I'd rather you [didn't] smoke in here.",
+    "The report [must|might|may|could] have been written in a hurry.",
+    "By next June, I [will|'ll] have finished my degree.",
+    "It's high time we [went] home.",
+    "Not only [did] he apologise, but he also paid for the damage.",
+    "I wish I [had] studied harder last year.",
+    "The more you practise, the [better|easier] it gets."
+  ]
+};
+
+var S = {level:1, items:[], i:0, score:0, right:0, ears:0, log:[], shown:false, answered:false};
+var voice = null, hasTTS = 'speechSynthesis' in window, audioCtx = null;
+
+function esc(t){ return String(t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var x=a[i]; a[i]=a[j]; a[j]=x; } return a; }
+function show(n){ ['Intro','Game','Result'].forEach(function(s){ document.getElementById('screen'+s).classList.toggle('active', s.toLowerCase()===n); }); if(hasTTS) speechSynthesis.cancel(); window.scrollTo(0,0); }
+
+function parseItem(raw){
+  var m = raw.match(/^(.*)\[([^\]]+)\](.*)$/);
+  var accept = m[2].split('|');
+  return {before:m[1], after:m[3], answer:accept[0], accept:accept, raw:raw};
+}
+
+function pickVoice(){
+  if(!hasTTS) return;
+  var vs = speechSynthesis.getVoices();
+  voice = vs.find(function(v){ return /en-GB/i.test(v.lang) && /Google|Natural|Daniel|Serena|Libby|Sonia/i.test(v.name); }) ||
+          vs.find(function(v){ return /en-GB/i.test(v.lang); }) ||
+          vs.find(function(v){ return /^en/i.test(v.lang); }) || null;
+}
+if(hasTTS){ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+else { document.getElementById('noVoice').hidden = false; }
+
+function startLevel(level){
+  S = {level:level, items:shuffle(BANK[level].slice()).slice(0,10).map(parseItem), i:0, score:0, right:0, ears:0, log:[], shown:false, answered:false};
+  document.getElementById('qTotal').textContent = S.items.length;
+  render();
+  show('game');
+}
+
+function render(){
+  var it = S.items[S.i];
+  S.shown = !hasTTS; S.answered = false;
+  document.getElementById('qNum').textContent = S.i + 1;
+  document.getElementById('bar').style.width = (S.i / S.items.length * 100) + '%';
+  document.getElementById('verdict').className = 'verdict';
+  document.getElementById('nextBtn').style.display = 'none';
+  document.getElementById('trBtn').disabled = !hasTTS;
+  var inp = document.getElementById('ans'); inp.value = ''; inp.disabled = false;
+  setTranscript(S.shown);
+  updateTop();
+  inp.focus();
+}
+
+function setTranscript(visible){
+  var it = S.items[S.i], el = document.getElementById('transcript');
+  if(visible){ el.className = 'transcript'; el.innerHTML = esc(it.before) + '<span class="gap">?</span>' + esc(it.after); }
+  else { el.className = 'transcript hidden-text'; el.textContent = 'Transcript hidden — listen first.'; }
+}
+
+function beep(done){
+  try{
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    if(audioCtx.state === 'suspended') audioCtx.resume();
+    var o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.type = 'sine'; o.frequency.value = 1000;
+    o.connect(g); g.connect(audioCtx.destination);
+    g.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.25, audioCtx.currentTime + 0.02);
+    g.gain.setValueAtTime(0.25, audioCtx.currentTime + 0.42);
+    g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.48);
+    o.start(); o.stop(audioCtx.currentTime + 0.5);
+  }catch(e){}
+  setTimeout(done, 560);
+}
+
+function say(text, rate, done){
+  if(!text.trim()){ done(); return; }
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-GB'; if(voice) u.voice = voice; u.rate = rate;
+  var finished = false;
+  var end = function(){ if(!finished){ finished = true; done(); } };
+  u.onend = end; u.onerror = end;
+  // safety net in case a browser never fires onend
+  setTimeout(end, 1200 + text.length * 110 / rate);
+  speechSynthesis.speak(u);
+}
+
+var playToken = 0;
+function play(rate){
+  if(!hasTTS) return;
+  var it = S.items[S.i], token = ++playToken, radio = document.getElementById('radio');
+  speechSynthesis.cancel();
+  radio.classList.add('playing');
+  var stop = function(){ if(token === playToken){ radio.classList.remove('playing','beeping'); } };
+  say(it.before, rate, function(){
+    if(token !== playToken) return;
+    radio.classList.add('beeping');
+    beep(function(){
+      if(token !== playToken) return;
+      radio.classList.remove('beeping');
+      say(it.after, rate, stop);
+    });
+  });
+}
+
+function speakFull(it){
+  if(!hasTTS) return;
+  speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(it.before + it.answer + it.after);
+  u.lang = 'en-GB'; if(voice) u.voice = voice; u.rate = 0.95;
+  speechSynthesis.speak(u);
+}
+
+function norm(s){ return String(s).toLowerCase().replace(/[‘’`´]/g, "'").replace(/[.,!?¿¡"]/g, '').trim(); }
+
+function revealTranscript(){
+  if(S.answered || S.shown) return;
+  S.shown = true; setTranscript(true);
+  document.getElementById('ans').focus();
+}
+
+function check(e){
+  e.preventDefault();
+  if(S.answered) return;
+  var typed = norm(document.getElementById('ans').value);
+  if(!typed) return;
+  var it = S.items[S.i];
+  var ok = it.accept.some(function(a){ return norm(a) === typed; });
+  resolve(ok, typed);
+}
+function giveUp(){ if(!S.answered) resolve(false, ''); }
+
+function resolve(ok, typed){
+  S.answered = true;
+  var it = S.items[S.i];
+  playToken++;
+  document.getElementById('radio').classList.remove('playing','beeping');
+  document.getElementById('ans').disabled = true;
+  if(ok){
+    var pts = S.shown && hasTTS ? 6 : 10;
+    S.score += pts; S.right++; if(!S.shown) S.ears++;
+  }
+  S.log.push({it:it, ok:ok});
+  var v = document.getElementById('verdict');
+  v.className = 'verdict show ' + (ok ? 'ok' : 'no');
+  var others = it.accept.length > 1 ? ' <span style="color:var(--sub)">(also accepted: ' + esc(it.accept.slice(1).join(', ')) + ')</span>' : '';
+  v.innerHTML = (ok ? '✅ Signal decoded!' : (typed ? '❌ "' + esc(typed) + '" doesn\'t fit here.' : '📡 Here it is:')) +
+    '<span class="full">' + esc(it.before) + '<b>' + esc(it.answer) + '</b>' + esc(it.after) + others + '</span>';
+  setTranscript(true);
+  document.getElementById('transcript').innerHTML = esc(it.before) + '<span class="gap" style="color:var(--ok); border-color:var(--ok)">' + esc(it.answer) + '</span>' + esc(it.after);
+  speakFull(it);
+  var nb = document.getElementById('nextBtn');
+  nb.textContent = S.i === S.items.length - 1 ? 'See results →' : 'Next transmission →';
+  nb.style.display = 'block'; nb.focus();
+  updateTop();
+}
+
+function nextQ(){
+  if(S.i >= S.items.length - 1){ finish(); return; }
+  S.i++; render();
+  setTimeout(function(){ play(1); }, 250);
+}
+
+function updateTop(){ document.getElementById('topScore').textContent = S.score; document.getElementById('topRight').textContent = S.right; }
+
+function finish(){
+  var n = S.log.length, pct = n ? S.right / n : 0;
+  document.getElementById('rIcon').textContent = pct >= 0.85 ? '🏆' : pct >= 0.5 ? '📻' : '🔧';
+  document.getElementById('rTitle').textContent = pct >= 0.85 ? 'Crystal-clear reception' : pct >= 0.5 ? 'Good reception' : 'Weak signal — keep training your ear';
+  document.getElementById('rScore').textContent = S.score;
+  document.getElementById('rRight').textContent = S.right + '/' + n;
+  document.getElementById('rEars').textContent = S.ears;
+  document.getElementById('review').innerHTML = n ? S.log.map(function(l){
+    return '<div>' + (l.ok ? '✅ ' : '❌ ') + esc(l.it.before) + '<b>' + esc(l.it.answer) + '</b>' + esc(l.it.after) + '</div>';
+  }).join('') : '<div style="color:var(--sub)">No transmissions answered yet.</div>';
+  try{ var k = 'missingSignalBest_' + S.level, best = parseInt(localStorage.getItem(k) || '0', 10); if(S.score > best) localStorage.setItem(k, S.score); }catch(e){}
+  show('result');
+}
+
+function pilot(){ try{ return JSON.parse(localStorage.getItem('missionLogPilot')) || {}; }catch(e){ return {}; } }
+function sendToMissionLog(){
+  var pl = pilot(); var payload = {kind:'game', tool:'Missing Signal', name:pl.name || 'Pilot', course:pl.course || '', score:S.score, date:new Date().toISOString()};
+  window.open('mission-log.html?import=' + encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(payload))))), '_blank', 'noopener');
+}
+</script>
+</body>
+</html>

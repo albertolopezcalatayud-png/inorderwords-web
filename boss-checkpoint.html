@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Boss Checkpoint</title>
+<meta name="description" content="End-of-level boss battles for 1º–4º ESO: grammar, vocabulary and listening in one challenge. Beat the boss to earn your badge.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Inorderwords">
+<meta property="og:title" content="Boss Checkpoint — Inorderwords">
+<meta property="og:description" content="Grammar, vocabulary and listening in one boss battle. Beat it to earn your badge.">
+<meta property="og:url" content="https://albertolopezcalatayud-png.github.io/inorderwords-web/boss-checkpoint.html">
+<meta property="og:image" content="https://albertolopezcalatayud-png.github.io/inorderwords-web/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0b0e1a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230b0e1a'/%3E%3Ctext x='50' y='68' font-size='58' text-anchor='middle'%3E%F0%9F%91%BE%3C/text%3E%3C/svg%3E">
+<link rel="canonical" href="https://albertolopezcalatayud-png.github.io/inorderwords-web/boss-checkpoint.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800;900&family=Manrope:wght@400;500;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0e1a; --panel:#12172c; --panel2:#161c36; --line:rgba(255,255,255,0.09);
+  --text:#f4f2ec; --sub:#9aa1ba; --acc:#f97316; --acc-dim:rgba(249,115,22,0.15);
+  --ok:#2dd4bf; --bad:#ff3b5c; --gold:#ffcc66;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{background:var(--bg); color:var(--text); font-family:'Manrope',system-ui,sans-serif; width:100%; min-height:100%;}
+body{padding:18px 16px 40px; display:flex; flex-direction:column; align-items:center;}
+.wrap{width:100%; max-width:660px; display:flex; flex-direction:column; gap:16px; margin-top:44px;}
+h1,h2,h3{font-family:'Unbounded',system-ui,sans-serif; text-wrap:balance;}
+.panel{background:linear-gradient(135deg,var(--panel2),var(--panel)); border:1px solid var(--line); border-radius:20px; padding:22px 20px;}
+.badge{display:inline-flex; align-items:center; gap:6px; background:var(--acc-dim); border:1px solid rgba(249,115,22,0.4); color:var(--acc); font-family:'JetBrains Mono',monospace; font-weight:700; font-size:11px; border-radius:999px; padding:5px 12px; margin-bottom:14px;}
+.panel h2{font-size:21px; margin-bottom:8px;}
+.lede{color:var(--sub); font-size:14px; line-height:1.55; margin-bottom:16px;}
+.howto{background:rgba(255,255,255,0.03); border:1px solid var(--line); border-radius:14px; padding:12px 14px; font-size:13px; color:var(--sub); line-height:1.6; margin-bottom:18px;}
+.howto b{color:var(--text);}
+.bosses{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+@media (max-width:520px){ .bosses{grid-template-columns:1fr;} }
+.boss-card{position:relative; background:rgba(255,255,255,0.03); border:1px solid var(--line); border-radius:16px; padding:16px; cursor:pointer; color:var(--text); text-align:left; font:inherit; display:flex; flex-direction:column; gap:6px;}
+.boss-card:hover,.boss-card:focus-visible{border-color:var(--acc); background:var(--acc-dim); outline:none;}
+.boss-card .em{font-size:34px; line-height:1;}
+.boss-card .g{font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700; letter-spacing:0.08em; color:var(--acc); text-transform:uppercase;}
+.boss-card .bn{font-family:'Unbounded',sans-serif; font-weight:800; font-size:15px;}
+.boss-card .bd{font-size:12px; color:var(--sub); line-height:1.45;}
+.boss-card .won{position:absolute; top:12px; right:12px; font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700; color:var(--gold); background:rgba(255,204,102,0.12); border:1px solid rgba(255,204,102,0.4); border-radius:99px; padding:3px 8px;}
+.shelf{margin-top:18px; background:rgba(0,0,0,0.25); border:1px solid var(--line); border-radius:14px; padding:12px 14px;}
+.shelf h3{font-size:13px; margin-bottom:8px;}
+.shelf .row{display:flex; gap:8px; flex-wrap:wrap;}
+.medal{display:flex; align-items:center; gap:6px; font-size:12.5px; font-weight:700; border:1px solid var(--line); border-radius:99px; padding:6px 11px; color:var(--sub);}
+.medal.on{color:var(--gold); border-color:rgba(255,204,102,0.45); background:rgba(255,204,102,0.08);}
+.screen{display:none;}
+.screen.active{display:block;}
+.arena{display:grid; grid-template-columns:1fr auto 1fr; gap:14px; align-items:center; margin-bottom:16px;}
+.fighter{display:flex; flex-direction:column; gap:6px;}
+.fighter .lbl{font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700; color:var(--sub); letter-spacing:0.06em; text-transform:uppercase;}
+.hp{height:12px; background:rgba(255,255,255,0.07); border-radius:99px; overflow:hidden; border:1px solid var(--line);}
+.hp div{height:100%; background:linear-gradient(90deg,var(--bad),var(--acc)); width:100%; transition:width .35s ease;}
+.hearts{font-size:20px; letter-spacing:2px;}
+.boss-em{font-size:62px; line-height:1; text-align:center; transition:transform .15s ease;}
+.boss-em.hit{animation:hit .4s ease;}
+.boss-em.attack{animation:attack .4s ease;}
+@keyframes hit{0%{transform:scale(1);}30%{transform:scale(0.85) rotate(-8deg); filter:brightness(2);}100%{transform:scale(1);}}
+@keyframes attack{0%{transform:translateX(0);}40%{transform:translateX(-18px) scale(1.12);}100%{transform:translateX(0);}}
+.qmeta{display:flex; justify-content:space-between; gap:10px; font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--sub); margin-bottom:10px;}
+.qmeta b{color:var(--acc);}
+.skill{font-weight:700; text-transform:uppercase; letter-spacing:0.06em;}
+.prompt{font-family:'Unbounded',sans-serif; font-weight:700; font-size:clamp(17px,4.4vw,21px); line-height:1.35; margin-bottom:16px;}
+.prompt .gap{display:inline-block; min-width:60px; border-bottom:2px solid var(--acc); color:var(--acc);}
+.listen-btn{display:inline-flex; align-items:center; gap:8px; background:var(--acc); color:#1a0a00; border:none; border-radius:12px; padding:11px 16px; font:inherit; font-weight:800; font-size:14px; cursor:pointer; margin-bottom:16px;}
+.opts{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+.opts.single{grid-template-columns:1fr;}
+@media (max-width:480px){ .opts{grid-template-columns:1fr;} }
+.opt{background:rgba(255,255,255,0.04); border:1px solid var(--line); border-radius:14px; padding:14px; color:var(--text); font:inherit; font-weight:700; font-size:14.5px; cursor:pointer; text-align:left;}
+.opt:hover:not(:disabled),.opt:focus-visible{border-color:var(--acc); background:var(--acc-dim); outline:none;}
+.opt.right{border-color:var(--ok); background:rgba(45,212,191,0.15);}
+.opt.wrong{border-color:var(--bad); background:rgba(255,59,92,0.15);}
+.opt:disabled{cursor:default;}
+.feedback{margin-top:14px; font-size:13.5px; line-height:1.5; color:var(--sub); min-height:20px;}
+.feedback b{color:var(--text);}
+.btn{border:none; border-radius:12px; padding:13px 16px; font:inherit; font-weight:800; font-size:14px; cursor:pointer; text-align:center;}
+.btn.primary{background:var(--acc); color:#1a0a00;}
+.btn.secondary{background:rgba(255,255,255,0.06); color:var(--text); border:1px solid var(--line);}
+.btn:focus-visible,.listen-btn:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
+.next{margin-top:12px; width:100%;}
+.result-em{font-size:60px; text-align:center;}
+.medal-big{margin:14px auto 6px; width:max-content; max-width:100%; display:flex; align-items:center; gap:10px; background:rgba(255,204,102,0.1); border:1px solid rgba(255,204,102,0.45); color:var(--gold); border-radius:16px; padding:12px 16px; font-weight:800;}
+.rtitle{text-align:center; font-size:21px; margin-top:6px;}
+.rsub{text-align:center; color:var(--sub); font-size:13.5px; margin:6px 0 16px; line-height:1.5;}
+.review{background:rgba(0,0,0,0.25); border:1px solid var(--line); border-radius:14px; padding:12px 14px; margin-bottom:16px; max-height:240px; overflow:auto; font-size:13.5px; line-height:1.5;}
+.review div{padding:5px 0; border-bottom:1px solid var(--line);}
+.review div:last-child{border-bottom:none;}
+.review b{color:var(--ok);}
+.ractions{display:flex; gap:10px; flex-wrap:wrap;}
+.ractions .btn{flex:1; min-width:130px;}
+.home-fab{position:fixed; top:14px; left:14px; z-index:60; display:flex; align-items:center; gap:7px; background:linear-gradient(135deg,var(--panel2),var(--panel)); border:1px solid var(--line); border-radius:999px; padding:9px 14px 9px 11px; text-decoration:none; color:var(--text); font-weight:700; font-size:12.5px; box-shadow:0 4px 14px rgba(0,0,0,0.35);}
+.home-fab:hover{border-color:var(--acc);}
+@media (max-width:420px){ .home-fab{top:10px; left:10px; font-size:0; padding:8px 12px 8px 10px;} .home-fab .ic{font-size:16px;} .boss-em{font-size:48px;} }
+@media (prefers-reduced-motion:reduce){ *{animation:none!important; transition:none!important;} }
+</style>
+</head>
+<body>
+<a class="home-fab" href="index.html" title="Back to home"><span class="ic">🏠</span><span class="lbl">Home</span></a>
+<div class="wrap">
+
+  <div class="screen active" id="screenIntro">
+    <div class="panel">
+      <span class="badge">👾 End-of-level challenge · no timer</span>
+      <h2>Boss Checkpoint</h2>
+      <p class="lede">Each grade has a boss guarding the checkpoint. The battle mixes <b>grammar</b>, <b>vocabulary</b> and <b>listening</b> from that level: 12 questions, and the boss has 10 HP. Every right answer is a hit. Every wrong answer costs you a shield. You have 3 shields.</p>
+      <div class="howto">Beat the boss and you earn that level's <b>badge</b>. It's saved on this device and appears in your <b>Mission Log</b>. Listening questions read a sentence aloud, so switch your sound on (or grab headphones in class).</div>
+      <div class="bosses" id="bosses"></div>
+      <div class="shelf">
+        <h3>🏅 Your badges</h3>
+        <div class="row" id="shelf"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="screenGame">
+    <div class="panel">
+      <div class="arena">
+        <div class="fighter">
+          <span class="lbl">You</span>
+          <span class="hearts" id="hearts">🛡️🛡️🛡️</span>
+        </div>
+        <div class="boss-em" id="bossEm">👾</div>
+        <div class="fighter" style="text-align:right;">
+          <span class="lbl" id="bossName">Boss</span>
+          <div class="hp"><div id="hp"></div></div>
+          <span class="lbl" id="hpText" style="text-align:right;">10 / 10 HP</span>
+        </div>
+      </div>
+      <div class="qmeta"><span>QUESTION <b id="qNum">1</b>/<span id="qTotal">12</span></span><span class="skill" id="skill"></span></div>
+      <div class="prompt" id="prompt"></div>
+      <button class="listen-btn" id="listenBtn" style="display:none" onclick="speakCurrent()">🔊 Play the sentence</button>
+      <div class="opts" id="opts"></div>
+      <div class="feedback" id="feedback" role="status" aria-live="polite"></div>
+      <button class="btn primary next" id="nextBtn" style="display:none" onclick="nextQ()">Next attack →</button>
+    </div>
+  </div>
+
+  <div class="screen" id="screenResult">
+    <div class="panel">
+      <div class="result-em" id="rEm">🏆</div>
+      <h2 class="rtitle" id="rTitle">Boss defeated!</h2>
+      <div class="medal-big" id="rMedal" hidden></div>
+      <p class="rsub" id="rSub"></p>
+      <div class="review" id="review"></div>
+      <div class="ractions">
+        <button class="btn secondary" onclick="renderIntro(); show('intro')">All bosses</button>
+        <a class="btn secondary" href="mission-log.html" style="text-decoration:none;">📡 Mission Log</a>
+        <button class="btn primary" onclick="startBoss(S.boss.id)">Fight again</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// type: g = grammar, v = vocabulary, l = listening (say = sentence read aloud; the options are what you might have heard)
+var BOSSES = [
+  {id:'1eso', grade:'1º ESO', cefr:'A1–A2', name:'The Grammar Golem', em:'🗿', medal:'🥉 Golem Breaker',
+   desc:'to be, have got, present simple & continuous, there is/are, can, possessives.',
+   qs:[
+    {t:'g', q:'My brother ___ 14 years old.', a:'is', o:['has','have','are']},
+    {t:'g', q:'___ there a supermarket near your house?', a:'Is', o:['Are','Has','Does']},
+    {t:'g', q:'She ___ football every Saturday.', a:'plays', o:['play','playing','is play']},
+    {t:'g', q:'I ___ swim very well — I learnt when I was five.', a:'can', o:['cans','can to','am can']},
+    {t:'g', q:'This is ___ bag. It belongs to me.', a:'my', o:['me','mine','I']},
+    {t:'g', q:'Be quiet! The baby ___ .', a:'is sleeping', o:['sleeps','sleep','are sleeping']},
+    {t:'v', q:'The opposite of "cheap" is…', a:'expensive', o:['poor','rich','cold']},
+    {t:'v', q:'You wear ___ on your feet.', a:'shoes', o:['gloves','a hat','a scarf']},
+    {t:'l', say:'She lives in a big house.', a:'She lives in a big house.', o:['She lived in a big house.','She\'ll live in a big house.']},
+    {t:'l', say:'There are two cats in the garden.', a:'There are two cats in the garden.', o:['There\'s a cat in the garden.','There were two cats in the garden.']},
+    {t:'l', say:'He doesn\'t like fish.', a:'He doesn\'t like fish.', o:['He didn\'t like fish.','He does like fish.']},
+    {t:'l', say:'Can you help me, please?', a:'Can you help me, please?', o:['Could you help me, please?','Can you tell me, please?']}
+   ]},
+  {id:'2eso', grade:'2º ESO', cefr:'A2–A2+', name:'The Past-Tense Kraken', em:'🐙', medal:'🥈 Kraken Tamer',
+   desc:'past simple & continuous, comparatives, superlatives, some/any, quantifiers.',
+   qs:[
+    {t:'g', q:'Yesterday I ___ to the cinema with my cousins.', a:'went', o:['go','goed','have gone']},
+    {t:'g', q:'___ you see the match last night?', a:'Did', o:['Do','Were','Have']},
+    {t:'g', q:'My sister is ___ than me.', a:'taller', o:['more tall','tallest','more taller']},
+    {t:'g', q:'This is the ___ film I\'ve ever seen.', a:'best', o:['better','most good','goodest']},
+    {t:'g', q:'There isn\'t ___ milk in the fridge.', a:'any', o:['some','a','many']},
+    {t:'g', q:'We were playing in the park when it ___ to rain.', a:'started', o:['was starting','starts','start']},
+    {t:'v', q:'A person who flies a plane is a…', a:'pilot', o:['driver','sailor','chef']},
+    {t:'v', q:'I\'m so ___ — I haven\'t eaten anything all day!', a:'hungry', o:['angry','thirsty','sleepy']},
+    {t:'l', say:'I watched a film last night.', a:'I watched a film last night.', o:['I watch a film every night.','I\'m watching a film tonight.']},
+    {t:'l', say:'She cooked dinner for us.', a:'She cooked dinner for us.', o:['She cooks dinner for us.','She\'s cooking dinner for us.']},
+    {t:'l', say:'They\'re older than us.', a:'They\'re older than us.', o:['They\'re colder than us.','They were older than us.']},
+    {t:'l', say:'We didn\'t go out on Saturday.', a:'We didn\'t go out on Saturday.', o:['We don\'t go out on Saturday.','We won\'t go out on Saturday.']}
+   ]},
+  {id:'3eso', grade:'3º ESO', cefr:'A2–B1', name:'The Present-Perfect Hydra', em:'🐉', medal:'🥇 Hydra Slayer',
+   desc:'present perfect, past continuous, will/going to, first conditional, modals, relatives.',
+   qs:[
+    {t:'g', q:'I ___ to London three times.', a:'have been', o:['was','have go','am been']},
+    {t:'g', q:'She has lived here ___ 2018.', a:'since', o:['for','from','during']},
+    {t:'g', q:'If it rains, we ___ at home.', a:'will stay', o:['would stay','stay will','stayed']},
+    {t:'g', q:'I ___ TV when you called me.', a:'was watching', o:['watched','am watching','have watched']},
+    {t:'g', q:'You ___ wear a seatbelt. It\'s the law.', a:'must', o:['mustn\'t','don\'t have to','can']},
+    {t:'g', q:'The girl ___ won the prize is my cousin.', a:'who', o:['which','what','whose']},
+    {t:'v', q:'I can\'t ___ a decision — both options look great!', a:'make', o:['do','get','say']},
+    {t:'v', q:'Someone who is always calm and never worries is…', a:'relaxed', o:['nervous','bossy','moody']},
+    {t:'l', say:'I\'ve finished my homework.', a:'I\'ve finished my homework.', o:['I finished my homework.','I\'ll finish my homework.']},
+    {t:'l', say:'He\'s gone to Paris.', a:'He\'s gone to Paris.', o:['He\'s been to Paris.','He went to Paris.']},
+    {t:'l', say:'We\'ll call you later.', a:'We\'ll call you later.', o:['We call you later.','We\'d call you later.']},
+    {t:'l', say:'She was studying all night.', a:'She was studying all night.', o:['She has studied all night.','She is studying all night.']}
+   ]},
+  {id:'4eso', grade:'4º ESO', cefr:'B1–B1+', name:'The Passive-Voice Leviathan', em:'🐋', medal:'🏆 Leviathan Hunter',
+   desc:'passive voice, 2nd & 3rd conditional, reported speech, relative clauses, modals.',
+   qs:[
+    {t:'g', q:'The Mona Lisa ___ by Leonardo da Vinci.', a:'was painted', o:['painted','is painting','has painted']},
+    {t:'g', q:'If I ___ rich, I would travel the world.', a:'were', o:['am','will be','would be']},
+    {t:'g', q:'She said that she ___ tired.', a:'was', o:['is','will','has']},
+    {t:'g', q:'This is the town ___ I was born.', a:'where', o:['which','who','what']},
+    {t:'g', q:'I\'m not used to ___ up so early.', a:'getting', o:['get','got','have got']},
+    {t:'g', q:'He asked me where I ___ .', a:'lived', o:['did live','do I live','live I']},
+    {t:'v', q:'Someone who is "reliable" is…', a:'trustworthy', o:['lazy','rude','shy']},
+    {t:'v', q:'Climate change is one of the biggest ___ facing the world today.', a:'challenges', o:['chances','advices','damages']},
+    {t:'l', say:'The house was built in 1920.', a:'The house was built in 1920.', o:['The house is built in 1920.','The house has been built since 1920.']},
+    {t:'l', say:'If I had time, I\'d help you.', a:'If I had time, I\'d help you.', o:['If I have time, I\'ll help you.','If I\'d had time, I\'d have helped you.']},
+    {t:'l', say:'She told me she was leaving.', a:'She told me she was leaving.', o:['She told me she\'s leaving.','She told me she\'d left.']},
+    {t:'l', say:'I wish I could come.', a:'I wish I could come.', o:['I wish I can come.','I wish I\'d come.']}
+   ]}
+];
+
+var BADGE_KEY = 'owBadges';
+var S = {boss:null, qs:[], i:0, hp:10, shields:3, answered:false, log:[]};
+var hasTTS = 'speechSynthesis' in window, voice = null;
+
+function esc(t){ return String(t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var x=a[i]; a[i]=a[j]; a[j]=x; } return a; }
+function show(n){ ['Intro','Game','Result'].forEach(function(s){ document.getElementById('screen'+s).classList.toggle('active', s.toLowerCase()===n); }); if(hasTTS) speechSynthesis.cancel(); window.scrollTo(0,0); }
+function loadBadges(){ try{ return JSON.parse(localStorage.getItem(BADGE_KEY)) || {}; }catch(e){ return {}; } }
+function saveBadge(b){ try{ var all = loadBadges(); var prev = all[b.id]; if(!prev || b.score > prev.score) all[b.id] = b; localStorage.setItem(BADGE_KEY, JSON.stringify(all)); }catch(e){} }
+
+function pickVoice(){
+  if(!hasTTS) return;
+  var vs = speechSynthesis.getVoices();
+  voice = vs.find(function(v){ return /en-GB/i.test(v.lang); }) || vs.find(function(v){ return /^en/i.test(v.lang); }) || null;
+}
+if(hasTTS){ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+
+function renderIntro(){
+  var badges = loadBadges();
+  document.getElementById('bosses').innerHTML = BOSSES.map(function(b){
+    return '<button class="boss-card" onclick="startBoss(\'' + b.id + '\')">' +
+      (badges[b.id] ? '<span class="won">✓ Defeated</span>' : '') +
+      '<span class="em">' + b.em + '</span><span class="g">' + b.grade + ' · CEFR ' + b.cefr + '</span>' +
+      '<span class="bn">' + esc(b.name) + '</span><span class="bd">' + esc(b.desc) + '</span></button>';
+  }).join('');
+  document.getElementById('shelf').innerHTML = BOSSES.map(function(b){
+    var on = !!badges[b.id];
+    return '<span class="medal' + (on ? ' on' : '') + '">' + (on ? b.medal : '🔒 ' + b.grade) + '</span>';
+  }).join('');
+}
+
+function startBoss(id){
+  var boss = BOSSES.filter(function(b){ return b.id === id; })[0];
+  // keep a skill mix: shuffle within the bank, listening questions spread through the fight
+  var qs = shuffle(boss.qs.slice());
+  S = {boss:boss, qs:qs, i:0, hp:10, shields:3, answered:false, log:[]};
+  document.getElementById('bossEm').textContent = boss.em;
+  document.getElementById('bossName').textContent = boss.name;
+  document.getElementById('qTotal').textContent = qs.length;
+  updateBars();
+  renderQ();
+  show('game');
+}
+
+function updateBars(){
+  document.getElementById('hp').style.width = (S.hp / 10 * 100) + '%';
+  document.getElementById('hpText').textContent = S.hp + ' / 10 HP';
+  document.getElementById('hearts').textContent = '🛡️'.repeat(S.shields) + '▫️'.repeat(3 - S.shields);
+}
+
+function renderQ(){
+  var q = S.qs[S.i];
+  S.answered = false;
+  document.getElementById('qNum').textContent = S.i + 1;
+  document.getElementById('skill').textContent = q.t === 'g' ? '⚙️ Grammar' : q.t === 'v' ? '🔤 Vocabulary' : '🎧 Listening';
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('nextBtn').style.display = 'none';
+  var lb = document.getElementById('listenBtn');
+  var opts = document.getElementById('opts');
+  if(q.t === 'l'){
+    if(hasTTS){ document.getElementById('prompt').textContent = 'Listen. Which sentence did you hear?'; }
+    else { document.getElementById('prompt').innerHTML = 'Audio isn\'t available in this browser. Read it instead: <span class="gap">' + esc(q.say) + '</span>'; }
+    lb.style.display = hasTTS ? 'inline-flex' : 'none';
+    opts.className = 'opts single';
+    setTimeout(speakCurrent, 300);
+  } else {
+    document.getElementById('prompt').innerHTML = esc(q.q).replace('___', '<span class="gap">?</span>');
+    lb.style.display = 'none';
+    opts.className = 'opts';
+  }
+  opts.innerHTML = '';
+  shuffle([q.a].concat(q.o)).forEach(function(o){
+    var b = document.createElement('button'); b.className = 'opt'; b.type = 'button'; b.textContent = o;
+    b.addEventListener('click', function(){ answer(o, b); });
+    opts.appendChild(b);
+  });
+}
+
+function speakCurrent(){
+  var q = S.qs[S.i];
+  if(!hasTTS || q.t !== 'l') return;
+  speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(q.say);
+  u.lang = 'en-GB'; if(voice) u.voice = voice; u.rate = 0.92;
+  speechSynthesis.speak(u);
+}
+
+function answer(choice, el){
+  if(S.answered) return;
+  S.answered = true;
+  var q = S.qs[S.i], ok = choice === q.a;
+  document.querySelectorAll('.opt').forEach(function(b){ b.disabled = true; if(b.textContent === q.a) b.classList.add('right'); });
+  var em = document.getElementById('bossEm');
+  em.classList.remove('hit','attack'); void em.offsetWidth;
+  if(ok){ S.hp = Math.max(0, S.hp - 1); em.classList.add('hit'); }
+  else { S.shields = Math.max(0, S.shields - 1); el.classList.add('wrong'); em.classList.add('attack'); }
+  S.log.push({q:q, ok:ok});
+  updateBars();
+  var fb = document.getElementById('feedback');
+  fb.innerHTML = ok ? '💥 <b>Direct hit!</b> The boss loses 1 HP.' : '🛡️ <b>The boss strikes back.</b> Correct answer: <b>' + esc(q.a) + '</b>';
+  var over = S.hp === 0 || S.shields === 0 || S.i === S.qs.length - 1;
+  var nb = document.getElementById('nextBtn');
+  nb.textContent = over ? 'See the outcome →' : 'Next attack →';
+  nb.style.display = 'block'; nb.focus();
+}
+
+function nextQ(){
+  if(S.hp === 0 || S.shields === 0 || S.i >= S.qs.length - 1){ finish(); return; }
+  S.i++; renderQ();
+}
+
+function finish(){
+  var won = S.hp === 0, b = S.boss, right = S.log.filter(function(l){ return l.ok; }).length;
+  document.getElementById('rEm').textContent = won ? '🏆' : b.em;
+  document.getElementById('rTitle').textContent = won ? b.name + ' defeated!' : b.name + ' survived…';
+  var medal = document.getElementById('rMedal');
+  if(won){
+    saveBadge({id:b.id, name:b.medal, boss:b.name, grade:b.grade, score:right, of:S.log.length, date:new Date().toISOString()});
+    medal.hidden = false; medal.textContent = 'Badge earned: ' + b.medal;
+    document.getElementById('rSub').textContent = 'You landed ' + right + ' hits out of ' + S.log.length + ' questions with ' + S.shields + ' shield(s) to spare. Your badge is saved in your Mission Log.';
+  } else {
+    medal.hidden = true;
+    document.getElementById('rSub').textContent = 'You landed ' + right + ' hits — the boss needed 10. Review the questions below, then try again: the questions come in a different order each time.';
+  }
+  document.getElementById('review').innerHTML = S.log.map(function(l){
+    var text = l.q.t === 'l' ? '🎧 ' + esc(l.q.say) :
+      (l.q.q.indexOf('___') > -1 ? esc(l.q.q).replace('___', '<b>' + esc(l.q.a) + '</b>') : esc(l.q.q) + ' <b>' + esc(l.q.a) + '</b>');
+    return '<div>' + (l.ok ? '✅ ' : '❌ ') + text + '</div>';
+  }).join('');
+  show('result');
+}
+
+renderIntro();
+</script>
+</body>
+</html>
