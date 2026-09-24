@@ -252,6 +252,25 @@
         { level:4, sentence:"It's important to ___ care of your health.", answer:"take", options:["take","make","do","have"], es:"take care of" },
     ];
 
+
+    // Spanish meaning shown during the round; the English collocation (item.es) is only revealed after answering
+    const ES_MAP = {
+        "do homework":"hacer los deberes", "make a decision":"tomar una decisión", "do somebody a favour":"hacer un favor a alguien",
+        "make a mistake":"cometer un error", "do the shopping":"hacer la compra", "make an effort":"esforzarse",
+        "do your best":"hacerlo lo mejor posible", "make (a lot of) noise":"hacer (mucho) ruido", "make the bed":"hacer la cama",
+        "do the washing-up":"fregar los platos", "take a photo":"hacer una foto", "have a shower":"ducharse",
+        "take a break":"tomarse un descanso", "have a party":"hacer una fiesta", "take an exam":"hacer un examen",
+        "have breakfast":"desayunar", "have a good time":"pasarlo bien", "get a headache":"empezar a dolerle a uno la cabeza",
+        "get married":"casarse", "get lost":"perderse", "pay attention":"prestar atención", "keep a promise":"cumplir una promesa",
+        "catch a cold":"pillar un resfriado", "save time":"ahorrar tiempo", "spend money":"gastar dinero",
+        "tell the truth":"decir la verdad", "make a promise":"hacer una promesa", "raise awareness":"concienciar / sensibilizar",
+        "reach a conclusion":"llegar a una conclusión", "achieve a goal":"lograr un objetivo", "keep in touch":"mantener el contacto",
+        "make an appointment":"pedir cita", "take medicine":"tomar medicinas", "give advice":"dar consejo(s)",
+        "give a presentation":"hacer una presentación", "keep an eye on":"vigilar / echar un ojo a", "reach an agreement":"llegar a un acuerdo",
+        "put an end to":"poner fin a", "draw a conclusion":"sacar una conclusión", "take care of":"cuidar de"
+    };
+    const esOf = item => '🇪🇸 ' + (ES_MAP[item.es] || '');
+
     const LEADERBOARD_KEY = 'collocationMatchLeaderboard';
     let currentPool = [], currentItem = null, score = 0, streak = 0, lives = 3;
     let playerName = "", playerCourse = "", rawLeaderboardData = [];
@@ -316,10 +335,10 @@
         clearInterval(timerInterval);
         if(currentPool.length === 0 || lives <= 0) { endGame(); return; }
         currentItem = currentPool.pop();
-        roundIndex++;
+        roundIndex++; roundLocked = false;
         document.getElementById('round').textContent = `${roundIndex}/${totalRounds}`;
         document.getElementById('sentence').innerHTML = currentItem.sentence.replace('___', '<span class="blank">____</span>');
-        document.getElementById('es-hint').textContent = currentItem.es;
+        document.getElementById('es-hint').textContent = esOf(currentItem);
         document.getElementById('feedback').style.display = 'none';
 
         const opts = [...currentItem.options];
@@ -331,8 +350,12 @@
         updateStats();
     }
 
+    let roundLocked = false;
     function resolveRound(chosen, el) {
+        if(roundLocked) return;
+        roundLocked = true;
         clearInterval(timerInterval);
+        document.getElementById('es-hint').textContent = `${esOf(currentItem)} → ✔ ${currentItem.es.toUpperCase()}`;
         const fb = document.getElementById('feedback');
         if(chosen === currentItem.answer) {
             if(el) el.classList.add('correct-flash');
@@ -355,7 +378,7 @@
 
     function getHint() {
         if(!currentItem) return;
-        document.getElementById('es-hint').textContent = currentItem.es + ` (starts with "${currentItem.answer[0]}")`;
+        document.getElementById('es-hint').textContent = esOf(currentItem) + ` · the verb starts with "${currentItem.answer[0]}"`;
     }
 
     function updateStats() {
