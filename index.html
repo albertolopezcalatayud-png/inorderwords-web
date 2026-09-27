@@ -295,6 +295,12 @@
     filter:blur(40px); opacity:0.28; background:var(--cap-glow,var(--teal)); z-index:0;
   }
   .capsule > *{position:relative; z-index:1;}
+  .cap-phon{display:flex; align-items:center; gap:10px; margin:2px 0 6px;}
+  .cap-ipa{font-family:'JetBrains Mono',monospace; font-size:13.5px; color:var(--text-dim,#9aa1ba); letter-spacing:0.02em;}
+  .cap-speak{background:rgba(255,255,255,0.07); border:1px solid var(--line); color:var(--text,#f4f2ec); border-radius:99px; width:34px; height:34px; font-size:16px; line-height:1; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; flex:none; transition:transform .12s ease, border-color .12s ease;}
+  .cap-speak:hover{transform:scale(1.08); border-color:var(--cap-glow,var(--teal));}
+  .cap-speak:focus-visible{outline:2px solid var(--cap-glow,var(--teal)); outline-offset:2px;}
+  .cap-speak.playing{border-color:var(--cap-glow,var(--teal)); box-shadow:0 0 12px var(--cap-glow,var(--teal));}
   .capsule .cap-label{
     font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase;
     color:var(--cap-glow,var(--teal)); display:flex; align-items:center; gap:6px; margin-bottom:8px;
@@ -332,12 +338,13 @@
     <div class="capsule" id="capsuleWord" style="--cap-glow:var(--teal)">
       <div class="cap-label">📖 Word of the day</div>
       <div class="cap-word" id="wordText">worthwhile</div>
+      <div class="cap-phon"><span class="cap-ipa" id="wordIpa">/ˌwɜːθˈwaɪl/</span><button type="button" class="cap-speak" id="wordSpeak" title="Listen" aria-label="Listen to the word" hidden>🔊</button></div>
       <div class="cap-es" id="wordEs">que vale la pena</div>
       <div class="cap-example" id="wordExample">"Learning irregular verbs is worthwhile in the long run."</div>
     </div>
     <div class="capsule" id="capsuleIdiom" style="--cap-glow:var(--gold)">
       <div class="cap-label">💬 Idiom of the week</div>
-      <div class="cap-word" id="idiomText">call it a day</div>
+      <div class="cap-word" id="idiomText" style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;"><span id="idiomWordTxt">call it a day</span><button type="button" class="cap-speak" id="idiomSpeak" title="Listen" aria-label="Listen to the idiom" hidden>🔊</button></div>
       <div class="cap-es" id="idiomEs">dejarlo por hoy</div>
       <div class="cap-example" id="idiomExample">"We've done enough revision — let's call it a day."</div>
       <a class="cap-link" href="idiom-detective.html" target="_blank" rel="noopener">🕵️ Crack more idioms in Idiom Detective →</a>
@@ -823,26 +830,26 @@
 
   /* WORD OF THE DAY / IDIOM OF THE WEEK / CULTURE CORNER */
   const WORDS = [
-    { word:"procrastinate", es:"procrastinar / posponer", example:"Stop procrastinating and finish your homework." },
-    { word:"overwhelmed", es:"agobiado / desbordado", example:"She felt overwhelmed by all the exam revision." },
-    { word:"stubborn", es:"terco / testarudo", example:"My little brother is too stubborn to admit he's wrong." },
-    { word:"worthwhile", es:"que vale la pena", example:"Learning irregular verbs is worthwhile in the long run." },
-    { word:"blend in", es:"pasar desapercibido / mezclarse", example:"He tried to blend in with the crowd." },
-    { word:"reckon", es:"suponer / calcular (coloquial)", example:"I reckon we'll finish the unit by Friday." },
-    { word:"thrilled", es:"encantado / emocionadísimo", example:"We were thrilled when the team won the final." },
-    { word:"drawback", es:"inconveniente / desventaja", example:"The only drawback of the plan is the cost." },
-    { word:"straightforward", es:"sencillo / directo", example:"The instructions were clear and straightforward." },
-    { word:"commute", es:"desplazarse al trabajo/instituto", example:"She commutes to school by bus every day." },
-    { word:"blunt", es:"directo / brusco (al hablar)", example:"He gave a blunt answer that surprised everyone." },
-    { word:"tackle", es:"abordar / enfrentarse a", example:"Let's tackle the hardest exercise first." },
-    { word:"outcome", es:"resultado", example:"Nobody could predict the outcome of the match." },
-    { word:"reluctant", es:"reacio / poco dispuesto", example:"He was reluctant to speak in front of the class." },
-    { word:"genuine", es:"auténtico / sincero", example:"Her apology sounded genuine." },
-    { word:"handy", es:"útil / a mano", example:"A bilingual dictionary is handy for this exercise." },
-    { word:"eventually", es:"finalmente / con el tiempo (not a synonym of 'eventualmente')", example:"She eventually understood the difference between the tenses." },
-    { word:"skeptical", es:"escéptico / desconfiado", example:"I'm skeptical about that shortcut for learning grammar." },
-    { word:"overall", es:"en general / en conjunto", example:"Overall, the exam went better than expected." },
-    { word:"awkward", es:"incómodo / violento", example:"There was an awkward silence after the question." }
+    { word:"procrastinate", ipa:"/prəˈkræstɪneɪt/", es:"procrastinar / posponer", example:"Stop procrastinating and finish your homework." },
+    { word:"overwhelmed", ipa:"/ˌəʊvəˈwelmd/", es:"agobiado / desbordado", example:"She felt overwhelmed by all the exam revision." },
+    { word:"stubborn", ipa:"/ˈstʌbən/", es:"terco / testarudo", example:"My little brother is too stubborn to admit he's wrong." },
+    { word:"worthwhile", ipa:"/ˌwɜːθˈwaɪl/", es:"que vale la pena", example:"Learning irregular verbs is worthwhile in the long run." },
+    { word:"blend in", ipa:"/ˌblend ˈɪn/", es:"pasar desapercibido / mezclarse", example:"He tried to blend in with the crowd." },
+    { word:"reckon", ipa:"/ˈrekən/", es:"suponer / calcular (coloquial)", example:"I reckon we'll finish the unit by Friday." },
+    { word:"thrilled", ipa:"/θrɪld/", es:"encantado / emocionadísimo", example:"We were thrilled when the team won the final." },
+    { word:"drawback", ipa:"/ˈdrɔːbæk/", es:"inconveniente / desventaja", example:"The only drawback of the plan is the cost." },
+    { word:"straightforward", ipa:"/ˌstreɪtˈfɔːwəd/", es:"sencillo / directo", example:"The instructions were clear and straightforward." },
+    { word:"commute", ipa:"/kəˈmjuːt/", es:"desplazarse al trabajo/instituto", example:"She commutes to school by bus every day." },
+    { word:"blunt", ipa:"/blʌnt/", es:"directo / brusco (al hablar)", example:"He gave a blunt answer that surprised everyone." },
+    { word:"tackle", ipa:"/ˈtækl/", es:"abordar / enfrentarse a", example:"Let's tackle the hardest exercise first." },
+    { word:"outcome", ipa:"/ˈaʊtkʌm/", es:"resultado", example:"Nobody could predict the outcome of the match." },
+    { word:"reluctant", ipa:"/rɪˈlʌktənt/", es:"reacio / poco dispuesto", example:"He was reluctant to speak in front of the class." },
+    { word:"genuine", ipa:"/ˈdʒenjuɪn/", es:"auténtico / sincero", example:"Her apology sounded genuine." },
+    { word:"handy", ipa:"/ˈhændi/", es:"útil / a mano", example:"A bilingual dictionary is handy for this exercise." },
+    { word:"eventually", ipa:"/ɪˈventʃuəli/", es:"finalmente / con el tiempo (not a synonym of 'eventualmente')", example:"She eventually understood the difference between the tenses." },
+    { word:"skeptical", ipa:"/ˈskeptɪkl/", es:"escéptico / desconfiado", example:"I'm skeptical about that shortcut for learning grammar." },
+    { word:"overall", ipa:"/ˌəʊvərˈɔːl/", es:"en general / en conjunto", example:"Overall, the exam went better than expected." },
+    { word:"awkward", ipa:"/ˈɔːkwəd/", es:"incómodo / violento", example:"There was an awkward silence after the question." }
   ];
 
   const IDIOMS = [
@@ -896,10 +903,39 @@
     const f = CULTURE_FACTS[dayOfYear(now) % CULTURE_FACTS.length];
 
     document.getElementById('wordText').textContent = w.word;
+    document.getElementById('wordIpa').textContent = w.ipa || '';
     document.getElementById('wordEs').textContent = w.es;
     document.getElementById('wordExample').textContent = `"${w.example}"`;
 
-    document.getElementById('idiomText').textContent = i.idiom;
+    if('speechSynthesis' in window){
+      let capVoice = null;
+      function pickCapVoice(){
+        const vs = speechSynthesis.getVoices();
+        capVoice = vs.find(v => /en[-_]GB/i.test(v.lang)) || vs.find(v => /^en/i.test(v.lang)) || null;
+      }
+      pickCapVoice();
+      speechSynthesis.onvoiceschanged = pickCapVoice;
+      function sayCap(btn, text){
+        try{
+          speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance(text);
+          u.lang = 'en-GB'; if(capVoice) u.voice = capVoice; u.rate = 0.9;
+          btn.classList.add('playing');
+          u.onend = u.onerror = () => btn.classList.remove('playing');
+          speechSynthesis.speak(u);
+        }catch(e){}
+      }
+      const wb = document.getElementById('wordSpeak');
+      wb.hidden = false;
+      let wAlt = false;
+      wb.addEventListener('click', () => { sayCap(wb, wAlt ? w.example : w.word); wAlt = !wAlt; });
+      const ib = document.getElementById('idiomSpeak');
+      ib.hidden = false;
+      let iAlt = false;
+      ib.addEventListener('click', () => { sayCap(ib, iAlt ? i.example : i.idiom); iAlt = !iAlt; });
+    }
+
+    document.getElementById('idiomWordTxt').textContent = i.idiom;
     document.getElementById('idiomEs').textContent = i.es;
     document.getElementById('idiomExample').textContent = `"${i.example}"`;
 
