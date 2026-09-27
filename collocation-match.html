@@ -327,6 +327,7 @@
         bar.style.background = '';
         let timeLeft = timeLimitSeconds;
         timerInterval = setInterval(() => {
+            if(window.IOWBot && IOWBot.isOpen()) return;
             timeLeft -= 0.1;
             bar.style.width = `${Math.max(0, (timeLeft/timeLimitSeconds)*100)}%`;
             if(timeLeft <= 0) { clearInterval(timerInterval); resolveRound(null); }
@@ -342,6 +343,7 @@
         document.getElementById('sentence').innerHTML = currentItem.sentence.replace('___', '<span class="blank">____</span>');
         document.getElementById('es-hint').textContent = esOf(currentItem);
         document.getElementById('feedback').style.display = 'none';
+        if(window.IOWBot) IOWBot.hintFor('collo', currentItem, ES_MAP[currentItem.es]);
 
         const opts = [...currentItem.options];
         const field = document.getElementById('asteroid-field');
@@ -370,6 +372,7 @@
             if(el) el.classList.add('wrong-flash');
             streak = 0; if(!chillMode) lives--;
             missedItems.push(currentItem.sentence.replace('___', currentItem.answer.toUpperCase()));
+            if(window.IOWBot) IOWBot.mistake('collo', {item:currentItem, chosen:chosen, esText:ES_MAP[currentItem.es]});
             playSound(150, 'sawtooth', 0.3);
             fb.style.display = 'block'; fb.className = 'status-msg incorrect';
             fb.innerText = chosen === null ? `TIME UP! Correct: ${currentItem.answer.toUpperCase()}` : `MISSED! Correct: ${currentItem.answer.toUpperCase()}`;
@@ -468,4 +471,5 @@
         draw();
     }
 </script>
+<script src="helper-bot.js" defer></script>
 </body></html>

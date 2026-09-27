@@ -243,6 +243,7 @@ function renderClue(){
     document.getElementById('clue').textContent = c.item.es;
     document.getElementById('evidence').innerHTML = '🗒️ Evidence: ' + blankKey(c.item.ex, c.item.key);
   }
+  if(window.IOWBot) IOWBot.hintFor('idiom', c);
   var box = document.getElementById('opts');
   box.innerHTML = '';
   c.options.forEach(function(o){
@@ -263,6 +264,7 @@ function answer(choice, el){
     if(b.textContent === c.answer) b.classList.add('right');
   });
   if(!ok) el.classList.add('wrong');
+  if(!ok && window.IOWBot) IOWBot.mistake('idiom', {item:c.item, type:c.type, choice:choice, all:IDIOMS});
   if(ok){ S.right++; S.streak++; S.best = Math.max(S.best, S.streak); S.score += 10 + Math.min(S.streak-1, 5) * 2; }
   else { S.streak = 0; }
   S.log.push({item:c.item, ok:ok});
@@ -318,5 +320,6 @@ function sendToMissionLog(){
 function play(mode){ if(window.IOW) IOW.ensureIdentity(function(){ startCase(mode); }); else startCase(mode); }
 if(window.IOW) IOW.mountIdentity(document.getElementById('iowId'));
 </script>
+<script src="helper-bot.js" defer></script>
 </body>
 </html>

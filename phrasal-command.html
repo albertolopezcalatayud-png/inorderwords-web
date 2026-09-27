@@ -464,6 +464,7 @@
         let timeLeft = timeLimitSeconds;
 
         timerInterval = setInterval(() => {
+            if(window.IOWBot && IOWBot.isOpen()) return;
             timeLeft -= 0.1;
             timerBar.style.width = `${Math.max(0, (timeLeft / timeLimitSeconds) * 100)}%`;
             if(timeLeft <= 0) { clearInterval(timerInterval); handleTimeout(); }
@@ -474,6 +475,7 @@
         totalAttempts++; streak = 0; if(!chillMode) lives--;
         playSound(120, 'sawtooth', 0.4);
         recordFailure(currentVerb.full);
+        if(window.IOWBot) IOWBot.mistake('phrasal', {item:currentVerb, timeout:true, db:phrasalDB});
 
         const fb = document.getElementById('feedback');
         fb.style.display = 'block'; fb.className = 'status-msg incorrect'; fb.innerText = `⏱️ TIME EXPIRED! (${currentVerb.full.toUpperCase()})`;
@@ -529,6 +531,7 @@
         document.getElementById('input-particle').value = '';
         document.getElementById('feedback').style.display = 'none';
         document.getElementById('input-particle').focus();
+        if(window.IOWBot) IOWBot.hintFor('phrasal', currentVerb);
 
         wordStartTime = Date.now();
         startTimer();
@@ -565,6 +568,7 @@
             streak = 0; if(!chillMode) lives--;
             playSound(150, 'sawtooth', 0.3);
             recordFailure(currentVerb.full);
+            if(window.IOWBot) IOWBot.mistake('phrasal', {item:currentVerb, given:p, db:phrasalDB});
 
             const fb = document.getElementById('feedback');
             fb.style.display = 'block'; fb.className = 'status-msg incorrect';
@@ -591,6 +595,7 @@
             playSound(800, 'square', 0.2);
             alert("BONUS COMPLETE! +10 PTS");
         } else {
+            if(window.IOWBot) IOWBot.mistake('phrasalBonus', {item:currentVerb, given:ans});
             alert(`MISSED! Correct: ${currentVerb.sentenceAns}`);
         }
         nextVerb();
@@ -760,4 +765,5 @@
     }
 </script>
 
+<script src="helper-bot.js" defer></script>
 </body></html>

@@ -323,6 +323,7 @@
         bar.style.background = '';
         let timeLeft = timeLimitSeconds;
         timerInterval = setInterval(() => {
+            if(window.IOWBot && IOWBot.isOpen()) return;
             timeLeft -= 0.1;
             bar.style.width = `${Math.max(0, (timeLeft/timeLimitSeconds)*100)}%`;
             if(timeLeft <= 0) { clearInterval(timerInterval); resolveRound(false, true); }
@@ -344,6 +345,7 @@
         document.getElementById('feedback').style.display = 'none';
         const input = document.getElementById('q-input');
         input.value = ''; input.focus();
+        if(window.IOWBot) IOWBot.hintFor('question', currentItem);
 
         startTimer();
         updateStats();
@@ -373,6 +375,7 @@
         } else {
             streak = 0; if(!chillMode) lives--;
             missedItems.push({ answer: currentItem.answer, question: model, note: currentItem.es });
+            if(window.IOWBot) IOWBot.mistake('question', {item:currentItem, typed:document.getElementById('q-input').value, timeout:timedOut});
             playSound(150, 'sawtooth', 0.3);
             fb.style.display = 'block'; fb.className = 'status-msg incorrect';
             fb.innerText = (timedOut ? 'TIME UP! ' : 'SIGNAL LOST! ') + `→ ${model}`;
@@ -481,4 +484,5 @@
         draw();
     }
 </script>
+<script src="helper-bot.js" defer></script>
 </body></html>

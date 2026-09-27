@@ -251,6 +251,7 @@ function onWord(el, e){
   var id = el.getAttribute('data-bug');
   if(id === null){
     S.falses++; S.score = Math.max(0, S.score - 3);
+    if(window.IOWBot) IOWBot.mistake('debugFalse', {word:el.textContent});
     el.classList.remove('false'); void el.offsetWidth; el.classList.add('false');
     setTimeout(function(){ el.classList.remove('false'); }, 600);
     document.getElementById('toast').textContent = '⚠ False alarm — "' + el.textContent + '" was correct. −3';
@@ -294,6 +295,7 @@ function choose(opt){
     updateBugs(); updateTop();
   } else {
     bug.state = 'tried';
+    if(window.IOWBot) IOWBot.mistake('debugFix', {bug:bug, opt:opt});
     document.getElementById('toast').textContent = '✗ "' + opt + '" isn\'t right either — try another fix.';
     var btns = document.querySelectorAll('#popChoices button');
     btns.forEach(function(b){ if(b.textContent === opt){ b.disabled = true; b.style.opacity = 0.4; } });
@@ -318,7 +320,7 @@ function updateTop(){ document.getElementById('topScore').textContent = S.score;
 
 function endTransmission(){
   closePop();
-  var els = document.querySelectorAll('#msg .w[data-bug]');
+  var els = document.querySelectorAll('#msg .w[data-bug]'), missedBugs = [];
   els.forEach(function(el){
     var bug = S.bugs[+el.getAttribute('data-bug')];
     if(bug.state === 'open' || bug.state === 'tried'){
@@ -327,8 +329,10 @@ function endTransmission(){
       el.innerHTML = '<span class="was">' + esc(bug.wrong) + '</span>' + esc(bug.right);
       el.removeAttribute('tabindex');
       addLog(bug, 'miss', '❌ Missed');
+      missedBugs.push(bug);
     }
   });
+  if(missedBugs.length && window.IOWBot) IOWBot.mistake('debugMissed', {bugs:missedBugs});
   updateBugs();
   finishTransmission();
 }
@@ -375,5 +379,6 @@ document.addEventListener('click', function(e){
 });
 window.addEventListener('scroll', closePop, {passive:true});
 </script>
+<script src="helper-bot.js" defer></script>
 </body>
 </html>

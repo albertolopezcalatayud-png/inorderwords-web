@@ -1836,7 +1836,7 @@ function renderFlash(word){
     document.getElementById('flashActions').style.display='grid';
   };
   document.getElementById('speakBtn').onclick = ()=> speak(word.en);
-  area.querySelector('#dontKnow').onclick = ()=>{ registerResult(word,false); requeueWrong(word); nextCard(); };
+  area.querySelector('#dontKnow').onclick = ()=>{ registerResult(word,false); if(window.IOWBot) IOWBot.mistake('vocab', {word, mode:'flash'}); requeueWrong(word); nextCard(); };
   area.querySelector('#doKnow').onclick = ()=>{ registerResult(word,true); nextCard(); };
 }
 
@@ -1852,6 +1852,7 @@ function renderChoice(word){
   const correctAns = askEnglish ? word.en : word.es;
   const key = askEnglish ? 'en' : 'es';
   const options = shuffle([correctAns, ...distractors(word,key,3)]);
+  if(window.IOWBot) IOWBot.hintFor('vocab', word, 'choice');
   area.innerHTML = `
     <div class="card" style="min-height:120px;">
       <div class="speak" id="speakBtn">🔊</div>
@@ -1872,6 +1873,7 @@ function renderChoice(word){
         else if(c===b && !ok) c.classList.add('wrong');
       });
       registerResult(word, ok);
+      if(!ok && window.IOWBot){ const cw = sel.unit.groups.flatMap(g=>g.words).find(w=>w[key]===opt); IOWBot.mistake('vocab', {word, mode:'choice', chosenText:opt, chosen:cw}); }
       const fb = document.getElementById('feedback');
       fb.textContent = ok ? '¡Correcto!' : `Era: ${correctAns}`;
       fb.className = 'feedback ' + (ok?'ok':'bad');
@@ -1898,6 +1900,7 @@ function renderType(word){
     </div>
   `;
   document.getElementById('speakBtn').onclick = ()=> speak(word.en);
+  if(window.IOWBot) IOWBot.hintFor('vocab', word, 'type');
   const input = document.getElementById('typeInput');
   const submit = ()=>{
     const val = input.value.trim().toLowerCase();
@@ -1906,6 +1909,7 @@ function renderType(word){
     input.classList.add(ok?'correct':'wrong');
     input.disabled = true; document.getElementById('typeSubmit').disabled = true;
     registerResult(word, ok);
+    if(!ok && window.IOWBot) IOWBot.mistake('vocab', {word, mode:'type', given:input.value});
     const fb = document.getElementById('feedback');
     fb.textContent = ok ? '¡Correcto!' : `Era: ${word.en}`;
     fb.className = 'feedback ' + (ok?'ok':'bad');
@@ -1960,5 +1964,6 @@ function autoSelectFromURL(){
   loadRanking();
 })();
 </script>
+<script src="helper-bot.js" defer></script>
 </body>
 </html>

@@ -279,6 +279,7 @@ function updateBars(){
 function renderQ(){
   var q = S.qs[S.i];
   S.answered = false;
+  if(window.IOWBot) IOWBot.hintFor('boss', q);
   document.getElementById('qNum').textContent = S.i + 1;
   document.getElementById('skill').textContent = q.t === 'g' ? '⚙️ Grammar' : q.t === 'v' ? '🔤 Vocabulary' : '🎧 Listening';
   document.getElementById('feedback').textContent = '';
@@ -323,6 +324,7 @@ function answer(choice, el){
   if(ok){ S.hp = Math.max(0, S.hp - 1); em.classList.add('hit'); }
   else { S.shields = Math.max(0, S.shields - 1); el.classList.add('wrong'); em.classList.add('attack'); }
   S.log.push({q:q, ok:ok});
+  if(!ok && window.IOWBot) IOWBot.mistake('boss', {q:q, choice:choice});
   updateBars();
   var fb = document.getElementById('feedback');
   fb.innerHTML = ok ? '💥 <b>Direct hit!</b> The boss loses 1 HP.' : '🛡️ <b>The boss strikes back.</b> Correct answer: <b>' + esc(q.a) + '</b>';
@@ -363,5 +365,6 @@ function play(id){ if(window.IOW) IOW.ensureIdentity(function(){ startBoss(id); 
 if(window.IOW) IOW.mountIdentity(document.getElementById('iowId'));
 renderIntro();
 </script>
+<script src="helper-bot.js" defer></script>
 </body>
 </html>

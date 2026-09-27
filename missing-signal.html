@@ -264,6 +264,7 @@ function render(){
   var inp = document.getElementById('ans'); inp.value = ''; inp.disabled = false;
   setTranscript(S.shown);
   updateTop();
+  if(window.IOWBot) IOWBot.hintFor('signal', it);
   inp.focus();
 }
 
@@ -357,6 +358,7 @@ function resolve(ok, typed){
     S.score += pts; S.right++; if(!S.shown) S.ears++;
   }
   S.log.push({it:it, ok:ok});
+  if(!ok && window.IOWBot) IOWBot.mistake('signal', {item:it, typed:typed});
   var v = document.getElementById('verdict');
   v.className = 'verdict show ' + (ok ? 'ok' : 'no');
   var others = it.accept.length > 1 ? ' <span style="color:var(--sub)">(also accepted: ' + esc(it.accept.slice(1).join(', ')) + ')</span>' : '';
@@ -406,5 +408,6 @@ function sendToMissionLog(){
 function startChannel(level){ if(window.IOW) IOW.ensureIdentity(function(){ startLevel(level); }); else startLevel(level); }
 if(window.IOW) IOW.mountIdentity(document.getElementById('iowId'));
 </script>
+<script src="helper-bot.js" defer></script>
 </body>
 </html>

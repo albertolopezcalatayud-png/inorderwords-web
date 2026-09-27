@@ -502,6 +502,7 @@
         let timeLeft = timeLimitSeconds;
 
         timerInterval = setInterval(() => {
+            if(window.IOWBot && IOWBot.isOpen()) return;
             timeLeft -= 0.1;
             timerBar.style.width = `${Math.max(0, (timeLeft / timeLimitSeconds) * 100)}%`;
             if(timeLeft <= 0) { clearInterval(timerInterval); handleTimeout(); }
@@ -512,11 +513,16 @@
         totalAttempts++; streak = 0; lives--;
         playSound(120, 'sawtooth', 0.4);
         recordFailure(currentVerb.inf);
+        if(window.IOWBot) IOWBot.mistake('verb', {item:currentVerb, timeout:true, family:vsFamily(currentVerb)});
 
         const fb = document.getElementById('feedback');
         fb.style.display = 'block'; fb.className = 'status-msg incorrect'; fb.innerText = '⏱️ TIME EXPIRED!';
         setTimeout(nextVerb, 1500);
         updateStats();
+    }
+
+    function vsFamily(v) {
+        return verbsDB.filter(x => x.group === v.group && x.inf !== v.inf).slice(0, 3);
     }
 
     function recordFailure(verbInf) {
@@ -568,6 +574,7 @@
         document.getElementById('input-part').value = '';
         document.getElementById('feedback').style.display = 'none';
         document.getElementById('input-past').focus();
+        if(window.IOWBot) IOWBot.hintFor('verb', currentVerb);
 
         wordStartTime = Date.now();
         startTimer();
@@ -605,6 +612,7 @@
             streak = 0; if(!chillMode) lives--;
             playSound(150, 'sawtooth', 0.3);
             recordFailure(currentVerb.inf);
+            if(window.IOWBot) IOWBot.mistake('verb', {item:currentVerb, past:p, part:pt, family:vsFamily(currentVerb)});
 
             const fb = document.getElementById('feedback');
             fb.style.display = 'block'; fb.className = 'status-msg incorrect';
@@ -631,6 +639,7 @@
             playSound(800, 'square', 0.2);
             alert("BONUS COMPLETE! +10 PTS");
         } else {
+            if(window.IOWBot) IOWBot.mistake('verbBonus', {item:currentVerb, given:ans});
             alert(`MISSED! Correct: ${currentVerb.sentenceAns}`);
         }
         nextVerb();
@@ -821,4 +830,5 @@
     }
 </script>
 
+<script src="helper-bot.js" defer></script>
 </body></html>

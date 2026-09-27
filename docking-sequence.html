@@ -284,9 +284,9 @@ function buildDeck(n){
   var chosen = shuffle(VERBS.slice()).slice(0, n);
   var cards = [];
   chosen.forEach(function(v, gi){
-    cards.push({group: gi, form: 'base', text: v.base, matched: false});
-    cards.push({group: gi, form: 'past', text: v.past, matched: false});
-    cards.push({group: gi, form: 'pp', text: v.pp, matched: false});
+    cards.push({group: gi, form: 'base', text: v.base, matched: false, verb: v});
+    cards.push({group: gi, form: 'past', text: v.past, matched: false, verb: v});
+    cards.push({group: gi, form: 'pp', text: v.pp, matched: false, verb: v});
   });
   return shuffle(cards);
 }
@@ -364,6 +364,7 @@ function flipCard(i){
           finishLevel();
         }
       } else {
+        if(window.IOWBot) IOWBot.mistake('docking', {cards: idxs.map(function(idx){ return state.deck[idx]; })});
         idxs.forEach(function(idx){
           var el = cardEl(idx);
           el.classList.add('shake');
@@ -404,5 +405,6 @@ function finishLevel(){
 function playLevel(n, label){ if(window.IOW) IOW.ensureIdentity(function(){ startLevel(n, label); }); else startLevel(n, label); }
 if(window.IOW) IOW.mountIdentity(document.getElementById('iowId'));
 </script>
+<script src="helper-bot.js" defer></script>
 </body>
 </html>
