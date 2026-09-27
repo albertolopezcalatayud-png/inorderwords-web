@@ -95,8 +95,8 @@
       'Elige tu curso arriba para personalizarlo.',
       'Se guarda en <b>este dispositivo</b>: si cambias de ordenador, no lo verás allí.']},
     'start.html': {t:'Test de nivel', how:[
-      'Contesta 12 preguntas rápidas (unos 2 minutos).',
-      'Al final te decimos tu nivel aproximado (A1–B1+) y qué curso y juego te recomendamos.',
+      'Contesta 20 preguntas rápidas (unos 3 minutos).',
+      'Al final te decimos tu nivel aproximado (A1–C2) y qué curso y juego te recomendamos.',
       'Es solo una estimación: puedes repetirlo cuando quieras.']},
     'trap-zone.html': {t:'Trap Zone', how:[
       'Cada carta es una <b>trampa</b> típica: false friends y errores de traducción que salen en los exámenes.',

@@ -3,7 +3,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Levlup Hub</title>
-<meta name="description" content="Level up your English with free games, a phonetics lab and vocabulary tools built for ESO students &#8212; and anyone learning English from A1 to B1+.">
+<meta name="description" content="Level up your English with free games, a phonetics lab and vocabulary tools built for ESO students &#8212; and anyone learning English from A1 to C2.">
 <link rel="canonical" href="https://albertolopezcalatayud-png.github.io/inorderwords-web/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Inorderwords">
@@ -331,7 +331,7 @@
     <span class="eyebrow">Mission Control · English</span>
     <h1 class="title">INORDERWORDS</h1>
     <p class="tagline">Games, tools and boss battles, one mission: <b>level up your English</b>. Pick your grade below and we'll show you what fits.</p>
-    <a href="start.html" style="display:inline-flex; align-items:center; gap:8px; margin-top:22px; font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--bg); background:linear-gradient(120deg,var(--gold),var(--coral)); padding:12px 22px; border-radius:99px;">🧭 New here? Take the 2-minute level test <span>→</span></a>
+    <a href="start.html" style="display:inline-flex; align-items:center; gap:8px; margin-top:22px; font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--bg); background:linear-gradient(120deg,var(--gold),var(--coral)); padding:12px 22px; border-radius:99px;">🧭 New here? Take the 3-minute level test <span>→</span></a>
   </section>
 
   <div class="capsule-row">
@@ -823,7 +823,7 @@
     chips.forEach(function(c){ c.addEventListener('click', function(){ apply(c.getAttribute('data-g')); }); });
     var init = 'all';
     try{ init = localStorage.getItem('owGradeFilter') || 'all'; }catch(e){}
-    var FROM_HASH = {'#grade-1eso':'1', '#grade-2eso':'2', '#grade-3eso':'3', '#grade-4eso':'4'};
+    var FROM_HASH = {'#grade-1eso':'1', '#grade-2eso':'2', '#grade-3eso':'3', '#grade-4eso':'4', '#grade-bach':'b'};
     if(FROM_HASH[location.hash]) init = FROM_HASH[location.hash];
     apply(init);
   })();

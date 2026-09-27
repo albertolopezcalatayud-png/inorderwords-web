@@ -329,6 +329,7 @@
         if(window.IOWBot) IOWBot.hintFor('prep', currentItem);
 
         const opts = [...currentItem.options];
+        for(let si = opts.length - 1; si > 0; si--){ const sj = Math.floor(Math.random() * (si + 1)); [opts[si], opts[sj]] = [opts[sj], opts[si]]; }
         const field = document.getElementById('asteroid-field');
         field.innerHTML = opts.map(o => `<div class="asteroid" data-opt="${o}">${o}</div>`).join('');
         field.querySelectorAll('.asteroid').forEach(a => a.addEventListener('click', () => resolveRound(a.dataset.opt, a)));

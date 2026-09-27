@@ -3,19 +3,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Start Here — Level Test</title>
-<meta name="description" content="Not sure where to start? Take a 2-minute English level test and get routed to the right Inorderwords course, from A1 to B1+.">
+<meta name="description" content="Not sure where to start? Take a 3-minute English level test and get routed to the right Inorderwords course, from A1 to C2.">
 <link rel="canonical" href="https://albertolopezcalatayud-png.github.io/inorderwords-web/start.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Inorderwords">
 <meta property="og:title" content="Start Here — Level Test — Inorderwords">
-<meta property="og:description" content="Take a 2-minute English level test and get routed to the right course, from A1 to B1+.">
+<meta property="og:description" content="Take a 3-minute English level test and get routed to the right course, from A1 to C2.">
 <meta property="og:url" content="https://albertolopezcalatayud-png.github.io/inorderwords-web/start.html">
 <meta property="og:image" content="https://albertolopezcalatayud-png.github.io/inorderwords-web/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Start Here — Level Test — Inorderwords">
-<meta name="twitter:description" content="Take a 2-minute English level test and get routed to the right course, from A1 to B1+.">
+<meta name="twitter:description" content="Take a 3-minute English level test and get routed to the right course, from A1 to C2.">
 <meta name="twitter:image" content="https://albertolopezcalatayud-png.github.io/inorderwords-web/og-image.png">
 <meta name="theme-color" content="#0b0e1a">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230b0e1a'/%3E%3Ctext x='50' y='68' font-size='58' text-anchor='middle' fill='%23ffcc66'%3E%F0%9F%9A%80%3C/text%3E%3C/svg%3E">
@@ -144,15 +144,15 @@
   <section class="hero">
     <span class="eyebrow">Mission Control · English</span>
     <h1 class="title">FIND YOUR LEVEL</h1>
-    <p class="tagline">Not sure where to start? Answer 12 quick questions and we'll point you to the right course and CEFR band — A1 to B1+.</p>
+    <p class="tagline">Not sure where to start? Answer 20 quick questions and we'll point you to the right course and CEFR band — A1 to C2.</p>
   </section>
 
   <div class="card">
 
     <div id="introBlock">
       <div class="intro-list">
-        <div class="intro-item">⏱️ <span><b>2 minutes</b>, 12 questions, no login.</span></div>
-        <div class="intro-item">📈 <span>We estimate a <b>CEFR band</b> (A1–B1+) from your answers.</span></div>
+        <div class="intro-item">⏱️ <span><b>3 minutes</b>, 20 questions, no login.</span></div>
+        <div class="intro-item">📈 <span>We estimate a <b>CEFR band</b> (A1–C2) from your answers.</span></div>
         <div class="intro-item">🧭 <span>You'll get a <b>recommended course card</b> and a game to try first.</span></div>
         <div class="intro-item">🔁 <span>Just an estimate — you can always retake it or pick your own course.</span></div>
       </div>
@@ -229,7 +229,15 @@
     { q:"If I ___ more time, I would learn French too.", opts:["have","had","will have","would have"], correct:1 },
     { q:"The Eiffel Tower ___ in 1889.", opts:["build","built","was built","has built"], correct:2 },
     { q:"You ___ be tired after such a long trip.", opts:["must","can","should","might not"], correct:0 },
-    { q:"I wish I ___ more time to study for the exam.", opts:["have","had","will have","would have"], correct:1 }
+    { q:"I wish I ___ more time to study for the exam.", opts:["have","had","will have","would have"], correct:1 },
+    { q:"She suggested ___ the meeting until next week.", opts:["to postpone","postponing","postpone","that to postpone"], correct:1 },
+    { q:"If he ___ the instructions, he wouldn't have broken it.", opts:["read","had read","would read","has read"], correct:1 },
+    { q:"The suspect denied ___ anything unusual that night.", opts:["to see","seeing","see","to have saw"], correct:1 },
+    { q:"Not only ___ late, but he also forgot the report.", opts:["he arrived","did he arrive","he did arrive","arrived he"], correct:1 },
+    { q:"It's high time the council ___ something about the traffic.", opts:["does","did","will do","has done"], correct:1 },
+    { q:"___ the heavy rain, the ceremony went ahead as planned.", opts:["Despite","Although","However","Even"], correct:0 },
+    { q:"Little ___ that the letter would change everything.", opts:["she knew","did she know","she did know","knew she"], correct:1 },
+    { q:"He would sooner resign ___ accept those conditions.", opts:["than","rather than","instead of","to"], correct:0 }
   ];
 
   var current = 0;
@@ -255,7 +263,9 @@
     var lettersArr = ['A','B','C','D'];
     var wrap = document.getElementById('qOptions');
     wrap.innerHTML = '';
-    item.opts.forEach(function(opt, i){
+    item._order = item.opts.map(function(_, k){ return k; });
+    for(var s = item._order.length - 1; s > 0; s--){ var r = Math.floor(Math.random() * (s + 1)); var tmp = item._order[s]; item._order[s] = item._order[r]; item._order[r] = tmp; }
+    item._order.map(function(k){ return item.opts[k]; }).forEach(function(opt, i){
       var btn = document.createElement('button');
       btn.className = 'opt';
       btn.innerHTML = '<span class="letter">' + lettersArr[i] + '</span><span>' + opt + '</span>';
@@ -270,12 +280,12 @@
     var item = QUESTIONS[current];
     var allOpts = document.querySelectorAll('#qOptions .opt');
     allOpts.forEach(function(o){ o.classList.add('disabled'); });
-    if(i === item.correct){
+    if(item._order[i] === item.correct){
       score++;
       btn.classList.add('correct');
     } else {
       btn.classList.add('wrong');
-      allOpts[item.correct].classList.add('correct');
+      allOpts[item._order.indexOf(item.correct)].classList.add('correct');
     }
     setTimeout(function(){
       current++;
@@ -289,14 +299,20 @@
   }
 
   var BANDS = [
-    { min:0, max:3, name:'A1 – A2', grade:'1º ESO', anchor:'grade-1eso', game:'vocab-rush.html?course=1eso',
+    { min:0, max:4, name:'A1 – A2', grade:'1º ESO', anchor:'grade-1eso', game:'vocab-rush.html?course=1eso',
       desc:"You're building the basics — articles, present tenses, everyday vocabulary. 1º ESO is the right starting point." },
-    { min:4, max:6, name:'A2 – A2+', grade:'2º ESO', anchor:'grade-2eso', game:'vocab-rush.html?course=2eso',
+    { min:5, max:7, name:'A2 – A2+', grade:'2º ESO', anchor:'grade-2eso', game:'vocab-rush.html?course=2eso',
       desc:"Solid A2 foundations. Time to work on past tenses, comparatives and everyday fluency with 2º ESO." },
-    { min:7, max:9, name:'A2 – B1', grade:'3º ESO', anchor:'grade-3eso', game:'vocab-rush.html?course=3eso',
+    { min:8, max:10, name:'A2 – B1', grade:'3º ESO', anchor:'grade-3eso', game:'vocab-rush.html?course=3eso',
       desc:"You're moving into B1 territory — perfect tenses, conditionals, passive voice. 3º ESO will stretch you further." },
-    { min:10, max:12, name:'B1 – B1+', grade:'4º ESO', anchor:'grade-4eso', game:'vocab-rush.html?course=4eso',
-      desc:"Strong B1+ grammar control. 4º ESO (and beyond) is where you'll keep sharpening exam-level English." }
+    { min:11, max:13, name:'B1 – B1+', grade:'4º ESO', anchor:'grade-4eso', game:'vocab-rush.html?course=4eso',
+      desc:"Strong B1+ grammar control. 4º ESO is where you'll keep sharpening exam-level English." },
+    { min:14, max:16, name:'B2', grade:'1º Bach', anchor:'grade-bach', game:'phrasal-command.html',
+      desc:"Comfortable B2 English — conditionals, reported speech and verb patterns barely slow you down. 1º Bach material will keep you growing." },
+    { min:17, max:18, name:'C1', grade:'2º Bach', anchor:'grade-bach', game:'preposition-blaster.html',
+      desc:"Advanced control — inversion, nuance and exam-level structures. 2º Bach and PAU/EBAU practice are your playground." },
+    { min:19, max:20, name:'C1 – C2', grade:'Beyond 2º Bach', anchor:'grade-bach', game:'vocabulary-sheets.html',
+      desc:"Near-native accuracy — you handled even the trickiest C2 structures. Polish PAU/EBAU topic vocabulary, master idioms and challenge the toughest bosses." }
   ];
 
   function showResult(){
