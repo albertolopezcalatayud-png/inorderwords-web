@@ -448,6 +448,7 @@
 
         playerName = nameInput; playerCourse = document.getElementById('player-course').value;
         if(window.IOW) IOW.setIdentity(playerName, playerCourse);
+        if(window.IOW && IOW.needsCode && IOW.needsCode() && !document.getElementById('chill-mode-toggle').checked){ document.getElementById('player-modal').style.display = 'none'; IOW.promptCode(function(ok){ if(ok){ startGame(isRevenge) } else { document.getElementById('player-modal').style.display = 'flex'; } }); return; }
         const selectedGroup = document.getElementById('phrasal-group').value;
         chillMode = document.getElementById('chill-mode-toggle').checked;
 

@@ -311,6 +311,7 @@
         if(!nameInput) return alert("Enter your Pilot Callsign!");
         playerName = nameInput; playerCourse = document.getElementById('player-course').value;
         if(window.IOW) IOW.setIdentity(playerName, playerCourse);
+        if(window.IOW && IOW.needsCode && IOW.needsCode() && !document.getElementById('chill-mode-toggle').checked){ document.getElementById('player-modal').style.display = 'none'; IOW.promptCode(function(ok){ if(ok){ startGame() } else { document.getElementById('player-modal').style.display = 'flex'; } }); return; }
         const lvl = document.getElementById('level-group').value;
 
         chillMode = document.getElementById('chill-mode-toggle').checked;

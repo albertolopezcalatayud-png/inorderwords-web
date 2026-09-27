@@ -121,6 +121,30 @@
     if(skip) skip.addEventListener('click', function(){ close(); window.__iowSkip = true; if(cb) cb(null); });
   }
 
+  function needsCode(){ return CODE_ON && !hasCode(); }
+  function promptCode(cb){
+    if(!needsCode()){ if(cb) cb(true); return; }
+    injectCss();
+    var bg = document.createElement('div'); bg.className = 'iow-modal-bg';
+    bg.innerHTML = '<div class="iow-modal" role="dialog" aria-modal="true" aria-labelledby="iowCT">' +
+      '<h3 id="iowCT">Class code</h3>' +
+      '<p>Ask your teacher for the class code so your scores count in the ranking.</p>' +
+      '<label for="iowCodeOnly">Class code</label><input id="iowCodeOnly" type="text" autocomplete="off" maxlength="24" placeholder="e.g. ABCD00">' +
+      '<div class="err" id="iowCErr"></div>' +
+      '<div class="row"><button type="button" class="skip" id="iowCSkip">Play without saving</button>' +
+      '<button type="button" class="go" id="iowCGo">Save code</button></div></div>';
+    document.body.appendChild(bg);
+    var codeEl = bg.querySelector('#iowCodeOnly'); codeEl.value = savedCode(); codeEl.focus();
+    function close(){ if(bg.parentNode) bg.parentNode.removeChild(bg); }
+    bg.querySelector('#iowCGo').addEventListener('click', function(){
+      var v = codeEl.value.trim();
+      if(!codeOk(v)){ bg.querySelector('#iowCErr').textContent = v ? 'That class code isn\'t right. Ask your teacher.' : 'Enter your class code.'; codeEl.focus(); return; }
+      lsSet('iow_class_code', v); close(); if(cb) cb(true);
+    });
+    codeEl.addEventListener('keydown', function(e){ if(e.key === 'Enter') bg.querySelector('#iowCGo').click(); });
+    bg.querySelector('#iowCSkip').addEventListener('click', function(){ close(); window.__iowSkip = true; if(cb) cb(false); });
+  }
+
   function ensureIdentity(cb){
     var id = getIdentity();
     if(id.name && id.grade && hasCode()){ cb(id); return; }
@@ -214,6 +238,6 @@
   window.IOW = {
     GRADES:GRADES, getIdentity:getIdentity, setIdentity:setIdentity, ensureIdentity:ensureIdentity,
     mountIdentity:mountIdentity, postScore:postScore, leaderboard:leaderboard, leaderboardAll:leaderboardAll,
-    fillBoard:fillBoard, prefill:prefill, toast:toast, boardName:boardName, jsonp:jsonp, cleanName:cleanName
+    fillBoard:fillBoard, prefill:prefill, toast:toast, boardName:boardName, jsonp:jsonp, cleanName:cleanName, needsCode:needsCode, promptCode:promptCode, hasCode:hasCode
   };
 })();
