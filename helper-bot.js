@@ -167,7 +167,8 @@
   /* ------------------------------------------------------------------ FAQ */
   var FAQ = [
     {q:'¿Cómo se guardan mis puntos?', a:'Al terminar una partida (no en 🧘 chill mode), tus puntos se envían al <b>ranking de tu clase</b> con tu nombre y tu curso. Cada juego tiene su propio ranking.'},
-    {q:'No salgo en el ranking', a:'Revisa tres cosas: 1) escribiste tu nombre y tu curso, 2) no jugabas en chill mode, 3) tenías internet al terminar. Escribe siempre tu nombre <b>igual</b> (nombre y apellido) para que tus puntos se sumen.'},
+    {q:'No salgo en el ranking', a:'Revisa cuatro cosas: 1) escribiste tu nombre y tu curso, 2) pusiste bien el <b>código de clase</b> que te dio tu profe, 3) no jugabas en chill mode, 4) tenías internet al terminar. Escribe siempre tu nombre <b>igual</b> (nombre y apellido) para que tus puntos se sumen.'},
+    {q:'¿Qué es el código de clase?', a:'Es una palabra que te da tu profe. La escribes una vez (con tu nombre y curso) y así tus puntos cuentan en el marcador. Si no lo sabes, pídeselo a tu profe. Sin el código puedes jugar igual, pero tus puntos no se guardan en el ranking.'},
     {q:'Me equivoqué de nombre o de curso', a:'Cámbialo en la barra “Jugando como…” de arriba, o en los campos de nombre y curso antes de empezar. Las próximas partidas se guardarán con el nombre nuevo.'},
     {q:'¿Qué es el modo chill?', a:'Es para practicar sin presión: no hay reloj y no pierdes vidas. Por eso esas partidas <b>no cuentan</b> para el ranking.'},
     {q:'No se oye el audio', a:'Sube el volumen, quita el modo silencio del móvil y usa Chrome, Edge o Safari. En clase, mejor con auriculares.'},

@@ -5,6 +5,16 @@
   var BACKEND = 'https://script.google.com/macros/s/AKfycbxE10u2B5PrXLWXkYAZ31h_ZDVlVmPOmqzaDmGPmhZ2UBFg_-DhGFEYktwIa0o5ixB5/exec';
   var GRADES = ['1º ESO','2º ESO','3º ESO','4º ESO','1º Bach','2º Bach'];
 
+  /* ---- class code: scores only count for players who know the teacher's code ----
+     CODE_ON=false disables the gate. To change the code, replace CODE_HASH with the
+     hash of the new code (ask Claude, or run hashCode() in the console). */
+  var CODE_ON = true;
+  var CODE_HASH = '2t36ti';           // hash of the current class code
+  function hashCode(x){ x = String(x || '').toUpperCase().replace(/[^A-Z0-9]/g, ''); var h = 5381; for(var i = 0; i < x.length; i++){ h = ((h << 5) + h) ^ x.charCodeAt(i); } return (h >>> 0).toString(36); }
+  function codeOk(x){ return !CODE_ON || hashCode(x) === CODE_HASH; }
+  function savedCode(){ return ls('iow_class_code') || ''; }
+  function hasCode(){ return codeOk(savedCode()); }
+
   function ls(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
   function lsSet(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
   function esc(t){ return String(t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
@@ -84,28 +94,36 @@
       '<label for="iowName">Name and surname</label><input id="iowName" type="text" autocomplete="off" maxlength="40" placeholder="e.g. Lucía García">' +
       '<label for="iowGrade">Grade</label><select id="iowGrade"><option value="">Choose your grade…</option>' +
       GRADES.map(function(g){ return '<option>' + g + '</option>'; }).join('') + '</select>' +
+      (CODE_ON ? '<label for="iowCode">Class code <span style="color:#9aa1ba;font-weight:400">(ask your teacher)</span></label><input id="iowCode" type="text" autocomplete="off" maxlength="24" placeholder="e.g. ABCD00">' : '') +
       '<div class="err" id="iowErr"></div>' +
       '<div class="row">' + (allowSkip ? '<button type="button" class="skip" id="iowSkip">Play without saving</button>' : '') +
       '<button type="button" class="go" id="iowGo">Let\'s go</button></div></div>';
     document.body.appendChild(bg);
-    var nameEl = bg.querySelector('#iowName'), gradeEl = bg.querySelector('#iowGrade');
+    var nameEl = bg.querySelector('#iowName'), gradeEl = bg.querySelector('#iowGrade'), codeEl = bg.querySelector('#iowCode');
     nameEl.value = id.name ? id.name : ''; gradeEl.value = id.grade;
+    if(codeEl) codeEl.value = savedCode();
     nameEl.focus();
     function close(){ if(bg.parentNode) bg.parentNode.removeChild(bg); }
     bg.querySelector('#iowGo').addEventListener('click', function(){
       var n = cleanName(nameEl.value), g = gradeEl.value;
       if(n.length < 2){ bg.querySelector('#iowErr').textContent = 'Write your name so your teacher can find you.'; nameEl.focus(); return; }
       if(!g){ bg.querySelector('#iowErr').textContent = 'Choose your grade.'; gradeEl.focus(); return; }
+      if(CODE_ON && codeEl){
+        var code = codeEl.value.trim();
+        if(!codeOk(code)){ bg.querySelector('#iowErr').textContent = code ? 'That class code isn\'t right. Ask your teacher.' : 'Enter your class code so your score counts.'; codeEl.focus(); return; }
+        lsSet('iow_class_code', code);
+      }
       setIdentity(n, g); close(); if(cb) cb(getIdentity());
     });
     nameEl.addEventListener('keydown', function(e){ if(e.key === 'Enter') bg.querySelector('#iowGo').click(); });
+    if(codeEl) codeEl.addEventListener('keydown', function(e){ if(e.key === 'Enter') bg.querySelector('#iowGo').click(); });
     var skip = bg.querySelector('#iowSkip');
     if(skip) skip.addEventListener('click', function(){ close(); window.__iowSkip = true; if(cb) cb(null); });
   }
 
   function ensureIdentity(cb){
     var id = getIdentity();
-    if(id.name && id.grade){ cb(id); return; }
+    if(id.name && id.grade && hasCode()){ cb(id); return; }
     openModal(cb, true);
   }
 
@@ -132,7 +150,13 @@
       toast('ℹ️ Score not sent to the class ranking — add your name and grade next time.', 'warn');
       return Promise.resolve({ok:false, reason:'noid'});
     }
+    if(CODE_ON && !hasCode()){
+      toast('🔒 Enter your class code (ask your teacher) so your score counts.', 'warn');
+      ensureIdentity(function(){});
+      return Promise.resolve({ok:false, reason:'nocode'});
+    }
     var params = {action:'score', student:name, course:boardName(game, grade), xp:xp, game:game};
+    if(CODE_ON) params.code = savedCode();
     Object.keys(opts).forEach(function(k){ if(k !== 'name' && k !== 'grade' && opts[k] !== undefined && opts[k] !== null) params[k] = opts[k]; });
     toast('📡 Sending to the class ranking…');
     return jsonp(params, 9000).then(function(r){
