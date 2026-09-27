@@ -20,6 +20,46 @@
     return d[m][n];
   }
   function b(t){ return '<b>' + esc(t) + '</b>'; }
+
+  /* ---- site dictionary (loaded lazily from iow-dict.js) ---- */
+  var DICT = null, dictTried = false;
+  function loadDict(cb){
+    if(DICT){ cb(DICT); return; }
+    if(window.IOW_DICT){ DICT = window.IOW_DICT; cb(DICT); return; }
+    if(dictTried){ cb(null); return; }
+    dictTried = true;
+    var sc = document.createElement('script');
+    sc.src = 'iow-dict.js';
+    sc.onload = function(){ DICT = window.IOW_DICT || null; cb(DICT); };
+    sc.onerror = function(){ cb(null); };
+    document.head.appendChild(sc);
+  }
+  function stripEs(t){ return fold(t).replace(/\b(el|la|los|las|un|una|unos|unas|to|the|a|an)\b/g, ' ').replace(/[\/().]/g,' ').replace(/\s+/g,' ').trim(); }
+  function dictLookup(q){
+    if(!DICT) return null;
+    var f = stripEs(q);
+    var raw = fold(q).replace(/[¿?¡!.,;:()"']/g,' ').replace(/\s+/g,' ').trim();
+    if(!f && !raw) return null;
+    var res = [];
+    function scan(en, es, extra){
+      var fe = fold(en), fs2 = stripEs(es), rawEs = fold(es);
+      var hit = fe === f || fe === raw || fs2 === f ||
+                (' '+fs2+' ').indexOf(' '+f+' ') !== -1 ||
+                (' '+fe+' ').indexOf(' '+f+' ') !== -1 ||
+                (raw && (' '+rawEs+' ').indexOf(' '+raw+' ') !== -1);
+      if(hit) res.push({en:en, es:es, extra:extra||''});
+    }
+    DICT.w.forEach(function(r){ scan(r[0], r[1]); });
+    DICT.p.forEach(function(r){ scan(r[0], r[1], 'phrasal verb'); });
+    DICT.c.forEach(function(r){ scan(r[0], r[1], 'collocation'); });
+    DICT.i.forEach(function(r){ scan(r[0], r[1], r[2] ? 'idiom · '+r[2] : 'idiom'); });
+    DICT.v.forEach(function(r){ scan(r[0], r[1], r[2] ? 'verbo: '+r[0]+' → '+r[2]+' → '+r[3] : ''); });
+    // dedupe by en+es
+    var seen = {}, out = [];
+    res.forEach(function(x){ var k = (x.en+'|'+x.es).toLowerCase(); if(!seen[k]){ seen[k]=1; out.push(x); } });
+    return out.length ? out.slice(0, 6) : null;
+  }
+
   function close(given, right){ given = fold(given).trim(); right = fold(right).trim(); return given && right && given !== right && lev(given, right) <= Math.max(1, Math.floor(right.length / 4)); }
 
   /* ---------------------------------------------------------------- pages */
@@ -195,7 +235,31 @@
     {k:['idiom','expresion','expresiones','frase hecha'], t:'Idioms', a:
       'Son expresiones cuyo significado no sale de las palabras: <b>a piece of cake</b> = pan comido. No las traduzcas palabra por palabra: apréndelas enteras con un ejemplo. Practícalas en Idiom Detective.'},
     {k:['false friend','falso amigo','falsos amigos','actually','embarrassed','sensible'], t:'False friends', a:
-      'Palabras que parecen españolas pero significan otra cosa:<br>• actually = en realidad (no “actualmente” = currently)<br>• embarrassed = avergonzado (no “embarazada” = pregnant)<br>• sensible = sensato (sensitive = sensible)<br>Tienes muchas más en Trap Zone.'}
+      'Palabras que parecen españolas pero significan otra cosa:<br>• actually = en realidad (no “actualmente” = currently)<br>• embarrassed = avergonzado (no “embarazada” = pregnant)<br>• sensible = sensato (sensitive = sensible)<br>Tienes muchas más en Trap Zone.'},
+    {k:['say tell','said told','say or tell','decir contar'], t:'Say o tell', a:
+      '• <b>tell</b> + persona: She <b>told me</b> the truth. También tell a story / a lie / the time.<br>• <b>say</b> sin persona: He <b>said</b> that…<br>⚠️ “say me” ✗ → tell me ✓.'},
+    {k:['question tag','tag','coletilla','isnt it','verdad no'], t:'Question tags', a:
+      'La coletilla usa el <b>mismo auxiliar</b> al revés:<br>• You like pizza, <b>don\'t you?</b><br>• She isn\'t here, <b>is she?</b><br>Afirmativa → coletilla negativa, y al revés.'},
+    {k:['been gone','ha ido ha estado'], t:'Been o gone', a:
+      '• <b>has gone to</b>: se ha ido y sigue allí.<br>• <b>has been to</b>: ha estado y ya volvió → He\'s <b>been</b> to Paris twice.'},
+    {k:['too enough','demasiado','suficiente'], t:'Too y enough', a:
+      '• <b>too</b> + adjetivo = demasiado: too expensive.<br>• adjetivo + <b>enough</b> = lo bastante: old <b>enough</b>.<br>• <b>enough</b> + nombre: enough time.'},
+    {k:['so such','tan que'], t:'So y such', a:
+      '• <b>so</b> + adjetivo: it was <b>so good</b>.<br>• <b>such</b> (+ a) + adjetivo + nombre: <b>such a good</b> film.'},
+    {k:['each other','one another','mutuamente','el uno al otro'], t:'Each other', a:
+      '<b>each other</b> = el uno al otro (mutuamente): They help <b>each other</b>. No es lo mismo que themselves (a sí mismos).'},
+    {k:['both either neither','ambos','ninguno de los dos'], t:'Both / either / neither', a:
+      '• <b>both</b> = los dos (both books).<br>• <b>either… or</b> = o uno o el otro.<br>• <b>neither… nor</b> = ni uno ni otro. Neither ya es negativo: neither of them <b>is</b> (verbo en positivo).'},
+    {k:['relative reduced','participle clause','the man sitting'], t:'Oraciones de participio', a:
+      'Se puede acortar un relativo con -ing o participio: The man <b>who is sitting</b> → the man <b>sitting</b> there. The book <b>which was written</b> → the book <b>written</b> in 1990.'},
+    {k:['inversion','hardly no sooner','negative adverbial','apenas cuando'], t:'Inversión (C1)', a:
+      'Tras un adverbio negativo al principio, se invierte como en pregunta:<br>• <b>Never have I</b> seen…<br>• <b>Hardly had I</b> arrived when…<br>• <b>Not only did he</b>… but also…'},
+    {k:['causative','have something done','get it done','mandar hacer'], t:'Causativo (have/get sth done)', a:
+      '<b>have/get + objeto + participio</b> = mandar hacer algo (lo hace otra persona):<br>• I <b>had my hair cut</b>.<br>• We\'re <b>getting the car repaired</b>.'},
+    {k:['wish if only','ojala','if only'], t:'Wish / if only', a:
+      '• presente: wish + <b>pasado</b> (I wish I <b>knew</b>).<br>• pasado: wish + <b>past perfect</b> (I wish I <b>had gone</b>).<br>• queja: wish + <b>would</b> (I wish you <b>would</b> stop).'},
+    {k:['linkers connectors','however therefore','conectores','moreover'], t:'Conectores', a:
+      'Contraste: <b>however</b>, <b>on the other hand</b>, <b>although</b>.<br>Añadir: <b>moreover</b>, <b>in addition</b>.<br>Consecuencia: <b>therefore</b>, <b>as a result</b>.<br>Van con coma: However, …'},
   ];
 
   /* ------------------------------------------------------ explanations */
@@ -656,11 +720,12 @@
     el.panel.addEventListener('keyup', function(e){ e.stopPropagation(); });
     el.panel.addEventListener('keypress', function(e){ e.stopPropagation(); });
     renderChips();
+    loadDict(function(){});
     bot('¡Hola! Soy <b>Bit</b> 🤖. Te explico cómo funciona esta página, tus errores y la gramática que no entiendas. ¿Qué necesitas?');
   }
 
   function renderChips(){
-    var chips = [['how','🎯 ¿Qué hago aquí?'], ['error','❌ Explícame mi error'], ['hint','💡 Dame una pista'], ['faq','❓ Dudas frecuentes']];
+    var chips = [['how','🎯 ¿Qué hago aquí?'], ['error','❌ Explícame mi error'], ['hint','💡 Dame una pista'], ['review','📒 Mis fallos'], ['faq','❓ Dudas frecuentes']];
     el.chips.innerHTML = '';
     chips.forEach(function(c){
       var bt = document.createElement('button'); bt.type = 'button'; bt.className = 'iowbot-chip' + (c[0] === 'error' && S.unread ? ' hot' : '');
@@ -691,6 +756,8 @@
       if(S.hint) bot(S.hint, 'Pista');
       else if(info.tip) bot(info.tip, 'Consejo');
       else bot('Aquí no tengo una pista para esta pregunta. Prueba con “🎯 ¿Qué hago aquí?” o escríbeme tu duda de gramática abajo.');
+    } else if(what === 'review'){
+      reviewMistakes();
     } else if(what === 'faq'){
       var d = bot('<p>Elige una:</p>', 'Dudas frecuentes');
       var wrap = document.createElement('div'); wrap.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;';
@@ -703,10 +770,38 @@
     }
   }
 
+  function tryDict(q, silent){
+    var m = String(q).match(/(?:qu[eé]\s+(?:significa|quiere\s+decir|es)|what\s+(?:does|is)|meaning\s+of|c[oó]mo\s+se\s+(?:dice|escribe)|how\s+do\s+you\s+say|traduce|translate)\s+(.+)/i);
+    var term = m ? m[1] : q;
+    term = term.replace(/[¿?¡!."']/g,'').replace(/\bin\s+english\b/i,'').replace(/\ben\s+ingl[eé]s\b/i,'').replace(/\bmean(s|ing)?\b/gi,'').replace(/\bla\s+palabra\b/gi,'').trim();
+    if(!term || term.split(/\s+/).length > 5) { if(!silent) return false; }
+    loadDict(function(d){
+      var hits = dictLookup(term);
+      if(hits){
+        bot(hits.map(function(h){ return b(h.en) + ' = ' + esc(h.es) + (h.extra ? ' <span style="color:var(--sub,#9aa1ba)">· ' + esc(h.extra) + '</span>' : ''); }).join('<br>') + '<br><span style="color:var(--sub,#9aa1ba);font-size:12px">🔊 Prácticalo en Vocab Rush.</span>', 'Diccionario');
+      } else if(!silent){
+        bot('No tengo “' + esc(term) + '” en el diccionario de la web. Prueba con otra palabra, o pregúntale a tu profe.', 'Diccionario');
+      }
+    });
+    return true;
+  }
+
   function ask(q){
     q = String(q || '').trim(); if(!q) return;
     me(q);
+    var raw = q;
     var f = ' ' + fold(q).replace(/[¿?¡!.,;:()"]/g, ' ').replace(/\s+/g, ' ') + ' ';
+    if(/(qu[eé] significa|quiere decir|c[oó]mo se dice|c[oó]mo se escribe|what does .+ mean|meaning of|how do you say|traduce|translate)/i.test(raw)){
+      if(tryDict(raw, false)) return;
+    }
+    // a short input that is an exact entry in the site dictionary answers from there first
+    if(DICT && f.trim().split(' ').length <= 4){
+      var exact = dictLookup(raw);
+      if(exact){
+        bot(exact.map(function(h){ return b(h.en) + ' = ' + esc(h.es) + (h.extra ? ' <span style="color:var(--sub,#9aa1ba)">· ' + esc(h.extra) + '</span>' : ''); }).join('<br>'), 'Diccionario');
+        return;
+      }
+    }
     if(/\b(respuesta|solucion|answer|dime la|cual es la correcta)\b/.test(f)){
       bot('¡No te voy a decir la respuesta! 😉 Pero te ayudo a pensarla:');
       act('hint'); return;
@@ -715,9 +810,18 @@
     if(/\b(error|falle|me equivoque|por que esta mal|porque esta mal|mal)\b/.test(f) && S.last){ act('error'); return; }
     if(/\b(hola|hello|hi|buenas)\b/.test(f) && f.trim().split(' ').length <= 3){ bot('¡Hola! 👋 Pregúntame por un tema de gramática (por ejemplo “present perfect” o “make o do”) o pulsa un botón de abajo.'); return; }
     var faqHit = FAQ.map(function(x){ var qq = fold(x.q).replace(/[¿?]/g, ''); var words = qq.split(' ').filter(function(w){ return w.length > 3; }); var s = words.filter(function(w){ return f.indexOf(w) !== -1; }).length; return {x:x, s:s / Math.max(1, words.length)}; }).sort(function(a, c){ return c.s - a.s; })[0];
+    var fWords = f.trim().split(' ').filter(function(w){ return w.length > 3; });
     var scored = KB.map(function(t){
       var s = 0;
-      t.k.forEach(function(k){ var kk = fold(k); if(f.indexOf(kk.trim().length <= 3 ? ' ' + kk.trim() + ' ' : kk) !== -1) s += kk.trim().length > 6 ? 3 : 1; });
+      t.k.forEach(function(k){
+        var kk = fold(k).trim();
+        if(f.indexOf(kk.length <= 3 ? ' ' + kk + ' ' : kk) !== -1){ s += kk.length > 6 ? 3 : 1; return; }
+        // typo tolerance: a query word within edit-distance 1 of a keyword word
+        kk.split(' ').forEach(function(kw){
+          if(kw.length < 5) return;
+          fWords.forEach(function(w){ if(Math.abs(w.length - kw.length) <= 1 && lev(w, kw) === 1) s += 1; });
+        });
+      });
       return {t:t, s:s};
     }).filter(function(r){ return r.s > 0; }).sort(function(a, c){ return c.s - a.s; });
     if(faqHit && faqHit.s >= 0.5 && (!scored.length || scored[0].s < 3)){ bot(faqHit.x.a); return; }
@@ -734,7 +838,13 @@
       }
       return;
     }
-    bot('Uy, eso todavía no lo sé 🤖. Prueba con palabras clave como <b>past simple</b>, <b>for since</b>, <b>make do</b>, <b>preguntas</b> o <b>ranking</b>. Si sigues con la duda, pregúntale a tu profe: ¡seguro que te ayuda!');
+    // maybe it's a word/phrase to look up in the site dictionary
+    var oneWord = f.trim().split(' ').filter(Boolean);
+    if(DICT && oneWord.length <= 4){
+      var h = dictLookup(raw);
+      if(h){ bot(h.map(function(x){ return b(x.en) + ' = ' + esc(x.es) + (x.extra ? ' <span style="color:var(--sub,#9aa1ba)">· ' + esc(x.extra) + '</span>' : ''); }).join('<br>'), 'Diccionario'); return; }
+    }
+    bot('Uy, eso todavía no lo sé 🤖. Prueba con palabras clave como <b>past simple</b>, <b>for since</b>, <b>make do</b>, <b>preguntas</b> o <b>ranking</b>, o pregúntame el significado de una palabra. Si sigues con la duda, pregúntale a tu profe: ¡seguro que te ayuda!');
   }
 
   function openPanel(view){
@@ -751,6 +861,44 @@
     try{ document.dispatchEvent(new CustomEvent('iowbot:close')); }catch(e){}
   }
 
+  /* -------------------------------------------------- mistake log (per device) */
+  var MLOG_KEY = 'iowbot_mistakes';
+  function logMistake(r){
+    try{
+      var arr = JSON.parse(localStorage.getItem(MLOG_KEY) || '[]');
+      var title = (r.body[0] || '').replace(/<[^>]+>/g,'').slice(0,90);
+      arr.unshift({ p:page, t:r.title, s:title, at:Date.now() });
+      // keep last 40, drop exact-duplicate consecutive
+      arr = arr.filter(function(x,i){ return !(i>0 && arr[i-1] && arr[i-1].s === x.s); }).slice(0, 40);
+      localStorage.setItem(MLOG_KEY, JSON.stringify(arr));
+    }catch(e){}
+  }
+  function reviewMistakes(){
+    var arr = [];
+    try{ arr = JSON.parse(localStorage.getItem(MLOG_KEY) || '[]'); }catch(e){}
+    if(!arr.length){ bot('Aún no tengo fallos guardados en este dispositivo. Cuando falles en un juego, los iré anotando aquí para repasarlos juntos.', 'Mis fallos'); return; }
+    var byTopic = {};
+    arr.forEach(function(m){ byTopic[m.t] = (byTopic[m.t] || 0) + 1; });
+    var top = Object.keys(byTopic).sort(function(a,c){ return byTopic[c] - byTopic[a]; }).slice(0, 4);
+    var html = '<p>Estos son tus últimos fallos guardados en este dispositivo:</p><ul>' +
+      arr.slice(0, 8).map(function(m){ return '<li>' + esc(m.s) + '</li>'; }).join('') + '</ul>' +
+      '<p>Lo que más se te resiste: ' + top.map(function(t){ return b(t) + ' (×' + byTopic[t] + ')'; }).join(', ') + '.</p>' +
+      '<p>💡 Practica esos temas otra vez. Puedo explicarte cualquiera: escríbeme el tema (por ejemplo “past simple”).</p>';
+    var d = bot(html, '📒 Mis fallos');
+    var wrap = document.createElement('div'); wrap.style.cssText = 'display:flex; gap:6px; flex-wrap:wrap; margin-top:6px;';
+    top.forEach(function(t){
+      var kb = KB.filter(function(x){ return x.t === t; })[0];
+      if(!kb) return;
+      var bt = document.createElement('button'); bt.type='button'; bt.className='iowbot-chip'; bt.textContent = t;
+      bt.addEventListener('click', function(){ me(t); bot(kb.a, kb.t); });
+      wrap.appendChild(bt);
+    });
+    var cl = document.createElement('button'); cl.type='button'; cl.className='iowbot-chip'; cl.textContent = '🗑 Borrar mis fallos';
+    cl.addEventListener('click', function(){ try{ localStorage.removeItem(MLOG_KEY); }catch(e){} me('🗑 Borrar mis fallos'); bot('Listo, he borrado tu lista de fallos de este dispositivo. ¡A por todas! 🚀'); });
+    wrap.appendChild(cl);
+    d.appendChild(wrap);
+  }
+
   /* ---------------------------------------------------------------- API */
   window.IOWBot = {
     isOpen: function(){ return S.open; },
@@ -762,6 +910,7 @@
       try{
         var r = EXPLAIN[kind] ? EXPLAIN[kind](data || {}) : null;
         if(!r) return;
+        logMistake(r);
         S.last = r; build();
         if(S.open){ bot(para(r.body), r.title); return; }
         S.unread = true; el.btn.classList.remove('alert'); void el.btn.offsetWidth; el.btn.classList.add('alert'); renderChips();
