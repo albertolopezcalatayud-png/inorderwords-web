@@ -285,6 +285,7 @@ footer a{color:var(--vocab); text-decoration:none;}
   </div>
 </div>
 
+<script src="class-sync.js"></script>
 <script>
 /* ---------- BACKEND (Google Apps Script Web App) ---------- */
 /* Apps Script Web App /exec URL (Vocab Rush - Backend).
@@ -339,7 +340,10 @@ async function loadVisibility(){
 
 function postScore(payload){
   if(!BACKEND_URL) return;
+  // class code gate: only players with the teacher's code count in the ranking
+  if(window.IOW && IOW.hasCode && !IOW.hasCode()) return;
   try{
+    if(window.IOW && IOW.code) payload = Object.assign({ code: IOW.code() }, payload);
     // fire-and-forget: JSONP GET carrying the score as query params
     jsonpRequest_(Object.assign({ action:'score' }, payload));
   }catch(e){}

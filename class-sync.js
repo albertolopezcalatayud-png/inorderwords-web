@@ -71,7 +71,15 @@
     '.iow-modal .go{background:#ffcc66;color:#1a1300;}.iow-modal .skip{background:rgba(255,255,255,0.07);color:#f4f2ec;border:1px solid rgba(255,255,255,0.14);}' +
     '.iow-modal .err{color:#ff8fa3;font-size:12.5px;min-height:18px;margin-top:8px;}' +
     '.iow-id{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font:600 13px/1.4 Manrope,system-ui,sans-serif;color:#9aa1ba;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.09);border-radius:12px;padding:9px 12px;margin:0 0 16px;}' +
-    '.iow-id b{color:#f4f2ec;}.iow-id button{background:none;border:1px solid rgba(255,255,255,0.18);color:#ffcc66;border-radius:99px;padding:4px 10px;font:700 12px Manrope,system-ui,sans-serif;cursor:pointer;}';
+    '.iow-id b{color:#f4f2ec;}.iow-id button{background:none;border:1px solid rgba(255,255,255,0.18);color:#ffcc66;border-radius:99px;padding:4px 10px;font:700 12px Manrope,system-ui,sans-serif;cursor:pointer;}' +
+    '.iow-cbanner{position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:100002;width:min(560px,calc(100vw - 20px));display:flex;align-items:center;gap:10px 12px;flex-wrap:wrap;justify-content:center;background:linear-gradient(135deg,#1a2346,#12172c);color:#f4f2ec;border:1px solid rgba(255,204,102,0.5);border-radius:14px;padding:11px 14px;font:600 13.5px/1.4 Manrope,system-ui,sans-serif;box-shadow:0 14px 34px rgba(0,0,0,0.5);opacity:0;transition:opacity .25s ease,transform .25s ease;transform:translateX(-50%) translateY(-8px);}' +
+    '.iow-cbanner.show{opacity:1;transform:translateX(-50%) translateY(0);}' +
+    '.iow-cbanner .cb-txt{flex:1 1 auto;min-width:150px;}.iow-cbanner .cb-txt b{color:#ffcc66;}.iow-cbanner .cb-sub{display:block;color:#9aa1ba;font-size:11.5px;font-weight:500;margin-top:1px;}' +
+    '.iow-cbanner .cb-btns{display:flex;gap:8px;flex:0 0 auto;}' +
+    '.iow-cbanner button{border:none;border-radius:10px;padding:9px 16px;font:800 13px Manrope,system-ui,sans-serif;cursor:pointer;}' +
+    '.iow-cbanner .yes{background:#ffcc66;color:#1a1300;}.iow-cbanner .no{background:rgba(255,255,255,0.08);color:#f4f2ec;border:1px solid rgba(255,255,255,0.16);}' +
+    '.iow-cchip{position:fixed;left:12px;top:calc(12px + env(safe-area-inset-top,0px));z-index:100002;background:rgba(18,23,44,0.92);color:#9aa1ba;border:1px solid rgba(255,255,255,0.14);border-radius:99px;padding:7px 12px;font:700 12px Manrope,system-ui,sans-serif;cursor:pointer;box-shadow:0 6px 16px rgba(0,0,0,0.4);}' +
+    '.iow-cchip b{color:#ffcc66;}';
   function injectCss(){ if(document.getElementById('iow-css')) return; var st = document.createElement('style'); st.id = 'iow-css'; st.textContent = css; document.head.appendChild(st); }
 
   var toastTimer = null;
@@ -94,29 +102,21 @@
       '<label for="iowName">Name and surname</label><input id="iowName" type="text" autocomplete="off" maxlength="40" placeholder="e.g. Lucía García">' +
       '<label for="iowGrade">Grade</label><select id="iowGrade"><option value="">Choose your grade…</option>' +
       GRADES.map(function(g){ return '<option>' + g + '</option>'; }).join('') + '</select>' +
-      (CODE_ON ? '<label for="iowCode">Class code <span style="color:#9aa1ba;font-weight:400">(ask your teacher)</span></label><input id="iowCode" type="text" autocomplete="off" maxlength="24" placeholder="e.g. ABCD00">' : '') +
       '<div class="err" id="iowErr"></div>' +
       '<div class="row">' + (allowSkip ? '<button type="button" class="skip" id="iowSkip">Play without saving</button>' : '') +
       '<button type="button" class="go" id="iowGo">Let\'s go</button></div></div>';
     document.body.appendChild(bg);
-    var nameEl = bg.querySelector('#iowName'), gradeEl = bg.querySelector('#iowGrade'), codeEl = bg.querySelector('#iowCode');
+    var nameEl = bg.querySelector('#iowName'), gradeEl = bg.querySelector('#iowGrade');
     nameEl.value = id.name ? id.name : ''; gradeEl.value = id.grade;
-    if(codeEl) codeEl.value = savedCode();
     nameEl.focus();
     function close(){ if(bg.parentNode) bg.parentNode.removeChild(bg); }
     bg.querySelector('#iowGo').addEventListener('click', function(){
       var n = cleanName(nameEl.value), g = gradeEl.value;
       if(n.length < 2){ bg.querySelector('#iowErr').textContent = 'Write your name so your teacher can find you.'; nameEl.focus(); return; }
       if(!g){ bg.querySelector('#iowErr').textContent = 'Choose your grade.'; gradeEl.focus(); return; }
-      if(CODE_ON && codeEl){
-        var code = codeEl.value.trim();
-        if(!codeOk(code)){ bg.querySelector('#iowErr').textContent = code ? 'That class code isn\'t right. Ask your teacher.' : 'Enter your class code so your score counts.'; codeEl.focus(); return; }
-        lsSet('iow_class_code', code);
-      }
       setIdentity(n, g); close(); if(cb) cb(getIdentity());
     });
     nameEl.addEventListener('keydown', function(e){ if(e.key === 'Enter') bg.querySelector('#iowGo').click(); });
-    if(codeEl) codeEl.addEventListener('keydown', function(e){ if(e.key === 'Enter') bg.querySelector('#iowGo').click(); });
     var skip = bg.querySelector('#iowSkip');
     if(skip) skip.addEventListener('click', function(){ close(); window.__iowSkip = true; if(cb) cb(null); });
   }
@@ -147,7 +147,7 @@
 
   function ensureIdentity(cb){
     var id = getIdentity();
-    if(id.name && id.grade && hasCode()){ cb(id); return; }
+    if(id.name && id.grade){ cb(id); return; }
     openModal(cb, true);
   }
 
@@ -162,6 +162,48 @@
   }
   function mountIdentity(el){ if(!el) return; el.setAttribute('data-iow-identity', ''); renderIdentity(el); }
 
+  /* ---------- "Got a code?" banner (shown when a scoring game opens) ---------- */
+  var CHOICE_KEY = 'iow_code_choice';   // 'no' = chose to play without saving this session
+  function removeBanner(){ var b = document.getElementById('iow-cbanner'); if(b && b.parentNode) b.parentNode.removeChild(b); }
+  function showChip(){
+    if(document.getElementById('iow-cchip')) return;
+    injectCss();
+    var c = document.createElement('button'); c.id = 'iow-cchip'; c.className = 'iow-cchip'; c.type = 'button';
+    c.innerHTML = '🔒 Not scoring · <b>Got a code?</b>';
+    c.setAttribute('aria-label', 'Enter class code to score');
+    c.addEventListener('click', function(){ promptCode(function(ok){ if(ok){ if(c.parentNode) c.parentNode.removeChild(c); window.__iowSkip = false; try{ sessionStorage.removeItem(CHOICE_KEY); }catch(e){} toast('✅ Code OK — your scores now count.', 'ok'); } }); });
+    document.body.appendChild(c);
+  }
+  function codeBanner(){
+    if(!CODE_ON) return;
+    injectCss();
+    if(hasCode()) return;                                  // already has a valid code: nothing to ask
+    var chose = ''; try{ chose = sessionStorage.getItem(CHOICE_KEY) || ''; }catch(e){}
+    if(chose === 'no'){ window.__iowSkip = true; showChip(); return; }   // already said no this session
+    removeBanner();
+    var b = document.createElement('div'); b.id = 'iow-cbanner'; b.className = 'iow-cbanner'; b.setAttribute('role', 'dialog'); b.setAttribute('aria-label', 'Class code');
+    b.innerHTML = '<div class="cb-txt">🔑 <b>Got a class code?</b><span class="cb-sub">With a code, your scores count on your class ranking.</span></div>' +
+      '<div class="cb-btns"><button type="button" class="yes">Yes</button><button type="button" class="no">No</button></div>';
+    document.body.appendChild(b);
+    requestAnimationFrame(function(){ b.classList.add('show'); });
+    b.querySelector('.yes').addEventListener('click', function(){
+      promptCode(function(ok){
+        if(ok){ removeBanner(); window.__iowSkip = false; try{ sessionStorage.removeItem(CHOICE_KEY); }catch(e){} toast('✅ Code OK — your scores now count.', 'ok'); }
+        // if they cancel the code modal, leave the banner so they can decide again
+      });
+    });
+    b.querySelector('.no').addEventListener('click', function(){
+      window.__iowSkip = true; try{ sessionStorage.setItem(CHOICE_KEY, 'no'); }catch(e){}
+      removeBanner(); showChip();
+    });
+  }
+  function autoBanner(){
+    var page = (location.pathname.split('/').pop() || '').toLowerCase();
+    var SCORING = ['verb-striker.html','phrasal-command.html','preposition-blaster.html','collocation-match.html','question-control.html','docking-sequence.html','idiom-detective.html','debug-transmission.html','missing-signal.html','boss-checkpoint.html','vocab-rush.html'];
+    if(SCORING.indexOf(page) > -1) codeBanner();
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', autoBanner); else autoBanner();
+
   /* ---------- scores ---------- */
   // opts: {name, grade} to override the stored identity (arcade games ask for them every run), plus any extra fields
   function postScore(game, xp, opts){
@@ -170,14 +212,14 @@
     var name = cleanName(opts.name || id.name), grade = opts.grade || id.grade;
     xp = Math.round(Number(xp) || 0);
     if(xp <= 0) return Promise.resolve({ok:false, reason:'zero'});
+    if(CODE_ON && !hasCode()){
+      // no valid class code → play without scoring (banner/chip lets them add one)
+      if(window.__iowSkip) showChip();
+      return Promise.resolve({ok:false, reason:'nocode'});
+    }
     if(!name || GRADES.indexOf(grade) === -1 || (window.__iowSkip && !opts.name)){
       toast('ℹ️ Score not sent to the class ranking — add your name and grade next time.', 'warn');
       return Promise.resolve({ok:false, reason:'noid'});
-    }
-    if(CODE_ON && !hasCode()){
-      toast('🔒 Enter your class code (ask your teacher) so your score counts.', 'warn');
-      ensureIdentity(function(){});
-      return Promise.resolve({ok:false, reason:'nocode'});
     }
     var params = {action:'score', student:name, course:boardName(game, grade), xp:xp, game:game};
     if(CODE_ON) params.code = savedCode();
@@ -238,6 +280,6 @@
   window.IOW = {
     GRADES:GRADES, getIdentity:getIdentity, setIdentity:setIdentity, ensureIdentity:ensureIdentity,
     mountIdentity:mountIdentity, postScore:postScore, leaderboard:leaderboard, leaderboardAll:leaderboardAll,
-    fillBoard:fillBoard, prefill:prefill, toast:toast, boardName:boardName, jsonp:jsonp, cleanName:cleanName, needsCode:needsCode, promptCode:promptCode, hasCode:hasCode
+    fillBoard:fillBoard, prefill:prefill, toast:toast, boardName:boardName, jsonp:jsonp, cleanName:cleanName, needsCode:needsCode, promptCode:promptCode, hasCode:hasCode, codeBanner:codeBanner, code:savedCode
   };
 })();
