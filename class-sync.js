@@ -72,13 +72,21 @@
     '.iow-modal .err{color:#ff8fa3;font-size:12.5px;min-height:18px;margin-top:8px;}' +
     '.iow-id{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font:600 13px/1.4 Manrope,system-ui,sans-serif;color:#9aa1ba;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.09);border-radius:12px;padding:9px 12px;margin:0 0 16px;}' +
     '.iow-id b{color:#f4f2ec;}.iow-id button{background:none;border:1px solid rgba(255,255,255,0.18);color:#ffcc66;border-radius:99px;padding:4px 10px;font:700 12px Manrope,system-ui,sans-serif;cursor:pointer;}' +
-    '.iow-cbanner{position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:100002;width:min(560px,calc(100vw - 20px));display:flex;align-items:center;gap:10px 12px;flex-wrap:wrap;justify-content:center;background:linear-gradient(135deg,#1a2346,#12172c);color:#f4f2ec;border:1px solid rgba(255,204,102,0.5);border-radius:14px;padding:11px 14px;font:600 13.5px/1.4 Manrope,system-ui,sans-serif;box-shadow:0 14px 34px rgba(0,0,0,0.5);opacity:0;transition:opacity .25s ease,transform .25s ease;transform:translateX(-50%) translateY(-8px);}' +
-    '.iow-cbanner.show{opacity:1;transform:translateX(-50%) translateY(0);}' +
-    '.iow-cbanner .cb-txt{flex:1 1 auto;min-width:150px;}.iow-cbanner .cb-txt b{color:#ffcc66;}.iow-cbanner .cb-sub{display:block;color:#9aa1ba;font-size:11.5px;font-weight:500;margin-top:1px;}' +
-    '.iow-cbanner .cb-btns{display:flex;gap:8px;flex:0 0 auto;}' +
-    '.iow-cbanner button{border:none;border-radius:10px;padding:9px 16px;font:800 13px Manrope,system-ui,sans-serif;cursor:pointer;}' +
-    '.iow-cbanner .yes{background:#ffcc66;color:#1a1300;}.iow-cbanner .no{background:rgba(255,255,255,0.08);color:#f4f2ec;border:1px solid rgba(255,255,255,0.16);}' +
-    '.iow-cchip{position:fixed;left:12px;top:calc(12px + env(safe-area-inset-top,0px));z-index:100002;background:rgba(18,23,44,0.92);color:#9aa1ba;border:1px solid rgba(255,255,255,0.14);border-radius:99px;padding:7px 12px;font:700 12px Manrope,system-ui,sans-serif;cursor:pointer;box-shadow:0 6px 16px rgba(0,0,0,0.4);}' +
+    '.iow-cbanner{position:fixed;inset:0;z-index:100005;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(4,5,16,0.86);backdrop-filter:blur(3px);opacity:0;transition:opacity .2s ease;}' +
+    '.iow-cbanner.show{opacity:1;}' +
+    '.iow-cbanner-card{width:min(540px,100%);box-sizing:border-box;text-align:center;background:linear-gradient(160deg,#1c2650,#11162b);color:#f4f2ec;border:3px solid #ffcc66;border-radius:26px;padding:38px 30px 32px;box-shadow:0 26px 70px rgba(0,0,0,0.65),0 0 0 6px rgba(255,204,102,0.12);font-family:Manrope,system-ui,sans-serif;transform:scale(0.9);transition:transform .22s cubic-bezier(.2,1.2,.35,1);}' +
+    '.iow-cbanner.show .iow-cbanner-card{transform:scale(1);}' +
+    '.iow-cbanner .cb-key{font-size:72px;line-height:1;margin-bottom:8px;}' +
+    '.iow-cbanner h2{font:800 30px/1.15 Unbounded,Manrope,system-ui,sans-serif;margin:0 0 12px;color:#ffcc66;text-wrap:balance;}' +
+    '.iow-cbanner .cb-sub{display:block;color:#cfd4e6;font-size:16.5px;line-height:1.5;margin:0 auto 26px;max-width:400px;}' +
+    '.iow-cbanner .cb-btns{display:flex;gap:14px;}' +
+    '.iow-cbanner button{flex:1;border:none;border-radius:16px;padding:18px 10px;font:800 19px Manrope,system-ui,sans-serif;cursor:pointer;transition:transform .1s ease;}' +
+    '.iow-cbanner button:active{transform:scale(0.97);}' +
+    '.iow-cbanner .yes{background:#ffcc66;color:#1a1300;box-shadow:0 8px 20px rgba(255,204,102,0.35);}' +
+    '.iow-cbanner .no{background:rgba(255,255,255,0.1);color:#f4f2ec;border:2px solid rgba(255,255,255,0.22);}' +
+    '@media (max-width:420px){.iow-cbanner .cb-key{font-size:60px;}.iow-cbanner h2{font-size:25px;}.iow-cbanner .cb-sub{font-size:15px;}.iow-cbanner button{font-size:18px;padding:16px 8px;}}' +
+    '@media (prefers-reduced-motion:reduce){.iow-cbanner,.iow-cbanner-card{transition:none;}}' +
+    '.iow-cchip{position:fixed;left:50%;transform:translateX(-50%);top:calc(12px + env(safe-area-inset-top,0px));z-index:100004;background:linear-gradient(135deg,#1a2346,#12172c);color:#f4f2ec;border:2px solid rgba(255,204,102,0.6);border-radius:99px;padding:11px 18px;font:800 14.5px Manrope,system-ui,sans-serif;cursor:pointer;box-shadow:0 10px 24px rgba(0,0,0,0.5);}' +
     '.iow-cchip b{color:#ffcc66;}';
   function injectCss(){ if(document.getElementById('iow-css')) return; var st = document.createElement('style'); st.id = 'iow-css'; st.textContent = css; document.head.appendChild(st); }
 
@@ -169,7 +177,7 @@
     if(document.getElementById('iow-cchip')) return;
     injectCss();
     var c = document.createElement('button'); c.id = 'iow-cchip'; c.className = 'iow-cchip'; c.type = 'button';
-    c.innerHTML = '🔒 Not scoring · <b>Got a code?</b>';
+    c.innerHTML = '🔑 <b>Enter class code to score</b>';
     c.setAttribute('aria-label', 'Enter class code to score');
     c.addEventListener('click', function(){ promptCode(function(ok){ if(ok){ if(c.parentNode) c.parentNode.removeChild(c); window.__iowSkip = false; try{ sessionStorage.removeItem(CHOICE_KEY); }catch(e){} toast('✅ Code OK — your scores now count.', 'ok'); } }); });
     document.body.appendChild(c);
@@ -181,15 +189,20 @@
     var chose = ''; try{ chose = sessionStorage.getItem(CHOICE_KEY) || ''; }catch(e){}
     if(chose === 'no'){ window.__iowSkip = true; showChip(); return; }   // already said no this session
     removeBanner();
-    var b = document.createElement('div'); b.id = 'iow-cbanner'; b.className = 'iow-cbanner'; b.setAttribute('role', 'dialog'); b.setAttribute('aria-label', 'Class code');
-    b.innerHTML = '<div class="cb-txt">🔑 <b>Got a class code?</b><span class="cb-sub">With a code, your scores count on your class ranking.</span></div>' +
-      '<div class="cb-btns"><button type="button" class="yes">Yes</button><button type="button" class="no">No</button></div>';
+    var b = document.createElement('div'); b.id = 'iow-cbanner'; b.className = 'iow-cbanner'; b.setAttribute('role', 'dialog'); b.setAttribute('aria-modal', 'true'); b.setAttribute('aria-label', 'Class code');
+    b.innerHTML = '<div class="iow-cbanner-card">' +
+      '<div class="cb-key" aria-hidden="true">🔑</div>' +
+      '<h2>Got a class code?</h2>' +
+      '<span class="cb-sub">Enter it so your scores count on your class ranking. No code? You can still play — you just won\'t appear in the ranking.</span>' +
+      '<div class="cb-btns"><button type="button" class="yes">Yes, I have a code</button><button type="button" class="no">No, just play</button></div>' +
+      '</div>';
     document.body.appendChild(b);
     requestAnimationFrame(function(){ b.classList.add('show'); });
     b.querySelector('.yes').addEventListener('click', function(){
+      removeBanner();   // take the full-screen banner away so the code box is on top
       promptCode(function(ok){
-        if(ok){ removeBanner(); window.__iowSkip = false; try{ sessionStorage.removeItem(CHOICE_KEY); }catch(e){} toast('✅ Code OK — your scores now count.', 'ok'); }
-        // if they cancel the code modal, leave the banner so they can decide again
+        if(ok){ window.__iowSkip = false; try{ sessionStorage.removeItem(CHOICE_KEY); }catch(e){} toast('✅ Code OK — your scores now count.', 'ok'); }
+        else { window.__iowSkip = true; showChip(); }   // cancelled → play without scoring, keep a way back
       });
     });
     b.querySelector('.no').addEventListener('click', function(){
