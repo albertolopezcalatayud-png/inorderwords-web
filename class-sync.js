@@ -213,7 +213,7 @@
   function autoBanner(){
     var page = (location.pathname.split('/').pop() || '').toLowerCase();
     var SCORING = ['verb-striker.html','phrasal-command.html','preposition-blaster.html','collocation-match.html','question-control.html','docking-sequence.html','idiom-detective.html','debug-transmission.html','missing-signal.html','boss-checkpoint.html','vocab-rush.html'];
-    /* access now handled by the full-screen access gate embedded in each page */ if(false && SCORING.indexOf(page) > -1) codeBanner();
+    if(SCORING.indexOf(page) > -1) codeBanner();
   }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', autoBanner); else autoBanner();
 
