@@ -452,4 +452,29 @@
     }
 </script>
 <script src="helper-bot.js" defer></script>
+<!--IOW-GATE-->
+<script>
+/* Inorderwords access gate — asks on every load; nothing is stored in the browser. */
+(function(){
+  var CODE_HASH='2t36ti';
+  function hc(x){x=String(x||'').toUpperCase().replace(/[^A-Z0-9]/g,'');var h=5381;for(var i=0;i<x.length;i++){h=((h<<5)+h)^x.charCodeAt(i);}return (h>>>0).toString(36);}
+  function ok(x){return hc(x)===CODE_HASH;}
+  try{localStorage.removeItem('iow_class_code');}catch(e){}
+  function build(){
+    if(document.getElementById('iow-gate'))return;
+    var o=document.createElement('div');o.id='iow-gate';
+    o.style.cssText='position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:rgba(8,10,24,0.94);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);font-family:-apple-system,BlinkMacSystemFont,Manrope,system-ui,sans-serif;padding:20px;';
+    o.innerHTML='<div style="width:min(420px,100%);box-sizing:border-box;background:#12172c;border:2px solid #ffcc66;border-radius:22px;padding:30px 26px;box-shadow:0 20px 60px rgba(0,0,0,.6);text-align:center;color:#f4f2ec;"><div style="font-size:52px;line-height:1;margin-bottom:10px;">🔒</div><h2 style="margin:0 0 6px;font-size:22px;font-weight:800;color:#ffcc66;">Class access</h2><p style="margin:0 0 18px;font-size:14px;color:#c7cbe0;">Enter your class code to open this resource.</p><input id="iow-gate-in" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Class code" style="width:100%;box-sizing:border-box;padding:13px 14px;font-size:16px;text-align:center;letter-spacing:2px;text-transform:uppercase;border-radius:12px;border:2px solid #33395c;background:#0b0e1a;color:#fff;outline:none;"><div id="iow-gate-err" style="min-height:18px;margin:8px 0 4px;font-size:13px;color:#ff8a8a;font-weight:700;"></div><button id="iow-gate-go" type="button" style="width:100%;padding:13px;font-size:16px;font-weight:800;border:none;border-radius:12px;background:#ffcc66;color:#1a1300;cursor:pointer;">Enter</button><p style="margin:16px 0 0;font-size:12px;color:#8a90ad;">Ask your teacher for the code. You will need it every time.</p></div>';
+    document.body.appendChild(o);
+    try{document.documentElement.style.overflow='hidden';document.body.style.overflow='hidden';}catch(e){}
+    var inp=o.querySelector('#iow-gate-in'),btn=o.querySelector('#iow-gate-go'),err=o.querySelector('#iow-gate-err');
+    function submit(){var v=inp.value.trim();if(ok(v)){window.IOW_ACCESS_CODE=v.toUpperCase().replace(/[^A-Z0-9]/g,'');window.__iowSkip=false;try{document.documentElement.style.overflow='';document.body.style.overflow='';}catch(e){}if(o.parentNode)o.parentNode.removeChild(o);var b=document.getElementById('iow-cbanner');if(b&&b.parentNode)b.parentNode.removeChild(b);var c=document.getElementById('iow-cchip');if(c&&c.parentNode)c.parentNode.removeChild(c);}else{err.textContent='Wrong code. Try again.';inp.focus();inp.select();}}
+    btn.addEventListener('click',submit);
+    inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();submit();}});
+    o.addEventListener('keydown',function(e){e.stopPropagation();});
+    setTimeout(function(){try{inp.focus();}catch(e){}},60);
+  }
+  if(document.body)build();else document.addEventListener('DOMContentLoaded',build);
+})();
+</script>
 </body></html>

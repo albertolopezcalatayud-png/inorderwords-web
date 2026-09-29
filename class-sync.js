@@ -12,7 +12,7 @@
   var CODE_HASH = '2t36ti';           // hash of the current class code
   function hashCode(x){ x = String(x || '').toUpperCase().replace(/[^A-Z0-9]/g, ''); var h = 5381; for(var i = 0; i < x.length; i++){ h = ((h << 5) + h) ^ x.charCodeAt(i); } return (h >>> 0).toString(36); }
   function codeOk(x){ return !CODE_ON || hashCode(x) === CODE_HASH; }
-  function savedCode(){ return ls('iow_class_code') || ''; }
+  function savedCode(){ return (window.IOW_ACCESS_CODE || ls('iow_class_code') || ''); }
   function hasCode(){ return codeOk(savedCode()); }
 
   function ls(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
@@ -213,7 +213,7 @@
   function autoBanner(){
     var page = (location.pathname.split('/').pop() || '').toLowerCase();
     var SCORING = ['verb-striker.html','phrasal-command.html','preposition-blaster.html','collocation-match.html','question-control.html','docking-sequence.html','idiom-detective.html','debug-transmission.html','missing-signal.html','boss-checkpoint.html','vocab-rush.html'];
-    if(SCORING.indexOf(page) > -1) codeBanner();
+    /* access now handled by the full-screen access gate embedded in each page */ if(false && SCORING.indexOf(page) > -1) codeBanner();
   }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', autoBanner); else autoBanner();
 
