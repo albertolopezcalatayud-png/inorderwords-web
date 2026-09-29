@@ -351,10 +351,11 @@ function postScore(payload){
 
 /* ---------- STUDENT NAME (asked once, for the leaderboard) ---------- */
 const NAME_KEY = 'iow_vocabrush_name';
-function getStudentName(){ try{ return localStorage.getItem(NAME_KEY)||''; }catch(e){ return ''; } }
+function getStudentName(){ try{ if(window.IOW && IOW.getIdentity && IOW.getIdentity().name) return IOW.getIdentity().name; return localStorage.getItem(NAME_KEY)||''; }catch(e){ return ''; } }
 function setStudentName(n){ try{ localStorage.setItem(NAME_KEY, n); }catch(e){} }
 
 function ensureName(cb){
+  if(window.IOW && IOW.ensureIdentity){ IOW.ensureIdentity(function(){ cb(); }); return; }
   const existing = getStudentName();
   if(existing){ cb(); return; }
   const modal = document.getElementById('nameModal');
@@ -1937,6 +1938,7 @@ function finishSession(){
   postScore({
     student: getStudentName(),
     course: sel.course.id,
+    clase: (window.IOW && IOW.getIdentity ? (IOW.getIdentity().grade||'') : ''),
     unit: sel.unit.id,
     group: sel.groups.join('+'),
     game: session.mode,
@@ -1960,12 +1962,24 @@ function autoSelectFromURL(){
   }catch(e){}
 }
 
+function courseIdForLevel(lvl){ var m=String(lvl||'').match(/^(\d)º ESO/); return m?(m[1]+'eso'):''; }
+function autoPickCourse(){
+  try{
+    if(sel.course) return;
+    if(!window.IOW || !IOW.gradeLevel) return;
+    var cid = courseIdForLevel(IOW.gradeLevel()); if(!cid) return;
+    var grid = document.getElementById('courseGrid'); if(!grid) return;
+    var idx = DATA.courses.findIndex(function(c){ return c.id === cid; });
+    if(idx > -1 && grid.children[idx]) grid.children[idx].click();
+  }catch(e){}
+}
 (async function init(){
   await loadVisibility();
   buildCourseGrid();
   refreshTopStats();
   autoSelectFromURL();
   loadRanking();
+  var _apc = 0; var _apcT = setInterval(function(){ _apc++; if(sel.course || _apc > 40){ clearInterval(_apcT); return; } autoPickCourse(); }, 250);
 })();
 </script>
 <script src="helper-bot.js" defer></script>

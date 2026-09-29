@@ -3,7 +3,12 @@
    e.g. "Verb Striker · 3º ESO", so every game keeps its own separate ranking. */
 (function(){
   var BACKEND = 'https://script.google.com/macros/s/AKfycbxE10u2B5PrXLWXkYAZ31h_ZDVlVmPOmqzaDmGPmhZ2UBFg_-DhGFEYktwIa0o5ixB5/exec';
-  var GRADES = ['1º ESO','2º ESO','3º ESO','4º ESO','1º Bach','2º Bach'];
+  var LEVELS = ['1º ESO','2º ESO','3º ESO','4º ESO','1º Bach','2º Bach'];
+  var GROUPS_BY_LEVEL = {'1º ESO':['A','B','C'],'2º ESO':['A','B','C','D'],'3º ESO':['A','B','C','D'],'4º ESO':['A','B','C'],'1º Bach':['A','B'],'2º Bach':['A','B']};
+  var GRADES = [];
+  LEVELS.forEach(function(l){ GROUPS_BY_LEVEL[l].forEach(function(x){ GRADES.push(l + ' ' + x); }); });
+  function gradeLevelOf(group){ return String(group || '').replace(/\s+[A-D]$/, ''); }
+  function groupsOf(x){ if(GRADES.indexOf(x) > -1) return [x]; if(LEVELS.indexOf(x) > -1) return GRADES.filter(function(g){ return gradeLevelOf(g) === x; }); return [x]; }
 
   /* ---- class code: scores only count for players who know the teacher's code ----
      CODE_ON=false disables the gate. To change the code, replace CODE_HASH with the
@@ -100,31 +105,48 @@
   }
 
   /* ---------- identity modal ---------- */
+  function classOptions(){
+    return LEVELS.map(function(l){
+      return '<optgroup label="' + l + '">' + GROUPS_BY_LEVEL[l].map(function(x){ var v = l + ' ' + x; return '<option value="' + v + '">' + v + '</option>'; }).join('') + '</optgroup>';
+    }).join('');
+  }
   function openModal(cb, allowSkip){
     injectCss();
     var id = getIdentity();
+    var needCode = needsCode();
     var bg = document.createElement('div'); bg.className = 'iow-modal-bg';
     bg.innerHTML = '<div class="iow-modal" role="dialog" aria-modal="true" aria-labelledby="iowT">' +
-      '<h3 id="iowT">Who\'s playing?</h3>' +
-      '<p>Your score goes to your class ranking for this game. Write your full name the same way every time.</p>' +
-      '<label for="iowName">Name and surname</label><input id="iowName" type="text" autocomplete="off" maxlength="40" placeholder="e.g. Lucía García">' +
-      '<label for="iowGrade">Grade</label><select id="iowGrade"><option value="">Choose your grade…</option>' +
-      GRADES.map(function(g){ return '<option>' + g + '</option>'; }).join('') + '</select>' +
+      '<h3 id="iowT">Score setup</h3>' +
+      '<p>' + (needCode ? 'Enter the class code, then choose your class and name so your score counts.' : 'Choose your class and name so your score counts.') + '</p>' +
+      (needCode ? '<label for="iowCode">Class code</label><input id="iowCode" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="24" placeholder="Ask your teacher">' : '') +
+      '<div id="iowIdFields"' + (needCode ? ' hidden' : '') + '>' +
+        '<label for="iowGrade">Your class</label><select id="iowGrade"><option value="">Choose your class…</option>' + classOptions() + '</select>' +
+        '<label for="iowName">Name and surname</label><input id="iowName" type="text" autocomplete="off" maxlength="40" placeholder="e.g. Lucía García">' +
+      '</div>' +
       '<div class="err" id="iowErr"></div>' +
       '<div class="row">' + (allowSkip ? '<button type="button" class="skip" id="iowSkip">Play without saving</button>' : '') +
       '<button type="button" class="go" id="iowGo">Let\'s go</button></div></div>';
     document.body.appendChild(bg);
-    var nameEl = bg.querySelector('#iowName'), gradeEl = bg.querySelector('#iowGrade');
-    nameEl.value = id.name ? id.name : ''; gradeEl.value = id.grade;
-    nameEl.focus();
+    var codeEl = bg.querySelector('#iowCode'), fields = bg.querySelector('#iowIdFields'),
+        nameEl = bg.querySelector('#iowName'), gradeEl = bg.querySelector('#iowGrade'), err = bg.querySelector('#iowErr');
+    if(nameEl) nameEl.value = id.name ? id.name : '';
+    if(gradeEl) gradeEl.value = id.grade || '';
+    function reveal(){ if(fields) fields.hidden = false; if(gradeEl && !gradeEl.value) gradeEl.focus(); }
+    if(!needCode){ if(gradeEl) gradeEl.focus(); }
+    else if(codeEl){ codeEl.focus(); codeEl.addEventListener('input', function(){ if(codeOk(codeEl.value.trim())) reveal(); }); }
     function close(){ if(bg.parentNode) bg.parentNode.removeChild(bg); }
     bg.querySelector('#iowGo').addEventListener('click', function(){
-      var n = cleanName(nameEl.value), g = gradeEl.value;
-      if(n.length < 2){ bg.querySelector('#iowErr').textContent = 'Write your name so your teacher can find you.'; nameEl.focus(); return; }
-      if(!g){ bg.querySelector('#iowErr').textContent = 'Choose your grade.'; gradeEl.focus(); return; }
-      setIdentity(n, g); close(); if(cb) cb(getIdentity());
+      if(needCode){
+        var v = codeEl.value.trim();
+        if(!codeOk(v)){ err.textContent = v ? 'That class code isn\'t right. Ask your teacher.' : 'Enter your class code.'; codeEl.focus(); return; }
+        lsSet('iow_class_code', v); window.IOW_ACCESS_CODE = v.toUpperCase().replace(/[^A-Z0-9]/g, ''); reveal();
+      }
+      var g = gradeEl ? gradeEl.value : '', n = cleanName(nameEl ? nameEl.value : '');
+      if(!g){ err.textContent = 'Choose your class.'; if(gradeEl) gradeEl.focus(); return; }
+      if(n.length < 2){ err.textContent = 'Write your name so your teacher can find you.'; if(nameEl) nameEl.focus(); return; }
+      setIdentity(n, g); window.__iowSkip = false; close(); if(cb) cb(getIdentity());
     });
-    nameEl.addEventListener('keydown', function(e){ if(e.key === 'Enter') bg.querySelector('#iowGo').click(); });
+    if(nameEl) nameEl.addEventListener('keydown', function(e){ if(e.key === 'Enter') bg.querySelector('#iowGo').click(); });
     var skip = bg.querySelector('#iowSkip');
     if(skip) skip.addEventListener('click', function(){ close(); window.__iowSkip = true; if(cb) cb(null); });
   }
@@ -199,11 +221,11 @@
     document.body.appendChild(b);
     requestAnimationFrame(function(){ b.classList.add('show'); });
     b.querySelector('.yes').addEventListener('click', function(){
-      removeBanner();   // take the full-screen banner away so the code box is on top
-      promptCode(function(ok){
-        if(ok){ window.__iowSkip = false; try{ sessionStorage.removeItem(CHOICE_KEY); }catch(e){} toast('✅ Code OK — your scores now count.', 'ok'); }
+      removeBanner();   // take the full-screen banner away so the setup box is on top
+      openModal(function(idres){
+        if(idres){ window.__iowSkip = false; try{ sessionStorage.removeItem(CHOICE_KEY); }catch(e){} toast('✅ Code OK — your scores now count.', 'ok'); }
         else { window.__iowSkip = true; showChip(); }   // cancelled → play without scoring, keep a way back
-      });
+      }, true);
     });
     b.querySelector('.no').addEventListener('click', function(){
       window.__iowSkip = true; try{ sessionStorage.setItem(CHOICE_KEY, 'no'); }catch(e){}
@@ -234,7 +256,7 @@
       toast('ℹ️ Score not sent to the class ranking — add your name and grade next time.', 'warn');
       return Promise.resolve({ok:false, reason:'noid'});
     }
-    var params = {action:'score', student:name, course:boardName(game, grade), xp:xp, game:game};
+    var params = {action:'score', student:name, course:boardName(game, grade), xp:xp, game:game, clase:grade};
     if(CODE_ON) params.code = savedCode();
     Object.keys(opts).forEach(function(k){ if(k !== 'name' && k !== 'grade' && opts[k] !== undefined && opts[k] !== null) params[k] = opts[k]; });
     toast('📡 Sending to the class ranking…');
@@ -245,12 +267,21 @@
     });
   }
 
-  function leaderboard(game, grade){
+  function leaderboardOne(game, grade){
     return jsonp({action:'leaderboard', course:boardName(game, grade)}, 9000).then(function(d){
       if(!d || !d.ok || !Array.isArray(d.leaderboard)) return null;
       return d.leaderboard.filter(function(r){ return r && r.student && (r.xp || 0) > 0; })
         .map(function(r){ return {student:r.student, xp:r.xp || 0, grade:grade}; })
         .sort(function(a, b){ return b.xp - a.xp; });
+    });
+  }
+  function leaderboard(game, grade){
+    var gs = groupsOf(grade);
+    if(gs.length === 1) return leaderboardOne(game, gs[0]);
+    return Promise.all(gs.map(function(g){ return leaderboardOne(game, g); })).then(function(parts){
+      if(parts.every(function(p){ return p === null; })) return null;
+      var rows = []; parts.forEach(function(p){ if(p) rows = rows.concat(p); });
+      return rows.sort(function(a, b){ return b.xp - a.xp; });
     });
   }
   // grade = one grade, or null / 'TODOS' for every grade (one ranking per grade, shown together)
@@ -291,7 +322,7 @@
   }
 
   window.IOW = {
-    GRADES:GRADES, getIdentity:getIdentity, setIdentity:setIdentity, ensureIdentity:ensureIdentity,
+    GRADES:GRADES, LEVELS:LEVELS, GROUPS_BY_LEVEL:GROUPS_BY_LEVEL, gradeLevel:function(){ return gradeLevelOf(getIdentity().grade); }, gradeLevelOf:gradeLevelOf, getIdentity:getIdentity, setIdentity:setIdentity, ensureIdentity:ensureIdentity,
     mountIdentity:mountIdentity, postScore:postScore, leaderboard:leaderboard, leaderboardAll:leaderboardAll,
     fillBoard:fillBoard, prefill:prefill, toast:toast, boardName:boardName, jsonp:jsonp, cleanName:cleanName, needsCode:needsCode, promptCode:promptCode, hasCode:hasCode, codeBanner:codeBanner, code:savedCode
   };

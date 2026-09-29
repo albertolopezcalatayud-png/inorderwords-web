@@ -1,4 +1,5 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><style>#player-name,#player-course{display:none!important}</style>
+</head><body>
 <title>COLLOCATION MATCH</title>
 <meta name="description" content="Choose the verb that really goes with the word — make a decision, not do a decision — in this fast-paced collocation practice game.">
 <meta property="og:type" content="website">
@@ -313,9 +314,8 @@
 
     function startGame() {
         const nameInput = document.getElementById('player-name').value.trim();
-        if(!nameInput) return alert("Enter your Pilot Callsign!");
-        playerName = nameInput; playerCourse = document.getElementById('player-course').value;
-        if(window.IOW) IOW.setIdentity(playerName, playerCourse);
+        var _iid = (window.IOW && IOW.getIdentity) ? IOW.getIdentity() : {name:'',grade:''};
+        playerName = _iid.name || ''; playerCourse = _iid.grade || '';   // class GROUP from code→class→name
         const lvl = document.getElementById('level-group').value;
 
         chillMode = document.getElementById('chill-mode-toggle').checked;
