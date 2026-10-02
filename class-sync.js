@@ -186,7 +186,7 @@
     var id = getIdentity();
     el.className = 'iow-id';
     el.innerHTML = id.name && id.grade
-      ? '👤 Playing as <b>' + esc(id.name) + '</b> · ' + esc(id.grade) + ' <button type="button">Not you? Change</button>'
+      ? avTag() + ' Playing as <b>' + esc(id.name) + '</b> · ' + esc(id.grade) + ' <button type="button">Not you? Change</button>'
       : '🏫 Add your name and grade so your score reaches your class ranking. <button type="button">Set up</button>';
     el.querySelector('button').onclick = function(){ window.__iowSkip = false; openModal(null, false); };
   }
@@ -256,6 +256,7 @@
       toast('ℹ️ Score not sent to the class ranking — add your name and grade next time.', 'warn');
       return Promise.resolve({ok:false, reason:'noid'});
     }
+    addXP(xp);
     var params = {action:'score', student:name, course:boardName(game, grade), xp:xp, game:game, clase:grade};
     if(CODE_ON) params.code = savedCode();
     Object.keys(opts).forEach(function(k){ if(k !== 'name' && k !== 'grade' && opts[k] !== undefined && opts[k] !== null) params[k] = opts[k]; });
@@ -309,7 +310,7 @@
       }
       listEl.innerHTML = rows.slice(0, 50).map(function(r, i){
         var mine = meName && r.student.toUpperCase() === meName;
-        return '<li class="ranking-item' + (mine ? ' me' : '') + '"><span>' + (i + 1) + '. ' + esc(r.student) + (all ? ' (' + esc(r.grade) + ')' : '') + '</span><strong>' + r.xp + ' XP</strong></li>';
+        return '<li class="ranking-item' + (mine ? ' me' : '') + '"><span>' + (i + 1) + '. ' + (mine ? avTag() + ' ' : '') + esc(r.student) + (all ? ' (' + esc(r.grade) + ')' : '') + '</span><strong>' + r.xp + ' XP</strong></li>';
       }).join('');
     });
   }
@@ -321,9 +322,90 @@
     if(g && id.grade && Array.prototype.some.call(g.options, function(o){ return o.value === id.grade; })) g.value = id.grade;
   }
 
+  /* ------------------------------------------- avatar / character + XP unlocks */
+  function totalXP(){ return parseInt(ls('iow_total_xp') || '0', 10) || 0; }
+  function addXP(n){ var t = totalXP() + (Number(n) || 0); lsSet('iow_total_xp', String(t)); return t; }
+  var AVATARS = [
+    {e:'🧑‍🚀',need:0},{e:'👾',need:0},{e:'🤖',need:0},{e:'🦊',need:0},{e:'🐱',need:0},{e:'🐸',need:0},
+    {e:'🐙',need:150},{e:'🦖',need:150},{e:'🐺',need:300},{e:'🦄',need:300},{e:'🐲',need:500},{e:'👽',need:500},
+    {e:'🧙',need:800},{e:'🦸',need:800},{e:'🥷',need:1200},{e:'⚡',need:1500},{e:'🔥',need:1500},
+    {e:'🌟',need:2000},{e:'👑',need:3000},{e:'🏆',need:5000}
+  ];
+  var COLORS = [
+    {c:'#00f3ff',need:0},{c:'#00ff66',need:0},{c:'#ffe600',need:0},{c:'#ff5577',need:0},{c:'#b86bff',need:0},
+    {c:'#ff9f1c',need:250},{c:'#2dd4bf',need:500},{c:'#f472b6',need:900},{c:'#a3e635',need:1400},{c:'#ffd700',need:2500}
+  ];
+  function getAvatar(){
+    var xp = totalXP(), e = ls('iow_avatar'), c = ls('iow_avcolor');
+    if(!e || !AVATARS.some(function(a){ return a.e === e && xp >= a.need; })) e = AVATARS[0].e;
+    if(!c || !COLORS.some(function(x){ return x.c === c && xp >= x.need; })) c = COLORS[0].c;
+    return { emoji:e, color:c };
+  }
+  function setAvatar(e, c){ if(e) lsSet('iow_avatar', e); if(c) lsSet('iow_avcolor', c); }
+  function avTag(){ var a = getAvatar(); return '<span style="color:' + a.color + '">' + a.emoji + '</span>'; }
+  function injectAvCss(){
+    if(document.getElementById('iow-av-css')) return;
+    var st = document.createElement('style'); st.id = 'iow-av-css';
+    st.textContent = ".iow-av{margin:10px auto;max-width:440px;width:92%;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:10px 12px;box-sizing:border-box;text-align:left;color:#fff}"
+      + ".iow-av-head{font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;opacity:.88;margin-bottom:6px;display:flex;align-items:center;gap:8px}"
+      + ".iow-av-head .pv{font-size:22px;line-height:1}"
+      + ".iow-av-row{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}"
+      + ".iow-av-a,.iow-av-c{width:34px;height:34px;border-radius:9px;border:2px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:19px;cursor:pointer;padding:0;position:relative;color:#fff}"
+      + ".iow-av-a.sel,.iow-av-c.sel{border-color:currentColor;box-shadow:0 0 0 2px rgba(0,0,0,.6),0 0 10px currentColor}"
+      + ".iow-av-a.lock,.iow-av-c.lock{opacity:.3;cursor:not-allowed;filter:grayscale(.6)}"
+      + ".iow-av-a.lock::after{content:'🔒';position:absolute;font-size:11px;right:-3px;bottom:-5px;filter:none}"
+      + ".iow-av-note{font-size:11px;opacity:.7;margin-top:3px}";
+    document.head.appendChild(st);
+  }
+  function buildAvatarPicker(){
+    injectAvCss();
+    var wrap = document.createElement('div'); wrap.className = 'iow-av';
+    function render(){
+      var a = getAvatar(), xp = totalXP();
+      wrap.innerHTML = '';
+      var head = document.createElement('div'); head.className = 'iow-av-head';
+      head.innerHTML = '<span class="pv" style="color:' + a.color + '">' + a.emoji + '</span> Tu personaje · ' + xp + ' XP';
+      wrap.appendChild(head);
+      var rowA = document.createElement('div'); rowA.className = 'iow-av-row';
+      AVATARS.forEach(function(it){
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'iow-av-a'; b.textContent = it.e;
+        if(xp < it.need){ b.classList.add('lock'); b.title = 'Consigue ' + it.need + ' XP'; }
+        else { b.title = 'Elegir este avatar'; if(it.e === a.emoji){ b.classList.add('sel'); b.style.color = a.color; } b.onclick = function(){ setAvatar(it.e, null); render(); }; }
+        rowA.appendChild(b);
+      });
+      wrap.appendChild(rowA);
+      var rowC = document.createElement('div'); rowC.className = 'iow-av-row';
+      COLORS.forEach(function(it){
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'iow-av-c'; b.style.background = it.c;
+        if(xp < it.need){ b.classList.add('lock'); b.title = 'Consigue ' + it.need + ' XP'; }
+        else { b.title = 'Elegir este color'; if(it.c === a.color){ b.classList.add('sel'); b.style.color = it.c; } b.onclick = function(){ setAvatar(null, it.c); render(); }; }
+        rowC.appendChild(b);
+      });
+      wrap.appendChild(rowC);
+      var note = document.createElement('div'); note.className = 'iow-av-note'; note.textContent = 'Juega y gana XP para desbloquear más avatares y colores 🔒';
+      wrap.appendChild(note);
+    }
+    render();
+    return wrap;
+  }
+  function mountAvatarPicker(el){ if(!el) return null; var pk = buildAvatarPicker(); el.appendChild(pk); return pk; }
+  function autoMountAvatar(){
+    try{
+      if(document.querySelector('.iow-av')) return true;
+      var anchor = document.querySelector('[data-iow-identity]');
+      if(anchor && anchor.parentNode){ anchor.parentNode.insertBefore(buildAvatarPicker(), anchor.nextSibling); return true; }
+      var pc = document.getElementById('player-course');
+      if(pc && pc.parentNode){ pc.parentNode.insertBefore(buildAvatarPicker(), pc.nextSibling); return true; }
+    }catch(e){}
+    return false;
+  }
+  function scheduleAutoMount(){ [0,300,800,1600,3000].forEach(function(t){ setTimeout(function(){ if(!document.querySelector('.iow-av')) autoMountAvatar(); }, t); }); }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', scheduleAutoMount); else scheduleAutoMount();
+
   window.IOW = {
     GRADES:GRADES, LEVELS:LEVELS, GROUPS_BY_LEVEL:GROUPS_BY_LEVEL, gradeLevel:function(){ return gradeLevelOf(getIdentity().grade); }, gradeLevelOf:gradeLevelOf, getIdentity:getIdentity, setIdentity:setIdentity, ensureIdentity:ensureIdentity,
     mountIdentity:mountIdentity, postScore:postScore, leaderboard:leaderboard, leaderboardAll:leaderboardAll,
-    fillBoard:fillBoard, prefill:prefill, toast:toast, boardName:boardName, jsonp:jsonp, cleanName:cleanName, needsCode:needsCode, promptCode:promptCode, hasCode:hasCode, codeBanner:codeBanner, code:savedCode
+    fillBoard:fillBoard, prefill:prefill, toast:toast, boardName:boardName, jsonp:jsonp, cleanName:cleanName, needsCode:needsCode, promptCode:promptCode, hasCode:hasCode, codeBanner:codeBanner, code:savedCode,
+    getAvatar:getAvatar, setAvatar:setAvatar, totalXP:totalXP, addXP:addXP, mountAvatarPicker:mountAvatarPicker, AVATARS:AVATARS, COLORS:COLORS
   };
 })();
