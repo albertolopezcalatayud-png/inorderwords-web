@@ -183,7 +183,7 @@
       'Para rutinas, hábitos y cosas que siempre son verdad.<br>• Afirmativa: I play / she play<b>s</b> (+s con he, she, it).<br>• Negativa: I <b>don\'t</b> play / she <b>doesn\'t</b> play.<br>• Pregunta: <b>Do</b> you play? / <b>Does</b> she play?<br>⚠️ Con does y doesn\'t el verbo va <b>sin -s</b>: Does she play? (no “plays”).'},
     {k:['present continuous','presente continuo','ing ahora','right now','at the moment','am is are'], t:'Present continuous', a:
       'Para lo que pasa <b>ahora mismo</b> o planes ya decididos: am / is / are + verbo-ing.<br>• She <b>is sleeping</b> now.<br>• We <b>are meeting</b> Tom tomorrow.<br>⚠️ Los verbos de estado (like, know, want, need) casi nunca van en -ing: I <b>know</b> (no “I\'m knowing”).'},
-    {k:['past simple','pasado simple','preterito','did ','didnt','didn\'t','yesterday','last','ago','-ed','regular'], t:'Past simple', a:
+    {k:['past simple','pasado simple','preterito','did ','didnt','didn\'t','yesterday','last','ago','-ed','regular','pasado de','como se forma el pasado','forma pasada'], t:'Past simple', a:
       'Para acciones terminadas en el pasado (yesterday, last week, two days ago).<br>• Regulares: + <b>-ed</b> → play → play<b>ed</b>.<br>• Irregulares: hay que aprenderlos → go → <b>went</b>.<br>• Negativa: <b>didn\'t</b> + verbo base → I didn\'t <b>go</b>.<br>• Pregunta: <b>Did</b> + sujeto + verbo base → Did you <b>go</b>?<br>⚠️ Después de did/didn\'t, nunca pasado: “did you went” ✗.'},
     {k:['irregular','irregulares','participio','participle','past participle','tercera columna','lista de verbos','went gone'], t:'Verbos irregulares', a:
       'Tienen tres formas: infinitivo → pasado → participio (go → went → gone).<br>Truco: apréndelos por <b>familias</b> que suenan parecido:<br>• buy → bought → bought, think → thought → thought<br>• sing → sang → sung, drink → drank → drunk<br>• know → knew → known, fly → flew → flown<br>• cut → cut → cut, put → put → put<br>Practícalos en <b>Verb Striker</b> y <b>Docking Sequence</b>.'},
@@ -191,13 +191,13 @@
       'Ortografía: stop → sto<b>pped</b>, study → stud<b>ied</b>, like → like<b>d</b>.<br>Pronunciación:<br>• /t/ después de sonidos sordos: worked, watched.<br>• /d/ después de sonidos sonoros: played, lived.<br>• /ɪd/ solo si acaba en t o d: wanted, needed.<br>Lo practicas en Phonetics Lab → “-ed Endings”.'},
     {k:['past continuous','pasado continuo','was were ing','while','when i was'], t:'Past continuous', a:
       'Para una acción que estaba en progreso en el pasado: was / were + -ing.<br>• I <b>was watching</b> TV when you <b>called</b>.<br>La acción larga va en past continuous; la corta que la interrumpe, en past simple.'},
-    {k:['present perfect','presente perfecto','have been','has been','have has','ever','never','already','yet','just'], t:'Present perfect', a:
+    {k:['present perfect','presente perfecto','have been','has been','have has','ever','never','already','yet','just','cuando uso have','diferencia past simple','llevo','desde hace','tres columnas'], t:'Present perfect', a:
       'have / has + participio (I <b>have seen</b>, she <b>has gone</b>).<br>Se usa para:<br>• Experiencias sin decir cuándo: I\'ve <b>been</b> to London three times.<br>• Cosas que empezaron en el pasado y siguen: I\'ve lived here <b>for</b> two years.<br>• Con just, already, yet.<br>⚠️ Si dices <b>cuándo</b> (yesterday, last year, in 2020), usa past simple: I <b>saw</b> it yesterday.'},
     {k:['for since','since','for or since','desde','durante','hace'], t:'For y since', a:
       '• <b>for</b> + cantidad de tiempo: for two years, for ten minutes.<br>• <b>since</b> + el momento en que empezó: since 2018, since Monday, since I was five.<br>Suelen ir con present perfect: She has lived here <b>since</b> 2018.<br>⚠️ “Hace dos semanas” (algo terminado) es <b>two weeks ago</b>, no “since two weeks”.'},
-    {k:['future','futuro','will','going to','won\'t','wont'], t:'El futuro', a:
+    {k:['future','futuro','will','going to','won\'t','wont','will o going to','voy a','prediccion','planes futuros'], t:'El futuro', a:
       '• <b>will</b> + verbo: predicciones y decisiones en el momento → I think it <b>will</b> rain. I\'ll help you!<br>• <b>be going to</b> + verbo: planes e intenciones → I\'m <b>going to</b> study medicine.<br>• Present continuous: planes con fecha y hora → I\'m <b>meeting</b> Ana at five.'},
-    {k:['conditional','condicional','if ','first conditional','second conditional','third conditional','would'], t:'Condicionales', a:
+    {k:['conditional','condicional','if ','first conditional','second conditional','third conditional','would','if clauses','oraciones condicionales','tipo 1','tipo 2','tipo 3'], t:'Condicionales', a:
       '• 0: If + presente, presente → If you heat ice, it melts.<br>• 1º: If + <b>presente</b>, <b>will</b> + verbo → If it rains, we <b>will stay</b> at home.<br>• 2º: If + <b>pasado</b>, <b>would</b> + verbo → If I <b>were</b> rich, I <b>would travel</b>.<br>• 3º: If + <b>had</b> + participio, <b>would have</b> + participio → If I <b>had studied</b>, I <b>would have passed</b>.<br>⚠️ Nunca pongas will o would justo después de if.'},
     {k:['passive','pasiva','was painted','by','is made','was built'], t:'La voz pasiva', a:
       'be (en el tiempo que toque) + <b>participio</b>. Quién lo hace va con <b>by</b>.<br>• The Mona Lisa <b>was painted</b> by Leonardo.<br>• English <b>is spoken</b> all over the world.<br>• The house <b>has been sold</b>.'},
@@ -205,19 +205,19 @@
       'Al contar lo que alguien dijo, el verbo suele ir “un paso atrás”:<br>• am/is → <b>was</b>; will → <b>would</b>; can → <b>could</b><br>• present perfect → <b>past perfect</b> (have been → had been)<br>• <b>say</b> sin persona (she said that…) / <b>tell</b> + persona (she told <b>me</b> that…).<br>• Preguntas indirectas con orden normal: He asked me where I <b>lived</b> (no “where did I live”).'},
     {k:['relative','relativo','who which','which that','whose','where ','que relativo'], t:'Pronombres relativos', a:
       '• <b>who</b>: personas → The girl <b>who</b> won…<br>• <b>which</b>: cosas → The book <b>which</b> I read…<br>• <b>that</b>: personas o cosas (solo sin comas)<br>• <b>where</b>: lugares → the town <b>where</b> I was born<br>• <b>whose</b>: posesión → the boy <b>whose</b> dog…<br>⚠️ Entre comas nunca <b>that</b>: My bike, <b>which</b> is red, …'},
-    {k:['comparative','comparativo','superlative','superlativo','more than','the most','er than','better','best'], t:'Comparativos y superlativos', a:
+    {k:['comparative','comparativo','superlative','superlativo','more than','the most','er than','better','best','mas que','tan como','as as','el mas','el menos'], t:'Comparativos y superlativos', a:
       '• Adjetivos cortos: tall → tall<b>er</b> (than) → the tall<b>est</b>.<br>• Largos: expensive → <b>more</b> expensive → the <b>most</b> expensive.<br>• Irregulares: good → better → best; bad → worse → worst; far → further → furthest.<br>⚠️ Nunca los dos a la vez: “more taller” ✗ → <b>taller</b> ✓.'},
     {k:['some any','some','any','much many','a lot of','contable','incontable','countable','uncountable','advice','information','news'], t:'Some / any / much / many', a:
       '• <b>some</b> en afirmativas; <b>any</b> en negativas y preguntas → There isn\'t <b>any</b> milk.<br>• <b>many</b> + contables (many books); <b>much</b> + incontables (much water); <b>a lot of</b> vale para los dos.<br>⚠️ Incontables en inglés: advice, information, news, homework, furniture → sin -s y sin “a”: some <b>advice</b>.'},
-    {k:['modal','can','could','must','mustn','have to','should','deber','poder','tener que'], t:'Verbos modales', a:
+    {k:['modal','can','could','must','mustn','have to','should','deber','poder','tener que','might','may','shouldn','can could must should'], t:'Verbos modales', a:
       'Van seguidos del verbo <b>sin to</b> y no llevan -s: She <b>can swim</b> (no “can to swim”, no “cans”).<br>• can / could: poder<br>• must: obligación → You <b>must</b> wear a seatbelt.<br>• <b>mustn\'t</b>: prohibido ↔ <b>don\'t have to</b>: no hace falta.<br>• should: consejo → You <b>should</b> rest.'},
     {k:['in on at','preposicion','preposition','at ','on ','in '], t:'In / on / at', a:
       '<b>Tiempo</b><br>• at + hora: at 7 o\'clock, at night<br>• on + días y fechas: on Monday, on 5th May<br>• in + meses, años, estaciones: in July, in 2011, in summer, in the morning<br><b>Lugar</b><br>• in = dentro: in the fridge<br>• on = sobre una superficie: on the table<br>• at = punto concreto: at the bus stop, at home, at school'},
     {k:['make do','make or do','hacer','collocation','colocacion'], t:'Make o do', a:
       '• <b>make</b> = crear o producir algo: make a decision, make a mistake, make noise, make the bed, make a promise.<br>• <b>do</b> = tareas y actividades: do homework, do the shopping, do the washing-up, do your best, do someone a favour.<br>Truco: apréndelas en pareja, como si fueran una sola palabra. Practícalas en Collocation Match.'},
-    {k:['phrasal','phrasal verb','particula','particle','give up','look after','turn on'], t:'Phrasal verbs', a:
+    {k:['phrasal','phrasal verb','particula','particle','give up','look after','turn on','verbos con particula','verbo mas particula','preposicional'], t:'Phrasal verbs', a:
       'Verbo + partícula que cambia el significado: look (mirar) → look <b>after</b> (cuidar).<br>Pistas de las partículas:<br>• <b>up</b>: hacia arriba o del todo (give up = rendirse)<br>• <b>down</b>: hacia abajo o menos (calm down = calmarse)<br>• <b>out</b>: fuera o descubrir (find out = averiguar)<br>• <b>on / off</b>: encender / apagar, ponerse / quitarse<br>Se aprenden como vocabulario. Practícalos en Phrasal Command.'},
-    {k:['question','pregunta','preguntas','como hago una pregunta','orden de la pregunta','wh','auxiliar','auxiliary'], t:'Cómo hacer preguntas', a:
+    {k:['question','pregunta','preguntas','como hago una pregunta','orden de la pregunta','wh','auxiliar','auxiliary','word order','orden de palabras','interrogativa','como se pregunta'], t:'Cómo hacer preguntas', a:
       'Orden: <b>palabra interrogativa + auxiliar + sujeto + verbo</b>.<br>• Where <b>do</b> they live? · Where <b>does</b> she live? · Where <b>did</b> you go?<br>• What <b>have</b> you done? · When <b>will</b> you come?<br>⚠️ Si preguntas por el sujeto (quién hizo algo), no hay auxiliar: <b>Who called</b> you?'},
     {k:['there is','there are','hay','there was','there were'], t:'There is / there are', a:
       '“Hay”: <b>there is</b> + singular, <b>there are</b> + plural.<br>• There <b>is</b> a park. · There <b>are</b> two parks.<br>• Pasado: there was / there were. · Pregunta: <b>Is</b> there…? / <b>Are</b> there…?'},
@@ -261,6 +261,18 @@
       '• presente: wish + <b>pasado</b> (I wish I <b>knew</b>).<br>• pasado: wish + <b>past perfect</b> (I wish I <b>had gone</b>).<br>• queja: wish + <b>would</b> (I wish you <b>would</b> stop).'},
     {k:['linkers connectors','however therefore','conectores','moreover'], t:'Conectores', a:
       'Contraste: <b>however</b>, <b>on the other hand</b>, <b>although</b>.<br>Añadir: <b>moreover</b>, <b>in addition</b>.<br>Consecuencia: <b>therefore</b>, <b>as a result</b>.<br>Van con coma: However, …'},
+    {k:['this that these those','demostrativo','este ese','esto eso','aquel','demonstrative'], t:'This / that / these / those', a:
+      '• <b>this</b> = este/esta (cerca, singular) · <b>these</b> = estos/estas (cerca, plural).<br>• <b>that</b> = ese/aquel (lejos, singular) · <b>those</b> = esos/aquellos (lejos, plural).<br>• This book is mine. Those shoes are new.'},
+    {k:['orden de los adjetivos','adjective order','big red car','varios adjetivos'], t:'Orden de los adjetivos', a:
+      'Cuando hay varios adjetivos, el orden es: <b>opinión → tamaño → edad → forma → color → origen → material</b>.<br>• a <b>nice big old</b> house · a <b>small round black</b> table.<br>Truco: casi nunca pongas más de dos o tres juntos.'},
+    {k:['adjetivo o adverbio','adjective adverb','quick quickly','good well','adverbios de modo','-ly'], t:'Adjetivo o adverbio', a:
+      '• El <b>adjetivo</b> describe a un nombre: a <b>quick</b> car.<br>• El <b>adverbio</b> (normalmente + -ly) describe a un verbo: she drives <b>quickly</b>.<br>⚠️ Irregular: good → <b>well</b> (She sings <b>well</b>, no “good”). fast y hard no cambian.'},
+    {k:['plural irregular','irregular plural','plurales','child children','man men','mouse mice','people'], t:'Plurales irregulares', a:
+      'Algunos no hacen el plural con -s:<br>• child → <b>children</b>, man → <b>men</b>, woman → <b>women</b>, foot → <b>feet</b>, tooth → <b>teeth</b>, person → <b>people</b>, mouse → <b>mice</b>.<br>• Iguales en plural: sheep, fish, series.'},
+    {k:['a few a little','few little','poco pocos','unos cuantos','un poco de'], t:'A few / a little', a:
+      '• <b>a few</b> + contables: a few friends (unos cuantos).<br>• <b>a little</b> + incontables: a little milk (un poco de).<br>• Sin “a” suenan negativos: <b>few</b> people = poca gente; <b>little</b> time = poco tiempo.'},
+    {k:['would like want','me gustaria','quiero','like or would like','prefer','preferir'], t:'Want / would like / prefer', a:
+      '• <b>want</b> + to + verbo o + nombre: I want <b>to go</b> / I want a coffee.<br>• <b>would like</b> (’d like) = me gustaría (más educado): I\'d like <b>to go</b>.<br>• <b>like</b> + -ing = gustar en general: I like <b>swimming</b>.<br>• <b>prefer</b> A <b>to</b> B: I prefer tea <b>to</b> coffee.'},
   ];
 
   /* ------------------------------------------------------ explanations */
@@ -845,7 +857,33 @@
       var h = dictLookup(raw);
       if(h){ bot(h.map(function(x){ return b(x.en) + ' = ' + esc(x.es) + (x.extra ? ' <span style="color:var(--sub,#9aa1ba)">· ' + esc(x.extra) + '</span>' : ''); }).join('<br>'), 'Diccionario'); return; }
     }
-    bot('Uy, eso todavía no lo sé 🤖. Prueba con palabras clave como <b>past simple</b>, <b>for since</b>, <b>make do</b>, <b>preguntas</b> o <b>ranking</b>, o pregúntame el significado de una palabra. Si sigues con la duda, pregúntale a tu profe: ¡seguro que te ayuda!');
+    // never a dead end: suggest the closest topics, or offer the common-topics menu
+    var loose = KB.map(function(t){
+      var hay = ' ' + fold(t.t + ' ' + t.k.join(' ') + ' ' + t.a.replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ') + ' ';
+      var s = 0;
+      fWords.forEach(function(w){ if(hay.indexOf(' ' + w) !== -1) s += 1; });
+      return {t:t, s:s};
+    }).filter(function(r){ return r.s > 0; }).sort(function(a, c){ return c.s - a.s; });
+    function topicChips(container, list){
+      var wrap = document.createElement('div'); wrap.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;';
+      list.forEach(function(t){
+        if(!t) return;
+        var bt = document.createElement('button'); bt.type = 'button'; bt.className = 'iowbot-chip'; bt.textContent = t.t;
+        bt.addEventListener('click', function(){ me(t.t); bot(t.a, t.t); });
+        wrap.appendChild(bt);
+      });
+      container.appendChild(wrap);
+    }
+    if(loose.length){
+      var d1 = bot('No estoy seguro de haberte entendido 🤔. ¿Era alguno de estos temas? (pulsa uno)');
+      topicChips(d1, loose.slice(0, 4).map(function(r){ return r.t; }));
+      return;
+    }
+    var COMMON = ['Present simple','Past simple','Present perfect','El futuro','Condicionales','Comparativos y superlativos','Cómo hacer preguntas','Phrasal verbs','Make o do','Verbos modales','In / on / at','Some / any / much / many'];
+    var menu = COMMON.map(function(name){ return KB.filter(function(x){ return x.t === name; })[0]; }).filter(Boolean);
+    var d2 = bot('Uy, eso no sé explicártelo con mis palabras 🤖. Pero sí puedo con cualquiera de estos temas (pulsa uno), buscarte una palabra en el diccionario, o explicarte un fallo de un juego. Si es otra cosa, pregúntale a tu profe 😉:');
+    topicChips(d2, menu);
+    return;
   }
 
   function openPanel(view){
