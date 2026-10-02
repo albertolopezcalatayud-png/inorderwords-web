@@ -324,7 +324,7 @@
         roundIndex++;
         document.getElementById('round').textContent = `${roundIndex}/${totalRounds}`;
         document.getElementById('sentence').innerHTML = currentItem.sentence.replace('___', '<span class="blank">____</span>');
-        document.getElementById('es-hint').textContent = currentItem.es;
+        document.getElementById('es-hint').textContent = '';
         document.getElementById('feedback').style.display = 'none';
         if(window.IOWBot) IOWBot.hintFor('prep', currentItem);
 
@@ -357,6 +357,7 @@
             fb.style.display = 'block'; fb.className = 'status-msg incorrect';
             fb.innerText = chosen === null ? `TIME UP! Correct: ${currentItem.answer.toUpperCase()}` : `MISSED! Correct: ${currentItem.answer.toUpperCase()}`;
         }
+        document.getElementById('es-hint').textContent = '💡 ' + currentItem.es;
         updateStats();
         setTimeout(nextRound, 1100);
     }
