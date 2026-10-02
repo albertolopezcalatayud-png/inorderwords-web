@@ -96,6 +96,11 @@ h1,h2,h3{font-family:'Unbounded',system-ui,sans-serif; text-wrap:balance;}
 .home-fab{position:fixed; top:14px; left:14px; z-index:60; display:flex; align-items:center; gap:7px; background:linear-gradient(135deg,var(--panel2),var(--panel)); border:1px solid var(--line); border-radius:999px; padding:9px 14px 9px 11px; text-decoration:none; color:var(--text); font-weight:700; font-size:12.5px; box-shadow:0 4px 14px rgba(0,0,0,0.35);}
 .home-fab:hover{border-color:var(--acc);}
 @media (max-width:420px){ .home-fab{top:10px; left:10px; font-size:0; padding:8px 12px 8px 10px;} .home-fab .ic{font-size:16px;} .boss-em{font-size:48px;} }
+.pixelmon{image-rendering:pixelated; image-rendering:crisp-edges; filter:drop-shadow(0 5px 0 rgba(0,0,0,.4)); animation:bob 1.6s ease-in-out infinite;}
+.boss-em .pixelmon{width:112px; height:112px;}
+.boss-card .em .pixelmon{width:42px; height:42px; vertical-align:middle;}
+@keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+@media (max-width:420px){ .boss-em .pixelmon{width:88px; height:88px;} }
 @media (prefers-reduced-motion:reduce){ *{animation:none!important; transition:none!important;} }
 </style>
 </head>
@@ -244,12 +249,28 @@ function pickVoice(){
 }
 if(hasTTS){ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
 
+function pixelSprite(emoji){
+  try{
+    var S0 = 28;
+    var c = document.createElement('canvas'); c.width = S0; c.height = S0;
+    var x = c.getContext('2d'); x.imageSmoothingEnabled = false;
+    x.font = '24px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",serif';
+    x.textAlign = 'center'; x.textBaseline = 'middle';
+    x.fillText(emoji, S0/2, S0/2 + 1);
+    return c.toDataURL();
+  }catch(e){ return null; }
+}
+function pixHTML(emoji){
+  var d = pixelSprite(emoji);
+  return d ? '<img class="pixelmon" alt="" src="' + d + '">' : emoji;
+}
+
 function renderIntro(){
   var badges = loadBadges();
   document.getElementById('bosses').innerHTML = BOSSES.map(function(b){
     return '<button class="boss-card" onclick="play(\'' + b.id + '\')">' +
       (badges[b.id] ? '<span class="won">✓ Defeated</span>' : '') +
-      '<span class="em">' + b.em + '</span><span class="g">' + b.grade + ' · CEFR ' + b.cefr + '</span>' +
+      '<span class="em">' + pixHTML(b.em) + '</span><span class="g">' + b.grade + ' · CEFR ' + b.cefr + '</span>' +
       '<span class="bn">' + esc(b.name) + '</span><span class="bd">' + esc(b.desc) + '</span></button>';
   }).join('');
   document.getElementById('shelf').innerHTML = BOSSES.map(function(b){
@@ -263,7 +284,7 @@ function startBoss(id){
   // keep a skill mix: shuffle within the bank, listening questions spread through the fight
   var qs = shuffle(boss.qs.slice());
   S = {boss:boss, qs:qs, i:0, hp:10, shields:3, answered:false, log:[]};
-  document.getElementById('bossEm').textContent = boss.em;
+  document.getElementById('bossEm').innerHTML = pixHTML(boss.em);
   document.getElementById('bossName').textContent = boss.name;
   document.getElementById('qTotal').textContent = qs.length;
   updateBars();
