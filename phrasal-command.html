@@ -557,9 +557,13 @@
         clearInterval(timerInterval);
         totalAttempts++;
 
-        const p = document.getElementById('input-particle').value.trim().toLowerCase();
+        const p = document.getElementById('input-particle').value.trim().toLowerCase().replace(/\s+/g, ' ');
 
-        if(currentVerb.particle.includes(p)) {
+        var _accept = currentVerb.particle.map(function(x){ return x.toLowerCase(); });
+        currentVerb.particle.forEach(function(x){ _accept.push((currentVerb.base + ' ' + x).toLowerCase()); });
+        if(currentVerb.full) _accept.push(currentVerb.full.toLowerCase());
+
+        if(_accept.indexOf(p) > -1) {
             totalSuccess++;
             const pointsGained = 5 + (streak * 1);
             score += pointsGained; streak++; coins += 5;
