@@ -251,13 +251,16 @@ if(hasTTS){ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
 
 function pixelSprite(emoji){
   try{
-    var S0 = 28;
-    var c = document.createElement('canvas'); c.width = S0; c.height = S0;
-    var x = c.getContext('2d'); x.imageSmoothingEnabled = false;
-    x.font = '24px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",serif';
-    x.textAlign = 'center'; x.textBaseline = 'middle';
-    x.fillText(emoji, S0/2, S0/2 + 1);
-    return c.toDataURL();
+    var BIG = 96, LOW = 22;
+    var b = document.createElement('canvas'); b.width = BIG; b.height = BIG;
+    var bx = b.getContext('2d');
+    bx.textAlign = 'center'; bx.textBaseline = 'middle';
+    bx.font = (BIG - 12) + 'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",serif';
+    bx.fillText(emoji, BIG/2, BIG/2 + 2);
+    var sm = document.createElement('canvas'); sm.width = LOW; sm.height = LOW;
+    var sx = sm.getContext('2d'); sx.imageSmoothingEnabled = false;
+    sx.drawImage(b, 0, 0, LOW, LOW);
+    return sm.toDataURL();
   }catch(e){ return null; }
 }
 function pixHTML(emoji){
