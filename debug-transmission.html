@@ -118,9 +118,10 @@ h1,h2,h3{font-family:'Unbounded',system-ui,sans-serif; text-wrap:balance;}
         <b>Click any word or phrase</b> you think is wrong. If it really is a bug, you choose the correct version. If it was fine, that's a <b>false alarm</b> (−3 points), so read before you click. The counter tells you how many bugs are left. Stuck? <b>End transmission</b> reveals the ones you missed, with an explanation.
       </div>
       <div class="levels">
-        <button class="lvl" onclick="play('A')"><span><span class="t">🟢 Cadet — 1º–2º ESO</span><br><span class="d">4 transmissions · present &amp; past simple, there is/are, can, adjectives</span></span><span class="arr">→</span></button>
-        <button class="lvl" onclick="play('B')"><span><span class="t">🟡 Officer — 3º–4º ESO</span><br><span class="d">4 transmissions · present perfect, conditionals, prepositions, uncountables</span></span><span class="arr">→</span></button>
-        <button class="lvl" onclick="play('C')"><span><span class="t">🔴 Commander — Bachillerato</span><br><span class="d">4 transmissions · connectors, inversion, reported speech, 3rd conditional</span></span><span class="arr">→</span></button>
+        <button class="lvl" onclick="playCampaign()" style="border-color:var(--acc); background:var(--acc-dim);"><span><span class="t">🚀 Full mission — level up!</span><br><span class="d">Start at Cadet and climb: Cadet → Officer → Commander as you clear each rank</span></span><span class="arr">→</span></button>
+        <button class="lvl" onclick="play('A')"><span><span class="t">🟢 Cadet — 1º–2º ESO</span><br><span class="d">8 transmissions · present &amp; past simple, there is/are, can, adjectives</span></span><span class="arr">→</span></button>
+        <button class="lvl" onclick="play('B')"><span><span class="t">🟡 Officer — 3º–4º ESO</span><br><span class="d">8 transmissions · present perfect, conditionals, prepositions, uncountables</span></span><span class="arr">→</span></button>
+        <button class="lvl" onclick="play('C')"><span><span class="t">🔴 Commander — Bachillerato</span><br><span class="d">8 transmissions · connectors, inversion, reported speech, 3rd conditional</span></span><span class="arr">→</span></button>
       </div>
     </div>
   </div>
@@ -154,7 +155,7 @@ h1,h2,h3{font-family:'Unbounded',system-ui,sans-serif; text-wrap:balance;}
       <div class="actions">
         <button class="btn secondary" onclick="show('intro')">Change level</button>
         <button class="btn secondary" onclick="sendToMissionLog()">📡 Mission Log</button>
-        <button class="btn primary" onclick="startLevel(S.level)">Play again</button>
+        <button class="btn primary" onclick="playAgain()">Play again</button>
       </div>
     </div>
   </div>
@@ -174,33 +175,60 @@ var TRANSMISSIONS = {
     {name:"Postcard from Scotland", text:"Hi Emma! Last summer my family {go|went|goed,gone|The past simple of GO is WENT.} to Scotland. We {was|were|are,be|With WE the past of BE is WERE.} there for two weeks. The people {is|are|am,be|PEOPLE is plural, so it takes ARE.} very friendly and the landscapes are amazing. My brother {have|has|haves,having|With he/she/it: HAS.} a new camera, so he took hundreds of photos. I {didn't liked|didn't like|didn't likes,don't liked|After DIDN'T we use the base form: didn't LIKE.} the weather, but I loved the castles!"},
     {name:"About me", text:"My name is Lucas and I {have|am|has,do|For age English uses BE: I AM 13 (years old).} 13 years old. I live in Valencia with my parents and my sister. She {don't|doesn't|isn't,not|With he/she/it the negative is DOESN'T.} like football, but I love it. Every Saturday I {plays|play|playing,am play|With I there's no -s: I PLAY.} with my team. My favourite subject is {the English|English|a English,an English|No article before school subjects: I like ENGLISH.} because the teacher is very funny."},
     {name:"My town", text:"In my town there {is|are|be,has|Two parks is plural: THERE ARE.} two parks and a big library. My town is {more small|smaller|more smaller,smallest|Short adjectives add -ER: SMALLER (never 'more small').} than Valencia, but it's very nice. In summer the people {goes|go|going,is go|PEOPLE is plural: they GO.} to the beach every day. I {can to swim|can swim|can swimming,cans swim|After CAN use the base form without TO.} very well, so I love it."},
-    {name:"Last weekend", text:"Yesterday I {have seen|saw|seed,seen|A finished time (yesterday) needs the past simple: I SAW.} a great film with my friends. After that we {eated|ate|eaten,eat|EAT is irregular: ATE.} pizza in a small restaurant. And you? {Where did you went|Where did you go|Where you went,Where did you going|After DID use the base form: did you GO.} last weekend? Write soon! I {am agree|agree|am agreed,agreeing|AGREE is a verb, not an adjective: I AGREE.} that we should meet more often."}
+    {name:"Last weekend", text:"Yesterday I {have seen|saw|seed,seen|A finished time (yesterday) needs the past simple: I SAW.} a great film with my friends. After that we {eated|ate|eaten,eat|EAT is irregular: ATE.} pizza in a small restaurant. And you? {Where did you went|Where did you go|Where you went,Where did you going|After DID use the base form: did you GO.} last weekend? Write soon! I {am agree|agree|am agreed,agreeing|AGREE is a verb, not an adjective: I AGREE.} that we should meet more often."},
+    {name:"A normal day", text:"My sister {get up|gets up|getting up,get ups|With she we add -s: she GETS UP.} at seven every day. She {don’t|doesn’t|not,isn’t|With he/she/it the negative is DOESN’T.} like mornings, but she is never late. We {goes|go|going,gos|With WE there is no -s: we GO.} to school together. There {is|are|be,has|Many students is plural: THERE ARE.} many students in my class. My favourite subject is {the maths|maths|a maths,an maths|No article before school subjects: MATHS.}."},
+    {name:"My bedroom", text:"My bedroom is small but nice. There {is|are|be,has|Two windows is plural: THERE ARE.} two windows and a big bookshelf. I {has|have|haves,am have|With I we use HAVE.} a lot of books on it. My desk is {more old|older|more older,oldest|Short adjectives add -ER: OLDER.} than my bed. I always {does|do|doing,did|With I we use DO.} my homework there because it is quiet."},
+    {name:"My best friend", text:"My best friend is called Marta. She is {very nice person|a very nice person|very a nice person,an nice person|Singular countable nouns need A/AN: A very nice person.}. She can {to play|play|playing,plays|After CAN use the base form: CAN PLAY.} the guitar. On Saturdays we usually {goes|go|going,are go|With WE we use GO.} to the park. She {don’t|doesn’t|not,isn’t|With she the negative is DOESN’T.} like video games, but I love them."},
+    {name:"Last weekend trip", text:"Last Sunday my family and I {goed|went|go,gone|GO is irregular: the past is WENT.} to the mountains. The weather {were|was|is,be|With the weather (singular) we use WAS.} sunny and warm. We {eat|ate|eated,eaten|EAT is irregular: the past is ATE.} sandwiches near a river. My little brother {didn’t wanted|didn’t want|don’t want,didn’t wants|After DIDN’T use the base form: didn’t WANT.} to come home. It was a great day!"}
   ],
   B: [
     {name:"Exchange trip", text:"Last year I {have been|went|go,have gone|A finished time (last year) needs the past simple: I WENT.} to Dublin on a school exchange. I {am living|have lived|live,lived|From the past up to now + FOR needs the present perfect: I HAVE LIVED.} in the same town for ten years, so it was a big change. My host family were very kind and gave me a lot of useful {advices|advice|advises,an advice|ADVICE is uncountable: no -s, no 'an'.}. If I {will have|have|had,would have|First conditional: IF + present simple (never IF + WILL).} the chance, I will go back next summer. I'm really looking forward to {see|seeing|saw,seen|LOOK FORWARD TO is followed by -ING.} them again."},
     {name:"Opinion post", text:"Nowadays {the teenagers|teenagers|a teenagers,teenager|General statements about a group take no article: TEENAGERS spend…} spend a lot of time online. Whether that is good or bad depends {of|on|from,in|The verb is DEPEND ON.} how you use it. Social networks can be useful, but {its|it's|it is's,its'|IT'S = it is. ITS is the possessive.} very easy to waste time. That's why I {am agree|agree|am agreed,agreeing|AGREE is a verb: I AGREE.} with limiting screen time on school nights."},
     {name:"Complaint email", text:"Dear Sir or Madam, I am writing to complain about some headphones I bought {since two weeks|two weeks ago|for two weeks ago,during two weeks|A finished point in the past: TWO WEEKS AGO.}. They {didn't worked|didn't work|don't worked,didn't works|After DIDN'T use the base form: didn't WORK.} from the first day. I {explained him|explained to him|explained he,explained his|We EXPLAIN something TO someone.} the problem, but the shop assistant was very {rude with|rude to|rude for,rude at|We are RUDE TO someone.} me. I would like a full refund. Yours faithfully, Carla"},
-    {name:"Science fair", text:"Our science project {is consisting|consists|consist,is consist|CONSIST is a state verb: no continuous form.} of three experiments. We {have started|started|start,have start|A finished time (in January) needs the past simple: STARTED.} it in January and finished it last week. The experiments {was|were|are been,was been|The subject is plural: they WERE.} difficult but fun. If we win, we {would|will|would to,will to|First conditional: IF + present, WILL + verb.} travel to Madrid for the national final."}
+    {name:"Science fair", text:"Our science project {is consisting|consists|consist,is consist|CONSIST is a state verb: no continuous form.} of three experiments. We {have started|started|start,have start|A finished time (in January) needs the past simple: STARTED.} it in January and finished it last week. The experiments {was|were|are been,was been|The subject is plural: they WERE.} difficult but fun. If we win, we {would|will|would to,will to|First conditional: IF + present, WILL + verb.} travel to Madrid for the national final."},
+    {name:"Summer job email", text:"Dear Mr Brown, I am writing {for apply|to apply|for applying,to applying|To express purpose use TO + base form: TO APPLY.} for the summer job. I {work|have worked|am working,worked|From the past until now with FOR needs the present perfect: I HAVE WORKED.} as a waiter for two summers. I am available {since June|from June|during June,by June|A starting point in time uses FROM: FROM June.}. I look forward to {hear|hearing|to hear,heard|LOOK FORWARD TO is followed by -ING: HEARING.} from you."},
+    {name:"Film review", text:"I watched a film last night and it was {so boring film|such a boring film|so a boring film,such boring film|SUCH + A + adjective + noun: SUCH A boring film.}. The first part was not {enough interesting|interesting enough|enough interested,interesting enaugh|ENOUGH goes after the adjective: INTERESTING ENOUGH.}. The effects were {more better|better|more good,gooder|BETTER is already comparative: never more better.} than the plot. It is {the worse|the worst|worst,more bad|The superlative of BAD is THE WORST.} film I have seen this year."},
+    {name:"Advice to a friend", text:"If I {was|were|am,be|For advice we say IF I WERE YOU.} you, I would talk to the teacher. You {should to study|should study|should studying,shoulds study|After SHOULD use the base form: SHOULD STUDY.} a little every day. You {had better not|better not to|hadn’t better,had not better|HAD BETTER NOT + base form is the correct form.} leave everything for the last night. It is worth {to make|making|make,to making|BE WORTH is followed by -ING: WORTH MAKING.} a timetable."},
+    {name:"Travel blog", text:"While we {drove|were driving|was driving,have driven|An action in progress needs the past continuous: WERE DRIVING.} to the coast, it started to rain. We {arrived to|arrived in|arrived on,arrive at|We ARRIVE IN a city, never arrive to.} the city late at night. The hotel was {more cheap|cheaper|cheapest,more cheaper|Short adjectives add -ER: CHEAPER.} than we expected. There weren’t {no|any|none,not|Use ANY in negatives: there weren’t ANY problems.} problems during the trip."}
   ],
   C: [
     {name:"For-and-against essay", text:"{In the other hand|On the other hand|At the other hand,By the other hand|The fixed connector is ON THE OTHER HAND.}, technology has made our lives easier in countless ways. However, many people {are used to work|are used to working|used to working,are use to work|BE USED TO (= be accustomed to) is followed by -ING.} long hours in front of a screen. {Despite of|Despite|In spite,Although of|DESPITE takes no OF (or use IN SPITE OF).} the risks, most young people cannot imagine {to live|living|live,to living|IMAGINE is followed by -ING.} without their phones."},
     {name:"Survey report", text:"The survey, {that|which|what,who|Non-defining relative clauses (between commas) use WHICH, never THAT.} was carried out in May, shows some interesting results. More than half of the students said they {would rather to study|would rather study|would rather studying,had rather study|WOULD RATHER is followed by the base form.} in the morning. The number of students who cycle to school {have|has|haves,are|The subject is THE NUMBER (singular): HAS.} increased. It is therefore recommended that the school {will provide|provide|providing,to provide|Formal recommendations use the subjunctive: that the school PROVIDE.} more bike racks."},
     {name:"Looking back", text:"If I {would have studied|had studied|would studied,have studied|Third conditional: IF + past perfect.} harder, I would have passed the exam. I wish I {didn't waste|hadn't wasted|haven't wasted,wouldn't wasted|A regret about the past: WISH + past perfect.} so much time last term. {Hardly I had|Hardly had I|Hardly I have,Hardly have I had|After HARDLY at the start we invert: HARDLY HAD I…} started revising when the exams began. My tutor {suggested me to make|suggested that I make|suggested me making,suggested to me make|SUGGEST never takes 'me to': suggest THAT I MAKE / suggest MAKING.} a proper study timetable."},
-    {name:"Tutor meeting", text:"Yesterday my tutor told {to me|me|at me,for me|TELL takes a direct object: told ME.} that I {will|would|shall,am going|In reported speech WILL becomes WOULD.} need to improve my writing. She asked me {what did I want|what I wanted|what I did want,what wanted I|Reported questions use statement word order: what I WANTED.} to study at university. I explained that I {have been|had been|was been,am being|In reported speech the present perfect moves back to the PAST PERFECT.} thinking about Medicine for years."}
+    {name:"Tutor meeting", text:"Yesterday my tutor told {to me|me|at me,for me|TELL takes a direct object: told ME.} that I {will|would|shall,am going|In reported speech WILL becomes WOULD.} need to improve my writing. She asked me {what did I want|what I wanted|what I did want,what wanted I|Reported questions use statement word order: what I WANTED.} to study at university. I explained that I {have been|had been|was been,am being|In reported speech the present perfect moves back to the PAST PERFECT.} thinking about Medicine for years."},
+    {name:"Opinion essay", text:"{Although|Despite|Although of,Despite of|Before a noun phrase use DESPITE (no of); ALTHOUGH introduces a clause.} the many advantages of social media, its effects on mental health {has been|have been|has being,have being|The subject EFFECTS is plural: HAVE BEEN.} widely criticised. {Moreover of this|Moreover|Moreover of,In addition of|MOREOVER is used alone, with no of.}, privacy is increasingly at risk. It is high time governments {regulate|regulated|regulates,will regulate|IT IS HIGH TIME is followed by the past tense: REGULATED.} these platforms."},
+    {name:"Research report", text:"The report, {who|which|that,whom|For things in a non-defining clause (between commas) use WHICH.} was published last week, reveals a worrying trend. {The more|More the|Most the,The most|The structure is THE + comparative, THE + comparative: THE MORE people read...} people read about it, the more concerned they become. The data {was|were|is being,has|In formal writing DATA is plural: WERE collected.} collected over ten years. The committee recommended that the policy {is|be|was,will be|After RECOMMEND THAT use the base form: that the policy BE reviewed.} reviewed."},
+    {name:"A narrow escape", text:"If the pilot {wouldn’t have reacted|hadn’t reacted|didn’t react,won’t react|Third conditional: the IF-clause uses the past perfect, not would: HADN’T REACTED.} so quickly, the plane would have crashed. {Not only the engine failed|Not only did the engine fail|Not only the engine did fail,Only not the engine failed|After NOT ONLY at the start we invert: NOT ONLY DID the engine fail.}, but the radio also stopped. I wish I {would have|had|have,would|A regret about the past: I WISH I HAD stayed calm.} stayed calm. {Never I had seen|Never had I seen|Never I had saw,Never have I saw|After NEVER at the start we invert: NEVER HAD I seen.} anything so frightening."},
+    {name:"Formal complaint", text:"I am writing to express my dissatisfaction with your service. The parcel {was supposed arrive|was supposed to arrive|was suppose to arrive,supposed to arrive|BE SUPPOSED TO + base form: WAS SUPPOSED TO ARRIVE.} last Monday. When I phoned, I {was telled|was told|was said,telled|The passive of TELL is WAS TOLD.} that it had been lost. I would {appreciate if you|appreciate it if you|appreciate that you,appreciate you|The structure is APPRECIATE IT IF: I would APPRECIATE IT IF you refunded me.} refunded me. I {will be grateful|would be grateful|am grateful of,would grateful|Polite requests use WOULD: I WOULD BE GRATEFUL.} for a quick reply."}
   ]
 };
 
 var S = {level:'A', list:[], t:0, score:0, falses:0, fixedFirst:0, totalBugs:0, bugs:[], active:null, done:false};
+var TIERS = ['A','B','C'];
+var TIERNAME = {A:'🟢 Cadet (1º–2º ESO)', B:'🟡 Officer (3º–4º ESO)', C:'🔴 Commander (Bachillerato)'};
 
 function esc(t){ return String(t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
 function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var x=a[i]; a[i]=a[j]; a[j]=x; } return a; }
 function show(n){ ['Intro','Game','Result'].forEach(function(s){ document.getElementById('screen'+s).classList.toggle('active', s.toLowerCase()===n); }); closePop(); window.scrollTo(0,0); }
 
 function startLevel(level){
-  S = {level:level, list:TRANSMISSIONS[level], t:0, score:0, falses:0, fixedFirst:0, totalBugs:0, bugs:[], active:null, done:false};
+  S = {level:level, tierIdx:TIERS.indexOf(level), campaign:false, list:TRANSMISSIONS[level], t:0, score:0, falses:0, fixedFirst:0, totalBugs:0, bugs:[], active:null, done:false};
   document.getElementById('tTotal').textContent = S.list.length;
   renderTransmission();
   show('game');
+}
+function startCampaign(){
+  S = {level:'A', tierIdx:0, campaign:true, list:TRANSMISSIONS['A'], t:0, score:0, falses:0, fixedFirst:0, totalBugs:0, bugs:[], active:null, done:false};
+  document.getElementById('tTotal').textContent = S.list.length;
+  renderTransmission();
+  show('game');
+}
+function advanceLevel(){
+  S.tierIdx++; S.level = TIERS[S.tierIdx]; S.list = TRANSMISSIONS[S.level]; S.t = 0;
+  document.getElementById('tTotal').textContent = S.list.length;
+  renderTransmission();
+  var ts = document.getElementById('toast');
+  if(ts){ ts.textContent = '⬆ LEVEL UP! New rank: ' + TIERNAME[S.level]; }
 }
 
 // Split text into plain words and bug chunks
@@ -219,7 +247,7 @@ function renderTransmission(){
   var tr = S.list[S.t];
   S.done = false;
   document.getElementById('tNum').textContent = S.t + 1;
-  document.getElementById('tName').textContent = tr.name;
+  document.getElementById('tName').textContent = TIERNAME[S.level] + ' · ' + tr.name;
   document.getElementById('log').innerHTML = '';
   document.getElementById('toast').textContent = '';
   document.getElementById('endBtn').style.display = '';
@@ -341,13 +369,20 @@ function finishTransmission(){
   S.done = true;
   document.getElementById('endBtn').style.display = 'none';
   var nb = document.getElementById('nextBtn');
-  nb.textContent = S.t === S.list.length - 1 ? 'See mission report →' : 'Next transmission →';
+  if(S.t === S.list.length - 1){
+    nb.textContent = (S.campaign && S.tierIdx < TIERS.length - 1) ? ('🚀 LEVEL UP → ' + TIERNAME[TIERS[S.tierIdx + 1]]) : 'See mission report →';
+  } else {
+    nb.textContent = 'Next transmission →';
+  }
   nb.style.display = '';
   nb.focus();
 }
 
 function nextTransmission(){
-  if(S.t >= S.list.length - 1){ showResult(); return; }
+  if(S.t >= S.list.length - 1){
+    if(S.campaign && S.tierIdx < TIERS.length - 1){ advanceLevel(); return; }
+    showResult(); return;
+  }
   S.t++; renderTransmission();
 }
 
@@ -359,8 +394,9 @@ function showResult(){
   document.getElementById('rScore').textContent = S.score;
   document.getElementById('rFixed').textContent = S.fixedFirst + '/' + S.totalBugs;
   document.getElementById('rFalse').textContent = S.falses;
-  if(!S.posted && window.IOW){ S.posted = true; IOW.postScore('Debug the Transmission', S.score, {correct:S.fixedFirst, wrong:S.totalBugs - S.fixedFirst, falseAlarms:S.falses, level:S.level}); }
-  try{ var k='debugTransmissionBest_' + S.level, best = parseInt(localStorage.getItem(k) || '0', 10); if(S.score > best) localStorage.setItem(k, S.score); }catch(e){}
+  var lvlLabel = S.campaign ? 'Campaign' : S.level;
+  if(!S.posted && window.IOW){ S.posted = true; IOW.postScore('Debug the Transmission', S.score, {correct:S.fixedFirst, wrong:S.totalBugs - S.fixedFirst, falseAlarms:S.falses, level:lvlLabel}); }
+  try{ var k='debugTransmissionBest_' + (S.campaign ? 'campaign' : S.level), best = parseInt(localStorage.getItem(k) || '0', 10); if(S.score > best) localStorage.setItem(k, S.score); }catch(e){}
   show('result');
 }
 
@@ -371,6 +407,8 @@ function sendToMissionLog(){
 }
 
 function play(level){ if(window.IOW) IOW.ensureIdentity(function(){ startLevel(level); }); else startLevel(level); }
+function playCampaign(){ if(window.IOW) IOW.ensureIdentity(startCampaign); else startCampaign(); }
+function playAgain(){ if(S.campaign) startCampaign(); else startLevel(S.level); }
 if(window.IOW) IOW.mountIdentity(document.getElementById('iowId'));
 document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closePop(); });
 document.addEventListener('click', function(e){
