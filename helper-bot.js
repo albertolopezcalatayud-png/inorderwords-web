@@ -273,6 +273,12 @@
       '• <b>a few</b> + contables: a few friends (unos cuantos).<br>• <b>a little</b> + incontables: a little milk (un poco de).<br>• Sin “a” suenan negativos: <b>few</b> people = poca gente; <b>little</b> time = poco tiempo.'},
     {k:['would like want','me gustaria','quiero','like or would like','prefer','preferir'], t:'Want / would like / prefer', a:
       '• <b>want</b> + to + verbo o + nombre: I want <b>to go</b> / I want a coffee.<br>• <b>would like</b> (’d like) = me gustaría (más educado): I\'d like <b>to go</b>.<br>• <b>like</b> + -ing = gustar en general: I like <b>swimming</b>.<br>• <b>prefer</b> A <b>to</b> B: I prefer tea <b>to</b> coffee.'},
+    {k:['past perfect','pasado perfecto','had participio','habia hecho','accion anterior','pluscuamperfecto'], t:'Past perfect', a:
+      'Para la acción MÁS ANTIGUA cuando hablas de dos cosas del pasado: <b>had</b> + participio.<br>• When we arrived, the film <b>had</b> already <b>started</b> (empezó antes de llegar).<br>• I couldn\'t pay because I <b>had lost</b> my wallet.<br>Señales: <b>before</b>, <b>after</b>, <b>by the time</b>, <b>already</b>. Si solo hay UNA acción pasada, usa past simple.'},
+    {k:['used to vs would','used to o would','would costumbre','soler','past habits','used to would'], t:'Used to o would', a:
+      '• <b>used to</b> + verbo: estados y costumbres del pasado → I <b>used to</b> live here. She <b>used to</b> have long hair.<br>• <b>would</b> + verbo: SOLO acciones repetidas → Every summer we <b>would</b> go to the beach.<br>⚠️ Con estados (be, have, like, know, live) NO se usa would: “I would be shy” ✗ → I <b>used to</b> be shy.'},
+    {k:['past simple o present perfect','pasado o present perfect','yesterday o ever','terminado o experiencia','saw o have seen'], t:'Past simple o present perfect', a:
+      '• <b>Past simple</b>: tiempo terminado, dices CUÁNDO → I <b>saw</b> him yesterday. We <b>went</b> in 2019.<br>• <b>Present perfect</b> (have/has + participio): experiencia o algo que sigue, sin decir cuándo → I <b>have been</b> to London. She <b>has lived</b> here since 2010.<br>Señales de present perfect: ever, never, just, already, yet, for, since.'},
   ];
 
   /* ------------------------------------------------------ explanations */
@@ -457,6 +463,15 @@
 
   var HOMOPHONES = [['there','their',"they're"],['to','too','two'],['your',"you're"],['its',"it's"],['where','wear','were'],['hear','here'],['know','no'],['buy','by','bye'],['right','write'],['son','sun'],['week','weak'],['whose',"who's"],['then','than'],['piece','peace'],['quite','quiet'],['sea','see'],['knew','new'],['would','wood'],['for','four'],['one','won'],['eight','ate']];
 
+  var TENSE_TITLE = { PS_PC:'Present simple vs continuous', PAS_PAC:'Past simple vs continuous', PAS_PP:'Past simple vs past perfect', USED_WOULD:'Used to vs would', PAS_PRESP:'Past simple vs present perfect', WILL_GOING:'Will vs going to' };
+  var TENSE_RULE = {
+    PS_PC:'Present simple = rutinas y verdades (every day, usually). Present continuous (am/is/are + -ing) = ahora mismo (right now, Look!). ¿Es costumbre o pasa en este momento?',
+    PAS_PAC:'Past simple = acción terminada o en secuencia. Past continuous (was/were + -ing) = acción larga en progreso, casi siempre interrumpida (while…, when…).',
+    PAS_PP:'Past simple = una acción pasada. Past perfect (had + participio) = la acción MÁS ANTIGUA de dos pasadas (before, by the time, already).',
+    USED_WOULD:'used to vale para estados y costumbres pasadas. would SOLO para acciones repetidas, nunca con estados (be, have, like, know, live).',
+    PAS_PRESP:'Past simple = tiempo terminado (yesterday, last week, in 2019). Present perfect (have/has + participio) = experiencia o algo que sigue (ever, never, just, already, yet, for, since).',
+    WILL_GOING:'will = decisión del momento, predicción u opinión (I think), promesa u ofrecimiento. be going to = plan ya decidido o predicción con pruebas que ves venir.'
+  };
   var EXPLAIN = {
     verb: function(d){
       var it = d.item, out = [];
@@ -515,6 +530,17 @@
       out.push('💡 ' + (PREP_RULE[it.es] || esc(it.es)));
       if(d.chosen && PREP_USE[d.chosen] && d.chosen !== it.answer) out.push('Recuerda: ' + esc(PREP_USE[d.chosen]) + '.');
       return {title:'Preposición', body:out};
+    },
+    tense: function(d){
+      var it = d.item, out = [];
+      var ans = Array.isArray(it.answer) ? it.answer : [it.answer];
+      out.push(esc(it.sentence.split('___')[0]) + '<b>' + esc(ans[0]) + '</b>' + esc(it.sentence.split('___')[1] || ''));
+      if(d.chosen === null || d.chosen === undefined) out.push('Se acabó el tiempo. En 🧘 Chill mode puedes pensar sin reloj.');
+      else if(ans.indexOf(d.chosen) !== -1) out.push('✅ ' + b(d.chosen) + ' también vale aquí.');
+      else out.push('❌ Elegiste ' + b(d.chosen) + '. Aquí va ' + b(ans.join(' / ')) + '.');
+      if(it.es) out.push('💡 ' + esc(it.es));
+      if(TENSE_RULE[it.mode]) out.push(TENSE_RULE[it.mode]);
+      return {title:(TENSE_TITLE[it.mode] || 'Tiempos verbales'), body:out};
     },
     collo: function(d){
       var it = d.item, out = [];
@@ -657,6 +683,7 @@
     phrasal: function(it){ return 'Tiene que significar “' + esc(it.es) + '”. ' + (PHRASAL_GROUP[it.group] || '') + ' La partícula tiene ' + it.particle[0].length + ' letras.'; },
     prep: function(it){ var r = PREP_RULE[it.es]; return r ? 'Piensa en la regla: ' + r.replace(new RegExp('\\b' + it.answer + '\\b', 'gi'), '___').replace(/Nunca “[^”]*”/, '') : 'Lee la pista que tienes debajo de la frase.'; },
     collo: function(it, esText){ return (esText ? 'En español: “' + esc(esText) + '”. ' : '') + 'Piensa: ¿estás <b>creando</b> algo (make), haciendo una <b>tarea</b> (do), <b>cogiendo</b> algo (take), una comida o experiencia (have) o un <b>cambio</b> (get)?'; },
+    tense: function(it){ return 'Fíjate en la pista temporal de la frase (every day, right now, while, before, yesterday, since, I think, Look!). ' + (TENSE_RULE[it.mode] || ''); },
     question: function(it){ return 'Empieza por la palabra de <b>ASK WITH</b> y pon después el <b>auxiliar</b>. ' + (it.es ? 'Nota: ' + esc(it.es) : ''); },
     signal: function(it){ return 'La palabra que falta tiene ' + it.answer.length + ' letras y empieza por <b>' + esc(it.answer.charAt(0)) + '</b>. Escucha con 🐢 Slow.'; },
     vocab: function(w, mode){ var en = w.en.replace(/\(e\)/, ''); return mode === 'type' ? 'Empieza por <b>' + esc(en.charAt(0)) + '</b> y tiene ' + en.replace(/[^a-zA-Z]/g, '').length + ' letras.' : 'Descarta primero las opciones que seguro que no son. Pulsa 🔊 para oír la palabra.'; },
