@@ -1772,11 +1772,14 @@ function updateProgress(){
   document.getElementById('sessionPoints').textContent = `⭐ ${session.xpEarned} pts`;
 }
 
+var IOW_ENVOICE = null;
+function iowPickEnVoice(){ try{ var vs = speechSynthesis.getVoices() || []; IOW_ENVOICE = vs.find(function(v){return /en-GB/i.test(v.lang);}) || vs.find(function(v){return /en[-_]?US/i.test(v.lang);}) || vs.find(function(v){return /^en/i.test(v.lang);}) || null; }catch(e){} }
+if('speechSynthesis' in window){ iowPickEnVoice(); try{ speechSynthesis.onvoiceschanged = iowPickEnVoice; }catch(e){} }
 function speak(text){
   try{
     if(!('speechSynthesis' in window)) return;
     const u = new SpeechSynthesisUtterance(text.replace(/\(e\)|\//g,' '));
-    u.lang = 'en-GB'; u.rate = 0.92;
+    u.lang = 'en-GB'; u.rate = 0.92; if(IOW_ENVOICE) u.voice = IOW_ENVOICE;
     speechSynthesis.cancel(); speechSynthesis.speak(u);
   }catch(e){}
 }

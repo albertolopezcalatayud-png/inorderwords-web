@@ -640,10 +640,13 @@
         checkRevengeButton();
     }
 
+    var IOW_ENVOICE = null;
+    function iowPickEnVoice(){ try{ var vs = speechSynthesis.getVoices() || []; IOW_ENVOICE = vs.find(function(v){return /en-GB/i.test(v.lang);}) || vs.find(function(v){return /en[-_]?US/i.test(v.lang);}) || vs.find(function(v){return /^en/i.test(v.lang);}) || null; }catch(e){} }
+    if('speechSynthesis' in window){ iowPickEnVoice(); try{ speechSynthesis.onvoiceschanged = iowPickEnVoice; }catch(e){} }
     function speakVerb() {
         if(!currentVerb) return;
         const msg = new SpeechSynthesisUtterance(currentVerb.inf);
-        msg.lang = 'en-GB'; window.speechSynthesis.speak(msg);
+        msg.lang = 'en-GB'; if(IOW_ENVOICE) msg.voice = IOW_ENVOICE; window.speechSynthesis.speak(msg);
     }
 
     function listenVoice(inputId) {
