@@ -2163,8 +2163,9 @@
       var a = rnd(actions);
       var mode = rnd(["aff","neg","lets"]);
       if(mode==="aff") return {type:"short", instruction:"Write this instruction as an imperative (base form, no subject).", prompt: "Tell someone to: "+a+".", answer: cap(a)+".", acceptableAnswers:[a+"."], explanation: "Imperatives use the base verb with no subject."};
-      if(mode==="neg") return {type:"short", instruction:"Write this as a negative imperative.", prompt: "Tell someone NOT to: "+a+".", answer: "Don't "+a+".", acceptableAnswers:[], explanation: "Negative imperative: don't + base verb."};
-      return {type:"short", instruction:"Make a suggestion using Let's.", prompt: "Suggest doing this together: "+rnd(["go to the park","watch a film","start now","have a break"])+".", answer: "Let's "+rnd(["go to the park","watch a film","start now","have a break"])+".", acceptableAnswers:[], explanation: "Let's + base verb makes a suggestion that includes the speaker."};
+      if(mode==="neg") return {type:"short", instruction:"Write this as a negative imperative.", prompt: "Tell someone NOT to: "+a+".", answer: "Don't "+a+".", acceptableAnswers:["Do not "+a+"."], explanation: "Negative imperative: don't + base verb."};
+      var s = rnd(["go to the park","watch a film","start now","have a break"]);
+      return {type:"short", instruction:"Make a suggestion using Let's.", prompt: "Suggest doing this together: "+s+".", answer: "Let's "+s+".", acceptableAnswers:["Let us "+s+"."], explanation: "Let's + base verb makes a suggestion that includes the speaker."};
     },
     function(){ var b=[{p:"___ your books, please.",o:["Open", "Opens", "Opening", "To open"],a:"Open",e:"Imperatives use the base form of the verb."},{p:"___ quiet during the test.",o:["Be", "Being", "Are", "To be"],a:"Be",e:"The imperative of 'to be' is just 'Be'."},{p:"Please ___ the door when you leave.",o:["close", "closes", "closing", "to close"],a:"close",e:"Imperatives use the base form."},{p:"Don't ___ late tomorrow.",o:["be", "being", "are", "to be"],a:"be",e:"Negative imperative: Don't + base form."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct form for an instruction.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
@@ -2406,7 +2407,7 @@
       if(mode==="too") return {type:"gap", instruction:"Complete with too + adjective.", prompt: "This is ___ ("+adj+") to carry.", answer: "too "+adj, acceptableAnswers:[], explanation: "Too + adjective means more than necessary."};
       return {type:"gap", instruction:"Complete with adjective + enough.", prompt: "Is the water warm ___?", answer: "enough", acceptableAnswers:[], explanation: "Enough comes after the adjective."};
     },
-    function(){ var b=[{p:"She isn't ___ to drive yet.",o:["old enough", "too old", "enough old"],a:"old enough",e:"Adjective + enough = as much as necessary."},{p:"This coffee is ___ to drink.",o:["too hot", "hot enough", "enough hot"],a:"too hot",e:"Too + adjective = more than necessary (a problem)."},{p:"He isn't ___ to reach the shelf.",o:["tall enough", "too tall", "enough tall"],a:"tall enough",e:"'enough' goes after the adjective."},{p:"The box is ___ to carry alone.",o:["too heavy", "heavy enough", "enough heavy"],a:"too heavy",e:"'too' goes before the adjective."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose 'too + adjective' or 'adjective + enough'.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
+    function(){ var b=[{p:"She isn't ___ to drive yet.",o:["old enough", "too old", "enough old"],a:"old enough",e:"Adjective + enough = as much as necessary."},{p:"Ouch! This coffee is ___ to drink.",o:["too hot", "hot enough", "enough hot"],a:"too hot",e:"Too + adjective = more than necessary (a problem)."},{p:"He isn't ___ to reach the shelf.",o:["tall enough", "too tall", "enough tall"],a:"tall enough",e:"'enough' goes after the adjective."},{p:"The box is ___ to carry alone.",o:["too heavy", "heavy enough", "enough heavy"],a:"too heavy",e:"'too' goes before the adjective."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose 'too + adjective' or 'adjective + enough'.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   /* ---------- 4th ESO ---------- */
@@ -2420,7 +2421,7 @@
       var pastTime = rnd(TIMES_PAST);
       return {type:"gap", instruction:"Complete with the past simple (specific time).", prompt: cap(subj.text)+" ___ ("+v.base+") "+objFor(v)+" "+pastTime+".", answer: v.past, acceptableAnswers:[], explanation: "A specific past time (\""+pastTime+"\") needs the past simple."};
     },
-    function(){ var b=[{p:"I've lived here ___.",o:["since 2019", "in 2019", "yesterday"],a:"since 2019",e:"'Since' + a starting point goes with the present perfect."},{p:"She ___ to Paris last summer.",o:["went", "has gone", "has been"],a:"went",e:"'last summer' is a finished time → past simple."},{p:"We ___ this film three times.",o:["have seen", "saw", "see"],a:"have seen",e:"Life experience up to now → present perfect."},{p:"He arrived ___.",o:["two hours ago", "since two hours", "for two hours ago"],a:"two hours ago",e:"'ago' marks a finished past time (past simple)."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct tense or time expression.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
+    function(){ var b=[{p:"I've lived here ___.",o:["since 2019", "in 2019", "yesterday"],a:"since 2019",e:"'Since' + a starting point goes with the present perfect."},{p:"She ___ to Paris last summer.",o:["went", "has gone", "has been"],a:"went",e:"'last summer' is a finished time → past simple."},{p:"We ___ this film three times already.",o:["have seen", "saw", "see"],a:"have seen",e:"Life experience up to now → present perfect."},{p:"He arrived ___.",o:["two hours ago", "since two hours", "for two hours ago"],a:"two hours ago",e:"'ago' marks a finished past time (past simple)."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct tense or time expression.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   GRAMMAR_GEN["first-second-conditional"] = [
@@ -2668,7 +2669,7 @@
       if(mode==="neednthave") return {type:"gap", instruction:"Say something was done but wasn't necessary.", prompt: "I ___ (bring, unnecessary) an umbrella — it didn't rain.", answer: "needn't have brought", acceptableAnswers:[], explanation: "Needn't have + participle: done, but unnecessary."};
       return {type:"gap", instruction:"Say something was possible but didn't happen.", prompt: "She ___ (win, possible but didn't happen), but she gave up too early.", answer: "could have won", acceptableAnswers:[], explanation: "Could have + participle: possible, but it didn't happen."};
     },
-    function(){ var b=[{p:"They ___ us about the change.",o:["should have told", "should tell", "should have telling"],a:"should have told",e:"'Should have + past participle' criticises a past action."},{p:"She's late; she ___ have missed the bus.",o:["might", "must", "can't"],a:"might",e:"'Might have' expresses a past possibility."},{p:"He ___ have passed; he barely studied.",o:["can't", "must", "should"],a:"can't",e:"'Can't have' = it's impossible it happened."},{p:"The light's on; someone ___ have forgotten it.",o:["must", "might", "can't"],a:"must",e:"'Must have' = a confident conclusion about the past."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct modal + have + past participle.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
+    function(){ var b=[{p:"They ___ us about the change.",o:["should have told", "should tell", "should have telling"],a:"should have told",e:"'Should have + past participle' criticises a past action."},{p:"She's late; she ___ have missed the bus, but I'm not sure.",o:["might", "must", "can't"],a:"might",e:"'Might have' expresses a past possibility ('I'm not sure')."},{p:"He ___ have passed; he barely studied.",o:["can't", "must", "should"],a:"can't",e:"'Can't have' = it's impossible it happened."},{p:"The light's on; someone ___ have forgotten it — there's no other explanation.",o:["must", "might", "can't"],a:"must",e:"'Must have' = a confident conclusion about the past ('no other explanation')."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct modal + have + past participle.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   GRAMMAR_GEN["ellipsis-substitution"] = [
@@ -2698,7 +2699,7 @@
       }
       return {type:"gap", instruction:"Complete the formal subjunctive-like structure (base verb, even for he/she/it).", prompt: "It is essential that every student ___ (submit) the form by Friday.", answer: "submit", acceptableAnswers:["should submit"], explanation: "After essential/vital/important/suggest/recommend, the following clause uses the base verb form."};
     },
-    function(){ var b=[{p:"It is essential that she ___ on time.",o:["arrive", "arrives", "arrived"],a:"arrive",e:"The subjunctive uses the base verb, even for she."},{p:"The teacher insists that every student ___ present.",o:["be", "is", "was"],a:"be",e:"Subjunctive of 'to be' is 'be' for all persons."},{p:"We recommend that he ___ a lawyer.",o:["consult", "consults", "consulted"],a:"consult",e:"Base verb after 'recommend that...'."},{p:"It is important that they ___ early.",o:["leave", "leaves", "left"],a:"leave",e:"Base verb in this formal structure."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct formal (subjunctive) form — base verb for all persons.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
+    function(){ var b=[{p:"It is essential that she ___ on time.",o:["arrive", "to arrive", "arriving"],a:"arrive",e:"The subjunctive uses the base verb, even for she."},{p:"The teacher insists that every student ___ present.",o:["be", "being", "to be"],a:"be",e:"Subjunctive of 'to be' is 'be' for all persons."},{p:"We recommend that he ___ a lawyer.",o:["consult", "consults", "consulted"],a:"consult",e:"Base verb after 'recommend that...'."},{p:"It is important that they ___ early.",o:["leave", "leaves", "left"],a:"leave",e:"Base verb in this formal structure."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct formal (subjunctive) form — base verb for all persons.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   
@@ -3680,18 +3681,25 @@
       };
     },
     function(){
-      var np = rnd(EE_NOUN_PAIRS);
       var useEach = Math.random() < 0.5;
-      var prompt = useEach ? ("The teacher gave " + "___ " + np.sg + " a different question, one by one.") : ("___ " + np.sg + " in the class passed the exam.");
-      var answer = useEach ? "Each" : "Every";
-      var options = ["Each","Every","All"];
+      if(useEach){
+        var np = rnd(EE_NOUN_PAIRS);
+        return {
+          type:"choice",
+          instruction:"Choose the best word.",
+          prompt: "The teacher gave ___ " + np.sg + " a different question, one by one.",
+          options: ["Each","Both","All"],
+          answer: "Each",
+          explanation: "'Each' highlights individual, separate people/items (a different question for each one); 'both'/'all' can't go before a singular noun."
+        };
+      }
       return {
         type:"choice",
         instruction:"Choose the best word.",
-        prompt: prompt,
-        options: options,
-        answer: answer,
-        explanation: useEach ? "'Each' highlights individual, separate items or people (a different question for each one)." : "'Every' is used for general statements about all members of a group, with a singular verb."
+        prompt: "The bus to the city centre leaves ___ ten minutes.",
+        options: ["every","each","all"],
+        answer: "every",
+        explanation: "'Every' + a time period (every ten minutes) means it repeats at regular intervals; 'each' and 'all' can't be used here."
       };
     }
   ];
@@ -19099,6 +19107,7 @@ GRAMMAR_GEN["extraposition-it-subject"] = [
     return (s === undefined || s === null ? "" : String(s))
       .toLowerCase().trim()
       .replace(/^["'“”‘’]+|["'“”‘’]+$/g, "")
+      .replace(/[‘’`´]/g, "'")
       .replace(/[.!?]+$/g, "")
       .replace(/\s+/g, " ")
       .trim();
