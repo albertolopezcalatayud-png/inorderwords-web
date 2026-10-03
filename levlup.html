@@ -2009,6 +2009,7 @@
   var ADJ_IRR = [{base:"good", er:"better", est:"the best"}, {base:"bad", er:"worse", est:"the worst"}, {base:"far", er:"further", est:"the furthest"}];
 
   function shuffleCopy(arr){ return pickN(arr, arr.length); }
+  function optsDistinct(correct, extras){ var out=[correct]; for(var i=0;i<extras.length && out.length<3;i++){ if(out.indexOf(extras[i])===-1) out.push(extras[i]); } return shuffleCopy(out); }
 
   var GRAMMAR_GEN = {};
 
@@ -2183,7 +2184,7 @@
     },
     function(){
       var v = rnd(VERBS);
-      var opts = shuffleCopy([v.past, v.base, v.pp]);
+      var opts = optsDistinct(v.past, [v.base, v.ing, v.s, v.pp]);
       return {type:"choice", instruction:"Choose the correct past simple form.", prompt: "She "+"___ ("+v.base+") "+rnd(TIMES_PAST)+".", options: opts, answer: v.past, explanation: "Past simple form of \""+v.base+"\" is \""+v.past+"\"."};
     }
   ];
@@ -2333,7 +2334,7 @@
       var subj = rnd(SUBJECTS);
       var haveForm = subj.person==="3sg" ? "has" : "have";
       var mode = rnd(["ever","never","already","yet","just"]);
-      if(mode==="ever") return {type:"gap", instruction:"Complete the question with ever.", prompt: haveForm==="has" ? "Has "+subj.text+" ever ___ ("+v.base+", pp) "+rnd(PLACES)+"?" : "Have "+subj.text+" ever ___ ("+v.base+", pp) "+rnd(PLACES)+"?", answer: v.pp, acceptableAnswers:[], explanation: "Ever + past participle asks about life experience."};
+      if(mode==="ever") return {type:"gap", instruction:"Complete the question with ever.", prompt: haveForm==="has" ? "Has "+subj.text+" ever ___ ("+v.base+", pp) before?" : "Have "+subj.text+" ever ___ ("+v.base+", pp) before?", answer: v.pp, acceptableAnswers:[], explanation: "Ever + past participle asks about life experience."};
       if(mode==="never") return {type:"gap", instruction:"Complete with never + past participle.", prompt: cap(subj.text)+" "+haveForm+" never ___ ("+v.base+").", answer: v.pp, acceptableAnswers:[], explanation: "Never denies any experience of the action."};
       if(mode==="already") return {type:"gap", instruction:"Complete with already + past participle.", prompt: cap(subj.text)+" "+haveForm+" already ___ ("+v.base+").", answer: v.pp, acceptableAnswers:[], explanation: "Already goes before the past participle in affirmatives."};
       if(mode==="yet") return {type:"gap", instruction:"Complete the negative sentence with yet.", prompt: cap(subj.text)+" "+haveForm+"n't ___ ("+v.base+") yet.", answer: v.pp, acceptableAnswers:[], explanation: "Yet goes at the end of negatives and questions."};
@@ -2341,8 +2342,8 @@
     },
     function(){
       var v = rnd(VERBS);
-      var opts = shuffleCopy([v.pp, v.past, v.base]);
-      return {type:"choice", instruction:"Choose the correct past participle.", prompt: "Have you ever ___ ("+v.base+") to Japan?", options: opts, answer: v.pp, explanation: "Present perfect needs have/has + past participle."};
+      var opts = optsDistinct(v.pp, [v.base, v.past, v.ing, v.s]);
+      return {type:"choice", instruction:"Choose the correct past participle.", prompt: "Look! They have just ___ ("+v.base+").", options: opts, answer: v.pp, explanation: "Present perfect: have/has + past participle (just = a moment ago)."};
     }
   ];
 
@@ -4902,42 +4903,35 @@ GRAMMAR_GEN["relative-pronouns-who-which-that"] = [
 // ---- 3eso ----
 
 GRAMMAR_GEN["first-conditional"] = [
-  function () {
-    var subj1 = rnd(SUBJECTS);
-    var verb1 = rnd(VERBS);
-    var subj2 = rnd(SUBJECTS);
-    var verb2 = rnd(VERBS);
-    var neg = Math.random() < 0.3;
-    var mainVerbPhrase = (neg ? "won't " : "will ") + verb2.base;
-    var prompt = "If " + subj1.text + " " + sForm(verb1, subj1.person) + " " + rnd(OBJECTS) + ", " + subj2.text + " ___ " + rnd(OBJECTS) + ".";
-    return {
-      type: "gap",
-      instruction: "Complete the first conditional sentence with 'will' or 'won't' + verb.",
-      prompt: prompt,
-      answer: mainVerbPhrase,
-      explanation: "The main clause of the first conditional uses will/won't + base verb."
-    };
-  },
-  function () {
-    var subj1 = rnd(SUBJECTS);
-    var verb1 = rnd(VERBS);
-    var correct = sForm(verb1, subj1.person);
-    var wrong1 = "will " + verb1.base;
-    var wrong2 = verb1.past;
-    var options = shuffleCopy([correct, wrong1, wrong2]);
-    var subj2 = rnd(SUBJECTS);
-    var verb2 = rnd(VERBS);
-    var prompt = "If " + subj1.text + " ___ " + rnd(OBJECTS) + ", " + subj2.text + " will " + verb2.base + " " + rnd(OBJECTS) + ".";
-    return {
-      type: "choice",
-      instruction: "Choose the correct verb form for the if-clause.",
-      prompt: prompt,
-      options: options,
-      answer: correct,
-      explanation: "The if-clause of a first conditional uses the present simple, not 'will'."
-    };
-  }
-];
+    function () {
+      var items = [
+        {cond:"If it rains tomorrow", res:"we ___ at home", base:"stay"},
+        {cond:"If you study hard", res:"you ___ the exam", base:"pass"},
+        {cond:"If we don't hurry", res:"we ___ the train", base:"miss"},
+        {cond:"If they win the match", res:"they ___ a prize", base:"get"},
+        {cond:"If I have time", res:"I ___ you with your homework", base:"help"},
+        {cond:"If he eats too much cake", res:"he ___ ill", base:"feel"},
+        {cond:"If she practises every day", res:"she ___ better", base:"get"},
+        {cond:"If the weather is good", res:"we ___ to the beach", base:"go"},
+        {cond:"If I see Tom", res:"I ___ him the news", base:"tell"},
+        {cond:"If you don't water the plants", res:"they ___", base:"die"}
+      ];
+      var it = rnd(items);
+      return { type:"gap", instruction:"Complete the main clause with 'will' + verb.", prompt: it.cond + ", " + it.res + ".", answer: "will " + it.base, acceptableAnswers:["'ll " + it.base], explanation:"First conditional main clause: will + base verb." };
+    },
+    function () {
+      var items = [
+        {s:"If it ___ tomorrow, we will stay at home.", opts:["rains","will rain","rained"], ans:"rains"},
+        {s:"If you ___ hard, you will pass the exam.", opts:["study","will study","studied"], ans:"study"},
+        {s:"If we ___ now, we will catch the train.", opts:["leave","will leave","left"], ans:"leave"},
+        {s:"If she ___ late, she will miss the bus.", opts:["is","will be","was"], ans:"is"},
+        {s:"If they ___ the match, they will celebrate.", opts:["win","will win","won"], ans:"win"},
+        {s:"If he ___ carefully, he won't have an accident.", opts:["drives","will drive","drove"], ans:"drives"}
+      ];
+      var it = rnd(items);
+      return { type:"choice", instruction:"Choose the correct verb form for the if-clause (present simple).", prompt: it.s, options: shuffleCopy(it.opts.slice()), answer: it.ans, explanation:"The if-clause of a first conditional uses the present simple, not 'will'." };
+    }
+  ];
 
 GRAMMAR_GEN["verb-patterns-intermediate"] = [
   function () {
@@ -5318,7 +5312,7 @@ GRAMMAR_GEN["correlative-conjunctions"] = [
     var pair = rnd(CORRELATIVE_PAIRS);
     var subj1 = rnd(NAMES3sg);
     var subj2 = rnd(NAMES3sg);
-    var tail = pair[0] === "Not only" ? "were surprised by the news." : "attended the meeting.";
+    var tail = pair[0] === "Not only" ? "was surprised by the news." : "attended the meeting.";
     var prompt = pair[0] + " " + subj1 + " ___ " + subj2 + " " + tail;
     return {
       type: "gap",
@@ -5348,7 +5342,7 @@ GRAMMAR_GEN["correlative-conjunctions"] = [
 GRAMMAR_GEN["passive-reporting-structures"] = [
   function () {
     var repVerb = rnd(REPORT_VERBS);
-    var subj = rnd(NAMESpl.concat(NAMES3sg));
+    var subj = rnd(NAMES3sg);
     var clause = rnd(["is planning a new project", "has already left the country", "was involved in the scandal", "knows the truth", "will resign soon"]);
     var prompt = "It is ___ that " + subj + " " + clause + ".";
     return {
