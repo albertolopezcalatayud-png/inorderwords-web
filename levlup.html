@@ -1931,51 +1931,53 @@
     return out;
   }
   function cap(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
+  function aOrAn(w){ return /^[aeiou]/i.test(String(w||"").trim())?"an":"a"; }
+  function objFor(v){ return (v&&v.obj)?v.obj:rnd(OBJECTS); }
 
   var VERBS = [
-    {base:"play", s:"plays", ing:"playing", past:"played", pp:"played"},
-    {base:"watch", s:"watches", ing:"watching", past:"watched", pp:"watched"},
-    {base:"study", s:"studies", ing:"studying", past:"studied", pp:"studied"},
-    {base:"visit", s:"visits", ing:"visiting", past:"visited", pp:"visited"},
-    {base:"live", s:"lives", ing:"living", past:"lived", pp:"lived"},
-    {base:"work", s:"works", ing:"working", past:"worked", pp:"worked"},
-    {base:"clean", s:"cleans", ing:"cleaning", past:"cleaned", pp:"cleaned"},
-    {base:"cook", s:"cooks", ing:"cooking", past:"cooked", pp:"cooked"},
-    {base:"help", s:"helps", ing:"helping", past:"helped", pp:"helped"},
-    {base:"listen", s:"listens", ing:"listening", past:"listened", pp:"listened"},
-    {base:"call", s:"calls", ing:"calling", past:"called", pp:"called"},
-    {base:"finish", s:"finishes", ing:"finishing", past:"finished", pp:"finished"},
-    {base:"arrive", s:"arrives", ing:"arriving", past:"arrived", pp:"arrived"},
-    {base:"open", s:"opens", ing:"opening", past:"opened", pp:"opened"},
-    {base:"close", s:"closes", ing:"closing", past:"closed", pp:"closed"},
-    {base:"paint", s:"paints", ing:"painting", past:"painted", pp:"painted"},
-    {base:"repair", s:"repairs", ing:"repairing", past:"repaired", pp:"repaired"},
-    {base:"go", s:"goes", ing:"going", past:"went", pp:"gone"},
-    {base:"eat", s:"eats", ing:"eating", past:"ate", pp:"eaten"},
-    {base:"see", s:"sees", ing:"seeing", past:"saw", pp:"seen"},
-    {base:"have", s:"has", ing:"having", past:"had", pp:"had"},
-    {base:"do", s:"does", ing:"doing", past:"did", pp:"done"},
-    {base:"write", s:"writes", ing:"writing", past:"wrote", pp:"written"},
-    {base:"read", s:"reads", ing:"reading", past:"read", pp:"read"},
-    {base:"run", s:"runs", ing:"running", past:"ran", pp:"run"},
-    {base:"swim", s:"swims", ing:"swimming", past:"swam", pp:"swum"},
-    {base:"buy", s:"buys", ing:"buying", past:"bought", pp:"bought"},
-    {base:"take", s:"takes", ing:"taking", past:"took", pp:"taken"},
-    {base:"make", s:"makes", ing:"making", past:"made", pp:"made"},
-    {base:"break", s:"breaks", ing:"breaking", past:"broke", pp:"broken"},
-    {base:"speak", s:"speaks", ing:"speaking", past:"spoke", pp:"spoken"},
-    {base:"drive", s:"drives", ing:"driving", past:"drove", pp:"driven"},
-    {base:"sing", s:"sings", ing:"singing", past:"sang", pp:"sung"},
-    {base:"win", s:"wins", ing:"winning", past:"won", pp:"won"},
-    {base:"lose", s:"loses", ing:"losing", past:"lost", pp:"lost"},
-    {base:"forget", s:"forgets", ing:"forgetting", past:"forgot", pp:"forgotten"},
-    {base:"tell", s:"tells", ing:"telling", past:"told", pp:"told"},
-    {base:"bring", s:"brings", ing:"bringing", past:"brought", pp:"brought"},
-    {base:"send", s:"sends", ing:"sending", past:"sent", pp:"sent"},
-    {base:"build", s:"builds", ing:"building", past:"built", pp:"built"},
-    {base:"grow", s:"grows", ing:"growing", past:"grew", pp:"grown"},
-    {base:"begin", s:"begins", ing:"beginning", past:"began", pp:"begun"},
-    {base:"understand", s:"understands", ing:"understanding", past:"understood", pp:"understood"}
+    {base:"play", s:"plays", ing:"playing", past:"played", pp:"played", obj:"football"},
+    {base:"watch", s:"watches", ing:"watching", past:"watched", pp:"watched", obj:"a film"},
+    {base:"study", s:"studies", ing:"studying", past:"studied", pp:"studied", obj:"English"},
+    {base:"visit", s:"visits", ing:"visiting", past:"visited", pp:"visited", obj:"the museum"},
+    {base:"live", s:"lives", ing:"living", past:"lived", pp:"lived", obj:"in Madrid"},
+    {base:"work", s:"works", ing:"working", past:"worked", pp:"worked", obj:"in an office"},
+    {base:"clean", s:"cleans", ing:"cleaning", past:"cleaned", pp:"cleaned", obj:"the kitchen"},
+    {base:"cook", s:"cooks", ing:"cooking", past:"cooked", pp:"cooked", obj:"dinner"},
+    {base:"help", s:"helps", ing:"helping", past:"helped", pp:"helped", obj:"their parents"},
+    {base:"listen", s:"listens", ing:"listening", past:"listened", pp:"listened", obj:"to music"},
+    {base:"call", s:"calls", ing:"calling", past:"called", pp:"called", obj:"a friend"},
+    {base:"finish", s:"finishes", ing:"finishing", past:"finished", pp:"finished", obj:"the project"},
+    {base:"arrive", s:"arrives", ing:"arriving", past:"arrived", pp:"arrived", obj:"at the station"},
+    {base:"open", s:"opens", ing:"opening", past:"opened", pp:"opened", obj:"the window"},
+    {base:"close", s:"closes", ing:"closing", past:"closed", pp:"closed", obj:"the door"},
+    {base:"paint", s:"paints", ing:"painting", past:"painted", pp:"painted", obj:"the wall"},
+    {base:"repair", s:"repairs", ing:"repairing", past:"repaired", pp:"repaired", obj:"the car"},
+    {base:"go", s:"goes", ing:"going", past:"went", pp:"gone", obj:"to the park"},
+    {base:"eat", s:"eats", ing:"eating", past:"ate", pp:"eaten", obj:"a sandwich"},
+    {base:"see", s:"sees", ing:"seeing", past:"saw", pp:"seen", obj:"a film"},
+    {base:"have", s:"has", ing:"having", past:"had", pp:"had", obj:"dinner"},
+    {base:"do", s:"does", ing:"doing", past:"did", pp:"done", obj:"the homework"},
+    {base:"write", s:"writes", ing:"writing", past:"wrote", pp:"written", obj:"a letter"},
+    {base:"read", s:"reads", ing:"reading", past:"read", pp:"read", obj:"a book"},
+    {base:"run", s:"runs", ing:"running", past:"ran", pp:"run", obj:"a marathon"},
+    {base:"swim", s:"swims", ing:"swimming", past:"swam", pp:"swum", obj:"in the sea"},
+    {base:"buy", s:"buys", ing:"buying", past:"bought", pp:"bought", obj:"a present"},
+    {base:"take", s:"takes", ing:"taking", past:"took", pp:"taken", obj:"the bus"},
+    {base:"make", s:"makes", ing:"making", past:"made", pp:"made", obj:"a cake"},
+    {base:"break", s:"breaks", ing:"breaking", past:"broke", pp:"broken", obj:"the window"},
+    {base:"speak", s:"speaks", ing:"speaking", past:"spoke", pp:"spoken", obj:"English"},
+    {base:"drive", s:"drives", ing:"driving", past:"drove", pp:"driven", obj:"a car"},
+    {base:"sing", s:"sings", ing:"singing", past:"sang", pp:"sung", obj:"a song"},
+    {base:"win", s:"wins", ing:"winning", past:"won", pp:"won", obj:"the match"},
+    {base:"lose", s:"loses", ing:"losing", past:"lost", pp:"lost", obj:"the match"},
+    {base:"forget", s:"forgets", ing:"forgetting", past:"forgot", pp:"forgotten", obj:"the keys"},
+    {base:"tell", s:"tells", ing:"telling", past:"told", pp:"told", obj:"the truth"},
+    {base:"bring", s:"brings", ing:"bringing", past:"brought", pp:"brought", obj:"an umbrella"},
+    {base:"send", s:"sends", ing:"sending", past:"sent", pp:"sent", obj:"an email"},
+    {base:"build", s:"builds", ing:"building", past:"built", pp:"built", obj:"a house"},
+    {base:"grow", s:"grows", ing:"growing", past:"grew", pp:"grown", obj:"vegetables"},
+    {base:"begin", s:"begins", ing:"beginning", past:"began", pp:"begun", obj:"the lesson"},
+    {base:"understand", s:"understands", ing:"understanding", past:"understood", pp:"understood", obj:"the lesson"}
   ];
 
   var SUBJECTS = [
@@ -2041,14 +2043,14 @@
   GRAMMAR_GEN["possessives-object-pronouns"] = [
     function(){
       var owner = rnd(["Tom","Anna","the girls","the boy","my sister","the teachers"]);
-      var thing = rnd(["bag","phone","car","house","books","dog"]);
+      var thing = rnd(["bag","phone","car","house","watch","dog"]);
       var isPluralS = /s$/.test(owner) && owner !== "the boy";
       var poss = isPluralS ? (owner+"'") : (owner+"'s");
       return {type:"gap", instruction:"Add the correct possessive form.", prompt: "This is "+"___ "+thing+".", answer: poss, acceptableAnswers:[], explanation: isPluralS ? "Plural owner ending in -s: add only an apostrophe." : "Singular owner: add 's."};
     },
     function(){
       var pairs = [
-        {subj:"her", verb:"called", obj:"me"}, {subj:"He", verb:"helped", obj:"us"},
+        {subj:"She", verb:"called", obj:"me"}, {subj:"He", verb:"helped", obj:"us"},
         {subj:"I", verb:"don't know", obj:"him"}, {subj:"They", verb:"invited", obj:"her"},
         {subj:"We", verb:"saw", obj:"them"}, {subj:"She", verb:"phoned", obj:"you"}
       ];
@@ -2057,11 +2059,10 @@
       return {type:"choice", instruction:"Choose the correct object pronoun.", prompt: p.subj+" "+p.verb+" ___.", options: opts, answer: p.obj, explanation: "The object pronoun replaces the person receiving the action."};
     },
     function(){
-      var owner = rnd(["my brother","the children","my parents","the cat"]);
-      var thing = rnd(["toys","phone","room","food"]);
-      var isPluralS = /s$/.test(owner) || owner==="the children";
-      var apos = owner==="the children" ? "children's" : (/s$/.test(owner) ? owner+"'" : owner+"'s");
-      return {type:"gap", instruction:"Write the possessive form of the owner.", prompt: "The ___ "+thing+" are here. (owner: "+owner+")", answer: apos, acceptableAnswers:[], explanation: "Possessive 's for singular owners, or apostrophe only for plural owners already ending in -s."};
+      var owners = [{name:"my brother",poss:"my brother's"},{name:"the children",poss:"the children's"},{name:"my parents",poss:"my parents'"},{name:"the cat",poss:"the cat's"}];
+      var o = rnd(owners);
+      var thing = rnd(["toys","books","keys","clothes"]);
+      return {type:"gap", instruction:"Write the possessive form of the owner.", prompt: "Look! ___ "+thing+" are over there. (owner: "+o.name+")", answer: o.poss, acceptableAnswers:[], explanation: "Possessive: add 's for singular owners, or just an apostrophe for plural owners ending in -s."};
     }
   ];
 
@@ -2307,7 +2308,7 @@
     function(){
       var v1 = rnd(VERBS), v2 = rnd(VERBS);
       var subj = rnd(SUBJECTS);
-      return {type:"gap", instruction:"Join the two actions: one in progress, one that interrupts it.", prompt: cap(subj.text)+" ___ ("+v1.base+", past continuous) when the phone ("+v2.base+", past simple: "+v2.past+").", answer: bePast(subj.person)+" "+v1.ing, acceptableAnswers:[], explanation: "Past continuous for the ongoing action, past simple for the interruption."};
+      return {type:"gap", instruction:"Join the two actions: one in progress, one that interrupts it.", prompt: cap(subj.text)+" ___ ("+v1.base+", past continuous) when the phone rang.", answer: bePast(subj.person)+" "+v1.ing, acceptableAnswers:[], explanation: "Past continuous for the ongoing action, past simple for the interruption."};
     }
   ];
 
@@ -2340,8 +2341,8 @@
     },
     function(){
       var subj = rnd(SUBJECTS);
-      var v = rnd(VERBS);
-      return {type:"gap", instruction:"Complete with will for a promise.", prompt: cap(subj.text)+" ___ (promise: "+v.base+" you later), I promise.", answer: (subj.person==="1"?"'ll ":"'ll ")+v.base, acceptableAnswers:["will "+v.base], explanation: "Will expresses promises."};
+      var v = rnd([{base:"call"},{base:"help"},{base:"tell"},{base:"pay"},{base:"email"},{base:"visit"}]);
+      return {type:"gap", instruction:"Complete with will for a promise.", prompt: cap(subj.text)+" ___ (promise: "+v.base+" you later), I promise.", answer: "'ll "+v.base, acceptableAnswers:["will "+v.base], explanation: "Will expresses promises."};
     }
   ];
 
@@ -2388,10 +2389,12 @@
   GRAMMAR_GEN["so-neither"] = [
     function(){
       var mode = rnd(["so","neither"]);
-      var aux = rnd([{s:"I love pizza", a:"do"},{s:"She can swim well", a:"can"},{s:"They were tired", a:"were"},{s:"He has finished", a:"has"}]);
-      if(mode==="so") return {type:"gap", instruction:"Agree with the positive statement using So.", prompt: aux.s+". ___ I / my brother.", answer: "So "+aux.a+" I", acceptableAnswers:["So "+aux.a+" my brother"], explanation: "So + auxiliary + subject agrees with a positive statement."};
-      var negAux = rnd([{s:"I don't like spiders", a:"do"},{s:"She hasn't seen the film", a:"has"},{s:"They can't come", a:"can"}]);
-      return {type:"gap", instruction:"Agree with the negative statement using Neither.", prompt: negAux.s+". ___ I.", answer: "Neither "+negAux.a+" I", acceptableAnswers:["Nor "+negAux.a+" I"], explanation: "Neither/Nor + auxiliary + subject agrees with a negative statement."};
+      if(mode==="so"){
+        var aux = rnd([{s:"I love pizza", a:"do"},{s:"She can swim well", a:"can"},{s:"They were tired", a:"was"},{s:"He has finished", a:"have"}]);
+        return {type:"gap", instruction:"Agree with the positive statement (So + auxiliary + I).", prompt: aux.s+". ___", answer: "So "+aux.a+" I", acceptableAnswers:[], explanation: "So + auxiliary + subject agrees with a positive statement. The auxiliary matches the new subject (I)."};
+      }
+      var negAux = rnd([{s:"I don't like spiders", a:"do"},{s:"She hasn't seen the film", a:"have"},{s:"They can't come", a:"can"}]);
+      return {type:"gap", instruction:"Agree with the negative statement (Neither + auxiliary + I).", prompt: negAux.s+". ___", answer: "Neither "+negAux.a+" I", acceptableAnswers:["Nor "+negAux.a+" I"], explanation: "Neither/Nor + auxiliary + subject agrees with a negative statement."};
     },
     function(){ var b=[{p:"\"I haven't seen that film.\" \"___ have I.\"",o:["Neither", "So", "Either"],a:"Neither",e:"'Neither' agrees with a negative statement."},{p:"\"I love coffee.\" \"___ do I.\"",o:["So", "Neither", "Either"],a:"So",e:"'So' agrees with an affirmative statement."},{p:"\"I can't swim.\" \"___ can I.\"",o:["Neither", "So", "Either"],a:"Neither",e:"'Neither + auxiliary + subject' agrees with a negative."},{p:"\"I'm tired.\" \"___ am I.\"",o:["So", "Neither", "Either"],a:"So",e:"'So + auxiliary + subject' agrees with an affirmative."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct short agreement (so / neither).", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
@@ -2413,35 +2416,38 @@
       var v = rnd(VERBS);
       var haveForm = subj.person==="3sg" ? "has" : "have";
       var mode = rnd(["perfect","past"]);
-      if(mode==="perfect") return {type:"gap", instruction:"Complete with the present perfect (no specific time).", prompt: cap(subj.text)+" ___ ("+v.base+", pp) "+rnd(["her keys","the report","a scholarship"])+". (still true now)", answer: haveForm+" "+v.pp, acceptableAnswers:[], explanation: "Present perfect connects the past to the present."};
+      if(mode==="perfect") return {type:"gap", instruction:"Complete with the present perfect (no specific time).", prompt: cap(subj.text)+" ___ ("+v.base+", pp) "+objFor(v)+". (still true now)", answer: haveForm+" "+v.pp, acceptableAnswers:[], explanation: "Present perfect connects the past to the present."};
       var pastTime = rnd(TIMES_PAST);
-      return {type:"gap", instruction:"Complete with the past simple (specific time).", prompt: cap(subj.text)+" ___ ("+v.base+") "+pastTime+".", answer: v.past, acceptableAnswers:[], explanation: "A specific past time (\""+pastTime+"\") needs the past simple."};
+      return {type:"gap", instruction:"Complete with the past simple (specific time).", prompt: cap(subj.text)+" ___ ("+v.base+") "+objFor(v)+" "+pastTime+".", answer: v.past, acceptableAnswers:[], explanation: "A specific past time (\""+pastTime+"\") needs the past simple."};
     },
     function(){ var b=[{p:"I've lived here ___.",o:["since 2019", "in 2019", "yesterday"],a:"since 2019",e:"'Since' + a starting point goes with the present perfect."},{p:"She ___ to Paris last summer.",o:["went", "has gone", "has been"],a:"went",e:"'last summer' is a finished time → past simple."},{p:"We ___ this film three times.",o:["have seen", "saw", "see"],a:"have seen",e:"Life experience up to now → present perfect."},{p:"He arrived ___.",o:["two hours ago", "since two hours", "for two hours ago"],a:"two hours ago",e:"'ago' marks a finished past time (past simple)."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct tense or time expression.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   GRAMMAR_GEN["first-second-conditional"] = [
     function(){
-      var v1 = rnd(VERBS), v2 = rnd(VERBS);
       var mode = rnd(["first","second"]);
-      if(mode==="first") return {type:"gap", instruction:"Complete the first conditional (realistic future).", prompt: "If you ("+v1.base+", present) hard, you ___ ("+v2.base+") the exam.", answer: "will "+v2.base, acceptableAnswers:["'ll "+v2.base], explanation: "First conditional: if + present simple, will + infinitive."};
-      return {type:"gap", instruction:"Complete the second conditional (hypothetical).", prompt: "If I ("+v1.base+", past: "+v1.past+") more time, I ___ ("+v2.base+") Japanese.", answer: "would "+v2.base, acceptableAnswers:["'d "+v2.base], explanation: "Second conditional: if + past simple, would + infinitive."};
+      if(mode==="first"){
+        var f = rnd([{p:"If you study hard, you ___ (pass) the exam.", a:"pass"},{p:"If it rains tomorrow, we ___ (stay) at home.", a:"stay"},{p:"If she calls, I ___ (tell) her the news.", a:"tell"}]);
+        return {type:"gap", instruction:"Complete the first conditional (realistic future).", prompt: f.p, answer: "will "+f.a, acceptableAnswers:["'ll "+f.a], explanation: "First conditional: if + present simple, will + infinitive."};
+      }
+      var s2 = rnd([{p:"If I had more time, I ___ (learn) Japanese.", a:"learn"},{p:"If I won the lottery, I ___ (travel) the world.", a:"travel"},{p:"If she were taller, she ___ (play) basketball.", a:"play"}]);
+      return {type:"gap", instruction:"Complete the second conditional (hypothetical).", prompt: s2.p, answer: "would "+s2.a, acceptableAnswers:["'d "+s2.a], explanation: "Second conditional: if + past simple, would + infinitive."};
     },
     function(){ var b=[{p:"If I ___ you, I wouldn't say that.",o:["were", "was", "am"],a:"were",e:"In the second conditional, 'were' is preferred for all persons."},{p:"If it ___ tomorrow, we'll stay in.",o:["rains", "will rain", "rained"],a:"rains",e:"First conditional if-clause → present simple."},{p:"If I had a car, I ___ to work.",o:["would drive", "will drive", "drive"],a:"would drive",e:"Second conditional result → would + base verb."},{p:"If you heat ice, it ___.",o:["melts", "will melt", "would melt"],a:"melts",e:"Zero conditional (a general truth) → present simple."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct conditional form.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   GRAMMAR_GEN["passive-present-past"] = [
     function(){
-      var v = rnd(VERBS);
-      var subj = rnd(["English","This song","Rice","The window","The letter","This bridge"]);
+      var items = [{s:"The house",b:"build",pp:"built"},{s:"The letter",b:"write",pp:"written"},{s:"The car",b:"repair",pp:"repaired"},{s:"The window",b:"break",pp:"broken"},{s:"The cake",b:"make",pp:"made"},{s:"The email",b:"send",pp:"sent"},{s:"The wall",b:"paint",pp:"painted"},{s:"The room",b:"clean",pp:"cleaned"}];
+      var it = rnd(items);
       var tense = rnd(["pres","past"]);
-      var isPlural = /rice|the students/i.test(subj);
-      if(tense==="pres") return {type:"gap", instruction:"Complete the present simple passive.", prompt: subj+" ___ ("+v.base+", pp) "+rnd(["every day","in many countries","here"])+".", answer: (isPlural?"are ":"is ")+v.pp, acceptableAnswers:[], explanation: "Present passive: am/is/are + past participle."};
-      return {type:"gap", instruction:"Complete the past simple passive.", prompt: subj+" ___ ("+v.base+", pp) "+rnd(TIMES_PAST)+".", answer: (isPlural?"were ":"was ")+v.pp, acceptableAnswers:[], explanation: "Past passive: was/were + past participle."};
+      if(tense==="pres") return {type:"gap", instruction:"Complete the present simple passive.", prompt: it.s+" ___ ("+it.b+", pp) "+rnd(["here","every week","by hand"])+".", answer: "is "+it.pp, acceptableAnswers:[], explanation: "Present passive: am/is/are + past participle."};
+      return {type:"gap", instruction:"Complete the past simple passive.", prompt: it.s+" ___ ("+it.b+", pp) "+rnd(TIMES_PAST)+".", answer: "was "+it.pp, acceptableAnswers:[], explanation: "Past passive: was/were + past participle."};
     },
     function(){
-      var v = rnd(VERBS);
-      return {type:"transform", instruction:"Rewrite in the passive voice (agent optional).", prompt: "Someone "+v.past+" the window last night.", answer: "The window was "+v.pp+" last night.", acceptableAnswers:["The window was "+v.pp+" last night by someone."], explanation: "Object of the active sentence becomes the subject of the passive."};
+      var acts = [{a:"Someone broke the window last night.", p:"The window was broken last night."},{a:"Someone stole the car yesterday.", p:"The car was stolen yesterday."},{a:"Someone cleaned the office this morning.", p:"The office was cleaned this morning."},{a:"Someone painted the wall last week.", p:"The wall was painted last week."}];
+      var it = rnd(acts);
+      return {type:"transform", instruction:"Rewrite in the passive voice (agent optional).", prompt: it.a, answer: it.p, acceptableAnswers:[it.p.slice(0,-1)+" by someone."], explanation: "The object of the active sentence becomes the subject of the passive."};
     }
   ];
 
@@ -2509,19 +2515,19 @@
   /* ---------- 1st Bachillerato ---------- */
   GRAMMAR_GEN["third-conditional"] = [
     function(){
-      var v1 = rnd(VERBS), v2 = rnd(VERBS);
-      return {type:"gap", instruction:"Complete the third conditional (hypothetical past).", prompt: "If she had ("+v1.base+", pp: "+v1.pp+") earlier, she ___ ("+v2.base+", pp: "+v2.pp+") the train.", answer: "wouldn't have "+v2.pp, acceptableAnswers:["would not have "+v2.pp], explanation: "Third conditional: if + past perfect, would have + past participle."};
+      var items = [{h1:"leave",pp1:"left",h2:"miss",pp2:"missed",tail:" the train"},{h1:"study",pp1:"studied",h2:"fail",pp2:"failed",tail:" the exam"},{h1:"wake up",pp1:"woken up",h2:"miss",pp2:"missed",tail:" the bus"},{h1:"save",pp1:"saved",h2:"spend",pp2:"spent",tail:" so much"}];
+      var it = rnd(items);
+      return {type:"gap", instruction:"Complete the third conditional (hypothetical past).", prompt: "If she had "+it.pp1+" earlier, she ___ ("+it.h2+")"+it.tail+".", answer: "wouldn't have "+it.pp2, acceptableAnswers:["would not have "+it.pp2], explanation: "Third conditional: if + past perfect, would (not) have + past participle."};
     },
     function(){ var b=[{p:"If I hadn't seen it, I ___ it.",o:["wouldn't have believed", "wouldn't believe", "hadn't believed"],a:"wouldn't have believed",e:"Result of a third conditional: would (not) have + past participle."},{p:"If I had known, I ___ you.",o:["would have told", "would tell", "had told"],a:"would have told",e:"would have + past participle."},{p:"If they had left earlier, they ___ the train.",o:["wouldn't have missed", "wouldn't miss", "hadn't missed"],a:"wouldn't have missed",e:"would (not) have + past participle."},{p:"If she had studied, she ___ the exam.",o:["would have passed", "would pass", "had passed"],a:"would have passed",e:"would have + past participle."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct third conditional (would have + past participle).", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   GRAMMAR_GEN["passive-all-tenses"] = [
     function(){
-      var v = rnd(VERBS);
       var mode = rnd(["perfectpassive","futurepassive","modalpassive"]);
-      if(mode==="perfectpassive") return {type:"gap", instruction:"Complete the present perfect passive.", prompt: "This problem ___ ("+v.base+", pp: "+v.pp+").", answer: "has been "+v.pp, acceptableAnswers:[], explanation: "Present perfect passive: has/have been + past participle."};
-      if(mode==="futurepassive") return {type:"gap", instruction:"Complete the future passive.", prompt: "The results ___ ("+v.base+", pp: "+v.pp+") tomorrow.", answer: "will be "+v.pp, acceptableAnswers:[], explanation: "Future passive: will be + past participle."};
-      return {type:"gap", instruction:"Complete the modal passive.", prompt: "The rules ___ (must, "+v.base+", pp: "+v.pp+").", answer: "must be "+v.pp, acceptableAnswers:[], explanation: "Modal passive: modal + be + past participle."};
+      if(mode==="perfectpassive"){ var a=rnd([{s:"This problem",b:"solve",pp:"solved"},{s:"The report",b:"finish",pp:"finished"},{s:"The house",b:"sell",pp:"sold"},{s:"The email",b:"send",pp:"sent"}]); return {type:"gap", instruction:"Complete the present perfect passive.", prompt: a.s+" ___ ("+a.b+", pp: "+a.pp+").", answer: "has been "+a.pp, acceptableAnswers:[], explanation: "Present perfect passive: has/have been + past participle."}; }
+      if(mode==="futurepassive"){ var b=rnd([{s:"The results",b:"announce",pp:"announced"},{s:"The winners",b:"reveal",pp:"revealed"},{s:"The project",b:"complete",pp:"completed"}]); return {type:"gap", instruction:"Complete the future passive.", prompt: b.s+" ___ ("+b.b+", pp: "+b.pp+") tomorrow.", answer: "will be "+b.pp, acceptableAnswers:[], explanation: "Future passive: will be + past participle."}; }
+      var c=rnd([{s:"The rules",b:"follow",pp:"followed"},{s:"The form",b:"sign",pp:"signed"},{s:"The safety guidelines",b:"respect",pp:"respected"}]); return {type:"gap", instruction:"Complete the modal passive.", prompt: c.s+" ___ (must, "+c.b+", pp: "+c.pp+").", answer: "must be "+c.pp, acceptableAnswers:[], explanation: "Modal passive: modal + be + past participle."};
     },
     function(){ var b=[{p:"The bridge ___ this month.",o:["is being repaired", "is being repair", "is repaired being"],a:"is being repaired",e:"Present continuous passive: is/are being + past participle."},{p:"The letters ___ yesterday.",o:["were sent", "were send", "was sent"],a:"were sent",e:"Past simple passive (plural): were + past participle."},{p:"The work ___ by Friday.",o:["will be finished", "will finished", "will be finish"],a:"will be finished",e:"Future passive: will be + past participle."},{p:"This house ___ in 1990.",o:["was built", "was build", "is built"],a:"was built",e:"Past simple passive: was + past participle."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct passive form.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
@@ -2561,12 +2567,14 @@
 
   GRAMMAR_GEN["gerund-infinitive"] = [
     function(){
-      var ingVerbs = ["enjoy","avoid","finish","suggest","mind","don't mind"];
-      var toVerbs = ["want","decide","promise","hope","plan"];
+      var ingVerbs = [{b:"enjoy",s:"enjoys"},{b:"avoid",s:"avoids"},{b:"finish",s:"finishes"},{b:"suggest",s:"suggests"},{b:"mind",s:"minds"}];
+      var toVerbs = [{b:"want",s:"wants"},{b:"decide",s:"decides"},{b:"promise",s:"promises"},{b:"hope",s:"hopes"},{b:"plan",s:"plans"}];
+      var subjects = [{t:"I",sg:false},{t:"You",sg:false},{t:"We",sg:false},{t:"They",sg:false},{t:"She",sg:true},{t:"He",sg:true}];
       var mode = rnd(["ing","to"]);
       var v2 = rnd(VERBS);
-      if(mode==="ing") return {type:"gap", instruction:"Complete with the gerund.", prompt: rnd(["I","She","We"])+" "+rnd(ingVerbs)+" ___ ("+v2.base+").", answer: v2.ing, acceptableAnswers:[], explanation: "This verb is followed by the -ing form (gerund)."};
-      return {type:"gap", instruction:"Complete with the to-infinitive.", prompt: rnd(["He","They","I"])+" "+rnd(toVerbs)+" ___ ("+v2.base+").", answer: "to "+v2.base, acceptableAnswers:[], explanation: "This verb is followed by the to-infinitive."};
+      var su = rnd(subjects);
+      if(mode==="ing"){ var mv = rnd(ingVerbs); return {type:"gap", instruction:"Complete with the gerund.", prompt: su.t+" "+(su.sg?mv.s:mv.b)+" ___ ("+v2.base+").", answer: v2.ing, acceptableAnswers:[], explanation: "This verb is followed by the -ing form (gerund)."}; }
+      var mv2 = rnd(toVerbs); return {type:"gap", instruction:"Complete with the to-infinitive.", prompt: su.t+" "+(su.sg?mv2.s:mv2.b)+" ___ ("+v2.base+").", answer: "to "+v2.base, acceptableAnswers:[], explanation: "This verb is followed by the to-infinitive."};
     },
     function(){ var b=[{p:"We stopped ___ a photo of the view.",o:["to take", "taking", "take"],a:"to take",e:"stop + to-infinitive = pause in order to do something."},{p:"Please stop ___ so much noise.",o:["making", "to make", "make"],a:"making",e:"stop + -ing = finish an activity."},{p:"I enjoy ___ to music.",o:["listening", "to listen", "listen"],a:"listening",e:"'enjoy' is followed by -ing."},{p:"She wants ___ a doctor.",o:["to be", "being", "be"],a:"to be",e:"'want' is followed by the to-infinitive."},{p:"He decided ___ early.",o:["to leave", "leaving", "leave"],a:"to leave",e:"'decide' is followed by the to-infinitive."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the gerund (-ing) or the to-infinitive.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
@@ -2599,9 +2607,8 @@
   GRAMMAR_GEN["mixed-conditionals"] = [
     function(){
       var mode = rnd(["pastpresent","presentpast"]);
-      var v1 = rnd(VERBS), v2 = rnd(VERBS);
-      if(mode==="pastpresent") return {type:"gap", instruction:"Complete the mixed conditional (past condition, present result).", prompt: "If I hadn't ("+v1.base+", pp: "+v1.pp+") the flight, I ___ (be) in Rome now.", answer: "would be", acceptableAnswers:[], explanation: "Past → present: if + past perfect, would + infinitive."};
-      return {type:"gap", instruction:"Complete the mixed conditional (general condition, past result).", prompt: "If she ("+"be"+", weren't) so shy, she ___ ("+v2.base+", pp: "+v2.pp+") up.", answer: "would have "+v2.pp, acceptableAnswers:[], explanation: "Present/general → past: if + past simple, would have + participle."};
+      if(mode==="pastpresent") return {type:"gap", instruction:"Complete the mixed conditional (past condition, present result).", prompt: "If I hadn't missed the flight, I ___ (be) in Rome now.", answer: "would be", acceptableAnswers:[], explanation: "Past → present: if + past perfect, would + infinitive."};
+      return {type:"gap", instruction:"Complete the mixed conditional (present condition, past result).", prompt: "If she weren't so shy, she ___ (speak) up at the meeting yesterday.", answer: "would have spoken", acceptableAnswers:[], explanation: "Present/general condition → past result: if + past simple, would have + participle."};
     },
     function(){ var b=[{p:"If I had studied medicine, I ___ a doctor now.",o:["would be", "would have been", "had been"],a:"would be",e:"Past cause, present result → would + base verb."},{p:"If he hadn't missed the train, he ___ here now.",o:["would be", "would have been", "had been"],a:"would be",e:"The result is in the present → would + base verb."},{p:"If I spoke French, I ___ that job last year.",o:["would have got", "would get", "had got"],a:"would have got",e:"Present condition, past result → would have + past participle."},{p:"If she were more organised, she ___ the deadline yesterday.",o:["wouldn't have missed", "wouldn't miss", "hadn't missed"],a:"wouldn't have missed",e:"Present condition, past result → would (not) have + past participle."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct mixed conditional form.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
@@ -2679,8 +2686,15 @@
       var pairs = [{v:"decide", n:"decision"}, {v:"improve", n:"improvement"}, {v:"agree", n:"agreement"}, {v:"develop", n:"development"}, {v:"discuss", n:"discussion"}];
       var mode = rnd(["nominalise","subjunctive"]);
       if(mode==="nominalise"){
-        var p = rnd(pairs);
-        return {type:"gap", instruction:"Turn the verb into its formal noun form (nominalisation).", prompt: "The committee reached a "+"___ ("+p.v+") after a long discussion.", answer: p.n, acceptableAnswers:[], explanation: "Formal writing often turns verbs into nouns: "+p.v+" → "+p.n+"."};
+        var npairs = [
+          {v:"decide", n:"decision", s:"After hours of debate, the committee reached a ___ (decide)."},
+          {v:"improve", n:"improvement", s:"The new method led to a clear ___ (improve) in the results."},
+          {v:"agree", n:"agreement", s:"After long talks, the two sides finally came to an ___ (agree)."},
+          {v:"develop", n:"development", s:"Scientists announced an exciting ___ (develop) in the research."},
+          {v:"discuss", n:"discussion", s:"The proposal led to a long ___ (discuss) in the meeting."}
+        ];
+        var p = rnd(npairs);
+        return {type:"gap", instruction:"Turn the verb into its formal noun form (nominalisation).", prompt: p.s, answer: p.n, acceptableAnswers:[], explanation: "Formal writing often turns verbs into nouns: "+p.v+" → "+p.n+"."};
       }
       return {type:"gap", instruction:"Complete the formal subjunctive-like structure (base verb, even for he/she/it).", prompt: "It is essential that every student ___ (submit) the form by Friday.", answer: "submit", acceptableAnswers:["should submit"], explanation: "After essential/vital/important/suggest/recommend, the following clause uses the base verb form."};
     },
@@ -2902,7 +2916,7 @@
       var verbCue = neg ? ("not "+v.base) : v.base;
       var answer = (neg ? "won't " : "will ") + v.base;
       return { type:"gap", instruction:"Complete the prediction with will or won't and the verb in brackets.",
-        prompt: cap(subj.text)+" ___ ("+verbCue+") the competition next year.",
+        prompt: cap(subj.text)+" ___ ("+verbCue+") "+objFor(v)+" next year.",
         answer: answer,
         acceptableAnswers: neg ? ["will not "+v.base] : [],
         explanation: "Will/won't + infinitive expresses a prediction about the future." };
@@ -3130,11 +3144,10 @@
     },
     function(){
       var subj = rnd(SUBJECTS);
-      var v = rnd(VERBS);
-      var obj = rnd(OBJECTS);
+      var act = rnd([{b:"carry",o:"the bags"},{b:"open",o:"the window"},{b:"make",o:"some coffee"},{b:"get",o:"a glass of water"},{b:"close",o:"the door"},{b:"fetch",o:"your coat"}]);
       return { type:"gap", instruction:"Complete the spontaneous offer with will and the verb in brackets.",
-        prompt: "You look tired. "+cap(subj.text)+" ___ ("+v.base+") "+obj+" for you.",
-        answer: "will "+v.base,
+        prompt: "You look tired. "+cap(subj.text)+" ___ ("+act.b+") "+act.o+" for you.",
+        answer: "will "+act.b,
         explanation: "Will + infinitive is used for a spontaneous offer made at the moment of speaking." };
     }
   ];
@@ -3176,7 +3189,7 @@
       var v = rnd(VERBS);
       var tense = rnd(["present","past"]);
       var aux = (tense==="present") ? doAux(subj.person) : "did";
-      var obj = rnd(OBJECTS);
+      var obj = objFor((typeof v!=="undefined"&&v&&v.obj)?v:(typeof verb!=="undefined"?verb:null));
       var plain = (tense==="present") ? (cap(subj.text)+" "+sForm(v, subj.person)+" "+obj+".") : (cap(subj.text)+" "+v.past+" "+obj+".");
       var answer = cap(subj.text)+" "+aux+" "+v.base+" "+obj+".";
       return { type:"transform", instruction:"Rewrite the sentence adding emphatic do/does/did.",
@@ -3187,7 +3200,7 @@
       var subj = rnd(SUBJECTS);
       var v = rnd(VERBS);
       var aux = doAux(subj.person);
-      var obj = rnd(OBJECTS);
+      var obj = objFor((typeof v!=="undefined"&&v&&v.obj)?v:(typeof verb!=="undefined"?verb:null));
       var correct = cap(subj.text)+" "+aux+" "+v.base+" "+obj+".";
       var wrong1 = cap(subj.text)+" "+aux+" "+v.s+" "+obj+".";
       var wrong2 = cap(subj.text)+" "+v.base+" "+obj+".";
@@ -3204,7 +3217,7 @@
       var v = rnd(VERBS);
       var trigger = rnd(["It's essential that","It's vital that","It's important that","It's crucial that"]);
       return { type:"gap", instruction:"Complete the sentence with the subjunctive form of the verb in brackets.",
-        prompt: trigger+" "+subj.text+" ___ ("+v.base+") the instructions.",
+        prompt: trigger+" "+subj.text+" ___ ("+v.base+") "+objFor(v)+".",
         answer: v.base,
         explanation: "After expressions like '"+trigger+"', English uses the bare infinitive (subjunctive) for every subject, without -s." };
     },
@@ -3234,7 +3247,7 @@
     function(){
       var subj = rnd(SUBJECTS);
       var v = rnd(VERBS);
-      var obj = rnd(OBJECTS);
+      var obj = objFor((typeof v!=="undefined"&&v&&v.obj)?v:(typeof verb!=="undefined"?verb:null));
       var sayer = cap(rnd(NAMES3sg));
       return { type:"transform", instruction:"Report what "+sayer+" said, using would.",
         prompt: sayer+": \""+cap(subj.text)+" will "+v.base+" "+obj+".\"",
@@ -3290,7 +3303,7 @@
         prompt = cap(subj.text)+" "+beNow(subj.person)+" "+item.w+" ___ "+rnd(["this","the results","success","the dark","her work"])+".";
       } else {
         var form = sForm(item.verbObj, subj.person);
-        prompt = cap(subj.text)+" "+form+" ___ "+rnd(["their parents","the timetable","seeing it herself","getting a refund"])+".";
+        prompt = cap(subj.text)+" "+form+" ___ "+rnd(["getting a refund","the new plan","booking early","checking the details"])+".";
       }
       var pool = ["for","of","on","in","at"];
       var wrongOptions = pickN(pool.filter(function(x){ return x!==item.p; }), 2);
@@ -3399,7 +3412,7 @@
     function(){
       var subj = rnd(SUBJECTS);
       var v = rnd(VERBS);
-      var obj = rnd(OBJECTS);
+      var obj = objFor((typeof v!=="undefined"&&v&&v.obj)?v:(typeof verb!=="undefined"?verb:null));
       return { type:"gap", instruction:"Complete the sentence expressing regret with the past perfect form of the verb in brackets.",
         prompt: "If only "+subj.text+" ___ ("+v.base+") "+obj+"!",
         answer: "had "+v.pp,
@@ -3428,7 +3441,7 @@
     function(){
       var pool = SUBJECTS;
       var subj = rnd(pool);
-      var obj = rnd(OBJECTS);
+      var obj = objFor((typeof v!=="undefined"&&v&&v.obj)?v:(typeof verb!=="undefined"?verb:null));
       var prompt = cap(subj.text) + " ___ " + obj + ".";
       return {
         type:"gap",
@@ -3451,7 +3464,7 @@
       return {
         type:"choice",
         instruction:"Choose the correct polite question.",
-        prompt:"Ask " + subj.text + " politely about " + verb.ing + " something.",
+        prompt:"Ask " + ({he:"him",she:"her",we:"us",they:"them",you:"you"}[subj.text]||subj.text) + " politely about " + verb.ing + " something.",
         options: options,
         answer: correct,
         explanation:"Polite offers/requests use 'Would + subject + like to + infinitive?'"
@@ -3777,10 +3790,9 @@
   GRAMMAR_GEN["zero-conditional"] = [
     function(){
       var subj = rnd(SUBJECTS);
-      var v1 = rnd(VERBS);
-      var v2 = rnd(VERBS.filter(function(v){ return v.base !== v1.base; }));
-      var place = rnd(PLACES);
-      var prompt = "If " + subj.text + " " + sForm(v1, subj.person) + " early, " + subj.text + " ___ (" + v2.base + ") to " + place + ".";
+      var v2 = rnd(VERBS);
+      var state = rnd(["tired","hungry","free","ill","busy","bored"]);
+      var prompt = "If " + subj.text + " " + beNow(subj.person) + " " + state + ", " + subj.text + " ___ (" + v2.base + ") " + objFor(v2) + ".";
       var answer = sForm(v2, subj.person);
       return {
         type:"gap",
@@ -3820,7 +3832,7 @@
       var subj = rnd(SUBJECTS);
       var verb = rnd(VERBS);
       var positive = Math.random() < 0.5;
-      var obj = Math.random() < 0.5 ? rnd(OBJECTS) : rnd(PLACES);
+      var obj = Math.random() < 0.5 ? objFor((typeof v!=="undefined"&&v&&v.obj)?v:(typeof verb!=="undefined"?verb:null)) : rnd(PLACES);
       var time = rnd(TIMES_PAST);
       var prompt = cap(subj.text) + " ___ (" + verb.base + ") " + obj + " " + time + ".";
       var answer = positive ? ("had to " + verb.base) : ("didn't have to " + verb.base);
@@ -3935,7 +3947,7 @@
       var subj = rnd(SUBJECTS);
       var verb = rnd(VERBS);
       var place = rnd(PLACES);
-      var obj = rnd(OBJECTS);
+      var obj = objFor((typeof v!=="undefined"&&v&&v.obj)?v:(typeof verb!=="undefined"?verb:null));
       var prompt = "By the time " + subj.text + " arrived at " + place + ", " + subj.text + " ___ (already/" + verb.base + ") " + obj + ".";
       var answer = "had already " + verb.pp;
       return {
@@ -4038,23 +4050,24 @@
   GRAMMAR_GEN["would-rather-had-better"] = [
     function(){
       var subj = rnd(SUBJECTS);
-      var v1 = rnd(VERBS);
-      var v2 = rnd(VERBS.filter(function(v){ return v.base !== v1.base; }));
-      var prompt = cap(subj.text) + " ___ (" + v1.base + ") than " + v2.base + ".";
-      var answer = "would rather " + v1.base;
+      var pool = ["walk","read","study","cook","swim","dance","travel","relax","paint","sing","drive","run"];
+      var v1b = rnd(pool);
+      var v2b = rnd(pool.filter(function(x){ return x !== v1b; }));
+      var prompt = cap(subj.text) + " ___ (" + v1b + ") than " + v2b + ".";
+      var answer = "would rather " + v1b;
       return {
         type:"gap",
         instruction:"Complete with would rather + base verb.",
         prompt: prompt,
         answer: answer,
-        acceptableAnswers:["'d rather " + v1.base],
+        acceptableAnswers:["'d rather " + v1b],
         explanation:"'Would rather + base verb + than' expresses a preference between two options."
       };
     },
     function(){
       var pool = SUBJECTS.filter(function(s){ return s.text !== "I"; });
       var subj = rnd(pool);
-      var verb = rnd(VERBS);
+      var verb = {base: rnd(["hurry","leave","start","decide","apologise","get ready"])};
       var correct = "had better";
       var options = ["had better","would rather","should to"];
       var prompt = cap(subj.text) + " ___ " + verb.base + " now, or " + subj.text + " will be late.";
@@ -4280,7 +4293,7 @@
         prompt: prompt,
         options: options,
         answer: it.fn,
-        explanation:"'" + it.clause + "' functions as a " + it.fn + " in this sentence."
+        explanation:"'" + it.clause + "' functions as " + aOrAn(it.fn) + " " + it.fn + " in this sentence."
       };
     },
     function(){
@@ -4288,14 +4301,14 @@
       var allFns = ["subject noun clause","object noun clause","adverbial clause of reason","adverbial clause of concession","relative clause"];
       var claimCorrect = Math.random() < 0.5;
       var claimed = claimCorrect ? it.fn : rnd(allFns.filter(function(f){ return f !== it.fn; }));
-      var statement = "In \"" + it.sentence + "\", the clause \"" + it.clause + "\" is a " + claimed + ".";
+      var statement = "In \"" + it.sentence + "\", the clause \"" + it.clause + "\" is " + aOrAn(claimed) + " " + claimed + ".";
       return {
         type:"truefalse",
         instruction:"Decide if the statement is true or false.",
         prompt: statement,
         options:["True","False"],
         answer: claimCorrect ? "True" : "False",
-        explanation:"The clause '" + it.clause + "' is actually a " + it.fn + "."
+        explanation:"The clause '" + it.clause + "' is actually " + aOrAn(it.fn) + " " + it.fn + "."
       };
     }
   ];
@@ -4520,7 +4533,7 @@ GRAMMAR_GEN["present-perfect-just-already-yet"] = [
     var verb = rnd(VERBS);
     var aux = haveAux(subj.person);
     var isQuestion = Math.random() < 0.5;
-    var obj = rnd(OBJECTS);
+    var obj = objFor((typeof v!=="undefined"&&v&&v.obj)?v:(typeof verb!=="undefined"?verb:null));
     var prompt;
     if (isQuestion) {
       prompt = cap(aux) + " " + subj.text + " " + verb.pp + " " + obj + " ___?";
@@ -4539,7 +4552,7 @@ GRAMMAR_GEN["present-perfect-just-already-yet"] = [
     var subj = rnd(SUBJECTS);
     var verb = rnd(VERBS);
     var aux = haveAux(subj.person);
-    var obj = rnd(OBJECTS);
+    var obj = objFor((typeof v!=="undefined"&&v&&v.obj)?v:(typeof verb!=="undefined"?verb:null));
     var mode = rnd(["just", "already", "yet"]);
     var prompt;
     if (mode === "yet") {
@@ -4621,12 +4634,13 @@ GRAMMAR_GEN["indefinite-pronouns-something-anyone-nobody"] = [
 GRAMMAR_GEN["present-perfect-for-since"] = [
   function () {
     var subj = rnd(SUBJECTS);
-    var verb = rnd(VERBS);
+    var DUR = [{pp:"lived",obj:"in this city"},{pp:"worked",obj:"at the hospital"},{pp:"studied",obj:"English"},{pp:"known",obj:"each other"},{pp:"played",obj:"the guitar"},{pp:"waited",obj:"for the bus"},{pp:"had",obj:"this car"},{pp:"learnt",obj:"French"}];
+    var verb = rnd(DUR);
     var aux = haveAux(subj.person);
     var useFor = Math.random() < 0.5;
     var phrase = useFor ? rnd(DURATIONS) : rnd(STARTPOINTS);
     var word = useFor ? "for" : "since";
-    var prompt = cap(subj.text) + " " + aux + " " + verb.pp + " " + rnd(OBJECTS) + " ___ " + phrase + ".";
+    var prompt = cap(subj.text) + " " + aux + " " + verb.pp + " " + verb.obj + " ___ " + phrase + ".";
     return {
       type: "gap",
       instruction: "Complete with 'for' or 'since'.",
@@ -4637,7 +4651,7 @@ GRAMMAR_GEN["present-perfect-for-since"] = [
   },
   function () {
     var subj = rnd(SUBJECTS);
-    var verb = rnd(VERBS);
+    var verb = rnd([{pp:"lived"},{pp:"worked"},{pp:"studied"},{pp:"waited"},{pp:"stayed"}]);
     var aux = haveAux(subj.person);
     var word = rnd(["for", "since"]);
     var rightPool = word === "for" ? DURATIONS : STARTPOINTS;
@@ -4666,7 +4680,7 @@ GRAMMAR_GEN["gerunds-infinitives-basic-verbs"] = [
     var triggerForm = sForm(trigger, subj.person);
     var verb2 = rnd(VERBS);
     var answer = isGerund ? verb2.ing : ("to " + verb2.base);
-    var obj = rnd(OBJECTS);
+    var obj = objFor((typeof v!=="undefined"&&v&&v.obj)?v:(typeof verb!=="undefined"?verb:null));
     var prompt = cap(subj.text) + " " + triggerForm + " ___ " + obj + ".";
     return {
       type: "gap",
@@ -4685,7 +4699,7 @@ GRAMMAR_GEN["gerunds-infinitives-basic-verbs"] = [
     var answer = isGerund ? verb2.ing : ("to " + verb2.base);
     var wrong = isGerund ? ("to " + verb2.base) : verb2.ing;
     var options = shuffleCopy([answer, wrong, verb2.base]);
-    var obj = rnd(OBJECTS);
+    var obj = objFor((typeof v!=="undefined"&&v&&v.obj)?v:(typeof verb!=="undefined"?verb:null));
     var prompt = cap(subj.text) + " " + triggerForm + " ___ " + obj + ".";
     return {
       type: "choice",
@@ -4754,7 +4768,7 @@ GRAMMAR_GEN["relative-pronouns-who-which-that"] = [
     var mode = rnd(["person", "thing", "place"]);
     var answer = mode === "person" ? "who" : (mode === "thing" ? "which" : "where");
     var role = rnd(["teacher", "doctor", "neighbour", "coach", "manager", "shop assistant"]);
-    var item = rnd(OBJECTS);
+    var item = objFor((typeof v!=="undefined"&&v&&v.obj)?v:(typeof verb!=="undefined"?verb:null));
     var place = rnd(PLACES);
     var prompt;
     if (mode === "person") prompt = "That's the " + role + " ___ helped me with my project.";
@@ -4774,7 +4788,7 @@ GRAMMAR_GEN["relative-pronouns-who-which-that"] = [
     var answer = mode === "person" ? "who" : (mode === "thing" ? "which" : "where");
     var options = shuffleCopy(["who", "which", "where"]);
     var name = rnd(NAMESpl);
-    var item = rnd(OBJECTS);
+    var item = objFor((typeof v!=="undefined"&&v&&v.obj)?v:(typeof verb!=="undefined"?verb:null));
     var place = rnd(PLACES);
     var prompt;
     if (mode === "person") prompt = cap(name) + " are the students ___ won the prize.";
@@ -4833,7 +4847,7 @@ GRAMMAR_GEN["verb-patterns-intermediate"] = [
     var triggerForm = tense === "present" ? sForm(trigger, subj.person) : trigger.past;
     var verb2 = rnd(VERBS);
     var answer = isGerund ? verb2.ing : ("to " + verb2.base);
-    var obj = rnd(OBJECTS);
+    var obj = objFor((typeof v!=="undefined"&&v&&v.obj)?v:(typeof verb!=="undefined"?verb:null));
     var prompt = cap(subj.text) + " " + triggerForm + " ___ " + obj + ".";
     return {
       type: "gap",
@@ -4852,7 +4866,7 @@ GRAMMAR_GEN["verb-patterns-intermediate"] = [
     var answer = isGerund ? verb2.ing : ("to " + verb2.base);
     var wrong = isGerund ? ("to " + verb2.base) : verb2.ing;
     var options = shuffleCopy([answer, wrong, verb2.base]);
-    var obj = rnd(OBJECTS);
+    var obj = objFor((typeof v!=="undefined"&&v&&v.obj)?v:(typeof verb!=="undefined"?verb:null));
     var prompt = cap(subj.text) + " " + triggerForm + " ___ " + obj + ".";
     return {
       type: "choice",
@@ -4976,7 +4990,7 @@ GRAMMAR_GEN["modals-of-deduction-present"] = [
     var c = rnd(DEDUCTION_CASES);
     var subj = rnd(SUBJECTS);
     var verb = rnd(VERBS);
-    var prompt = cap(subj.text) + " ___ " + verb.base + " " + rnd(OBJECTS) + " — " + c.evidence + ".";
+    var prompt = cap(subj.text) + " ___ " + verb.base + " " + objFor((typeof v!=="undefined"&&v&&v.obj)?v:(typeof verb!=="undefined"?verb:null)) + " — " + c.evidence + ".";
     return {
       type: "gap",
       instruction: "Complete with the modal of deduction that matches the evidence (must / might / could / can't).",
@@ -4990,7 +5004,7 @@ GRAMMAR_GEN["modals-of-deduction-present"] = [
     var subj = rnd(SUBJECTS);
     var verb = rnd(VERBS);
     var options = shuffleCopy(["must", "might", "could", "can't"]);
-    var prompt = cap(subj.text) + " ___ " + verb.base + " " + rnd(OBJECTS) + " — " + c.evidence + ".";
+    var prompt = cap(subj.text) + " ___ " + verb.base + " " + objFor((typeof v!=="undefined"&&v&&v.obj)?v:(typeof verb!=="undefined"?verb:null)) + " — " + c.evidence + ".";
     return {
       type: "choice",
       instruction: "Choose the modal of deduction that best fits.",
@@ -5010,7 +5024,7 @@ GRAMMAR_GEN["inversion-with-negative-adverbials"] = [
     var tense = rnd(["present", "past"]);
     var aux = tense === "present" ? doAux(subj.person) : "did";
     var answer = aux + " " + subj.text;
-    var obj = rnd(OBJECTS);
+    var obj = objFor((typeof v!=="undefined"&&v&&v.obj)?v:(typeof verb!=="undefined"?verb:null));
     var prompt = adverbial + " ___ " + verb.base + " " + obj + " " + (tense === "present" ? rnd(TIMES_PRES) : rnd(TIMES_PAST)) + ".";
     return {
       type: "gap",
@@ -5029,7 +5043,7 @@ GRAMMAR_GEN["inversion-with-negative-adverbials"] = [
     var wrong1 = subj.text + " " + aux + " " + verb.base;
     var wrong2 = subj.text + " " + sForm(verb, subj.person);
     var options = shuffleCopy([correct, wrong1, wrong2]);
-    var obj = rnd(OBJECTS);
+    var obj = objFor((typeof v!=="undefined"&&v&&v.obj)?v:(typeof verb!=="undefined"?verb:null));
     var prompt = adverbial + " ___ " + obj + ".";
     return {
       type: "choice",
@@ -5118,7 +5132,7 @@ GRAMMAR_GEN["modal-perfect-forms"] = [
     var c = rnd(MODAL_PERFECT_CASES);
     var subj = rnd(SUBJECTS);
     var verb = rnd(VERBS);
-    var prompt = cap(subj.text) + " ___ " + verb.pp + " " + rnd(OBJECTS) + ", " + c.context + ".";
+    var prompt = cap(subj.text) + " ___ " + verb.pp + " " + objFor((typeof v!=="undefined"&&v&&v.obj)?v:(typeof verb!=="undefined"?verb:null)) + ", " + c.context + ".";
     return {
       type: "gap",
       instruction: "Complete with the modal perfect form that matches the context (should have / needn't have / could have / might have).",
@@ -5132,7 +5146,7 @@ GRAMMAR_GEN["modal-perfect-forms"] = [
     var subj = rnd(SUBJECTS);
     var verb = rnd(VERBS);
     var options = shuffleCopy(["should have", "needn't have", "could have", "might have"]);
-    var prompt = cap(subj.text) + " ___ " + verb.pp + " " + rnd(OBJECTS) + ", " + c.context + ".";
+    var prompt = cap(subj.text) + " ___ " + verb.pp + " " + objFor((typeof v!=="undefined"&&v&&v.obj)?v:(typeof verb!=="undefined"?verb:null)) + ", " + c.context + ".";
     return {
       type: "choice",
       instruction: "Choose the correct modal perfect form.",
@@ -5147,7 +5161,7 @@ GRAMMAR_GEN["modal-perfect-forms"] = [
 GRAMMAR_GEN["participle-clauses-adverbial"] = [
   function () {
     var verb = rnd(VERBS);
-    var obj = rnd(OBJECTS);
+    var obj = objFor((typeof v!=="undefined"&&v&&v.obj)?v:(typeof verb!=="undefined"?verb:null));
     var mainClause = rnd(["he left the house", "she called her parents", "they went straight to bed", "he felt much better", "she started celebrating"]);
     var prompt = "___ " + verb.pp + " " + obj + ", " + mainClause + ".";
     return {
@@ -5183,6 +5197,7 @@ GRAMMAR_GEN["correlative-conjunctions"] = [
     var pair = rnd(CORRELATIVE_PAIRS);
     var subj1 = rnd(NAMES3sg);
     var subj2 = rnd(NAMES3sg);
+    while (subj2 === subj1) { subj2 = rnd(NAMES3sg); }
     var tail = pair[0] === "Not only" ? "was surprised by the news." : "attended the meeting.";
     var prompt = pair[0] + " " + subj1 + " ___ " + subj2 + " " + tail;
     return {
@@ -5198,6 +5213,7 @@ GRAMMAR_GEN["correlative-conjunctions"] = [
     var options = shuffleCopy(["and", "nor", "or", "but also"]);
     var subj1 = rnd(NAMES3sg);
     var subj2 = rnd(NAMES3sg);
+    while (subj2 === subj1) { subj2 = rnd(NAMES3sg); }
     var prompt = pair[0] + " " + subj1 + " ___ " + subj2 + " knew the correct answer.";
     return {
       type: "choice",
@@ -5248,64 +5264,69 @@ GRAMMAR_GEN["passive-reporting-structures"] = [
 
 GRAMMAR_GEN["reporting-verb-patterns"] = [
   function () {
-    var mode = rnd(["deny", "prep", "inf"]);
+    var ACTS = [
+      {base:"cheat", ing:"cheating", rest:" in the exam"},
+      {base:"take", ing:"taking", rest:" the money"},
+      {base:"break", ing:"breaking", rest:" the window"},
+      {base:"copy", ing:"copying", rest:" the homework"},
+      {base:"damage", ing:"damaging", rest:" the car"},
+      {base:"miss", ing:"missing", rest:" the deadline"}
+    ];
+    var NEU = [
+      {base:"tell", ing:"telling", rest:" the truth"},
+      {base:"pay", ing:"paying", rest:" the bill"},
+      {base:"help", ing:"helping", rest:" the team"},
+      {base:"call", ing:"calling", rest:" the police"},
+      {base:"finish", ing:"finishing", rest:" the project"}
+    ];
+    var DENY = [{base:"deny",past:"denied"},{base:"admit",past:"admitted"}];
+    var PREP = [{base:"accuse",past:"accused",prep:"of"},{base:"blame",past:"blamed",prep:"for"},{base:"suspect",past:"suspected",prep:"of"},{base:"warn",past:"warned",prep:"about"}];
+    var INF = [{base:"threaten",past:"threatened"},{base:"promise",past:"promised"},{base:"refuse",past:"refused"}];
+    var mode = rnd(["deny","prep","inf"]);
     var subj = rnd(NAMES3sg);
-    var verb = rnd(VERBS);
-    var obj = rnd(OBJECTS);
-    var prompt, answer, v;
     if (mode === "deny") {
-      v = rnd(DENY_STYLE);
-      prompt = cap(subj) + " " + v.past + " ___ " + obj + ".";
-      answer = verb.ing;
+      var v = rnd(DENY), a = rnd(ACTS);
+      return {type:"gap", instruction:"Complete with the correct form (-ing or to-infinitive).", prompt: cap(subj)+" "+v.past+" ___"+a.rest+".", answer: a.ing, explanation: "'"+v.base+"' is followed by the -ing form."};
     } else if (mode === "prep") {
-      v = rnd(PREP_STYLE);
-      var subj2 = rnd(NAMES3sg);
-      prompt = cap(subj) + " " + v.past + " " + subj2 + " " + v.prep + " ___ " + obj + ".";
-      answer = verb.ing;
-    } else {
-      v = rnd(INF_STYLE);
-      prompt = cap(subj) + " " + v.past + " ___ " + obj + ".";
-      answer = "to " + verb.base;
+      var v = rnd(PREP), a = rnd(ACTS), subj2 = rnd(NAMES3sg);
+      while (subj2 === subj) { subj2 = rnd(NAMES3sg); }
+      return {type:"gap", instruction:"Complete with the correct form (-ing or to-infinitive).", prompt: cap(subj)+" "+v.past+" "+subj2+" "+v.prep+" ___"+a.rest+".", answer: a.ing, explanation: "After '"+v.base+" somebody "+v.prep+"', use the -ing form."};
     }
-    return {
-      type: "gap",
-      instruction: "Complete with the correct form (-ing or to-infinitive).",
-      prompt: prompt,
-      answer: answer,
-      explanation: mode === "inf" ? "'" + v.base + "' is followed by the to-infinitive." : "'" + v.base + "' is followed by the -ing form" + (mode === "prep" ? " after the preposition '" + v.prep + "'." : ".")
-    };
+    var v = rnd(INF), a = rnd(NEU);
+    return {type:"gap", instruction:"Complete with the correct form (-ing or to-infinitive).", prompt: cap(subj)+" "+v.past+" ___"+a.rest+".", answer: "to "+a.base, explanation: "'"+v.base+"' is followed by the to-infinitive."};
   },
   function () {
-    var mode = rnd(["deny", "prep", "inf"]);
-    var subj = rnd(NAMES3sg);
-    var verb = rnd(VERBS);
-    var obj = rnd(OBJECTS);
-    var prompt, answer, options, v;
+    var ACTS = [
+      {base:"cheat", ing:"cheating", rest:" in the exam"},
+      {base:"take", ing:"taking", rest:" the money"},
+      {base:"break", ing:"breaking", rest:" the window"},
+      {base:"copy", ing:"copying", rest:" the homework"}
+    ];
+    var NEU = [
+      {base:"tell", ing:"telling", rest:" the truth"},
+      {base:"pay", ing:"paying", rest:" the bill"},
+      {base:"help", ing:"helping", rest:" the team"}
+    ];
+    var DENY = [{base:"deny",past:"denied"},{base:"admit",past:"admitted"}];
+    var PREP = [{base:"accuse",past:"accused",prep:"of"},{base:"blame",past:"blamed",prep:"for"},{base:"warn",past:"warned",prep:"about"}];
+    var INF = [{base:"threaten",past:"threatened"},{base:"promise",past:"promised"},{base:"refuse",past:"refused"}];
+    var mode = rnd(["deny","prep","inf"]);
+    var subj = rnd(NAMES3sg), prompt, answer, options, v, a;
     if (mode === "deny") {
-      v = rnd(DENY_STYLE);
-      prompt = cap(subj) + " " + v.past + " ___ " + obj + ".";
-      answer = verb.ing;
-      options = shuffleCopy([verb.ing, "to " + verb.base, verb.base]);
+      v = rnd(DENY); a = rnd(ACTS);
+      prompt = cap(subj)+" "+v.past+" ___"+a.rest+".";
+      answer = a.ing; options = shuffleCopy([a.ing, "to "+a.base, a.base]);
     } else if (mode === "prep") {
-      v = rnd(PREP_STYLE);
-      var subj2 = rnd(NAMES3sg);
-      prompt = cap(subj) + " " + v.past + " " + subj2 + " " + v.prep + " ___ " + obj + ".";
-      answer = verb.ing;
-      options = shuffleCopy([verb.ing, "to " + verb.base, verb.base]);
+      v = rnd(PREP); a = rnd(ACTS); var subj2 = rnd(NAMES3sg);
+      while (subj2 === subj) { subj2 = rnd(NAMES3sg); }
+      prompt = cap(subj)+" "+v.past+" "+subj2+" "+v.prep+" ___"+a.rest+".";
+      answer = a.ing; options = shuffleCopy([a.ing, "to "+a.base, a.base]);
     } else {
-      v = rnd(INF_STYLE);
-      prompt = cap(subj) + " " + v.past + " ___ " + obj + ".";
-      answer = "to " + verb.base;
-      options = shuffleCopy(["to " + verb.base, verb.ing, verb.base]);
+      v = rnd(INF); a = rnd(NEU);
+      prompt = cap(subj)+" "+v.past+" ___"+a.rest+".";
+      answer = "to "+a.base; options = shuffleCopy(["to "+a.base, a.ing, a.base]);
     }
-    return {
-      type: "choice",
-      instruction: "Choose the correct verb pattern.",
-      prompt: prompt,
-      options: options,
-      answer: answer,
-      explanation: mode === "inf" ? "'" + v.base + "' takes the to-infinitive." : "'" + v.base + "' takes the -ing form" + (mode === "prep" ? " (with preposition '" + v.prep + "')." : ".")
-    };
+    return {type:"choice", instruction:"Choose the correct verb pattern.", prompt: prompt, options: options, answer: answer, explanation: "Reporting verbs are each followed by a fixed pattern (-ing or to-infinitive)."};
   }
 ];
 
