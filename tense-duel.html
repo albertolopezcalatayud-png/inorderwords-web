@@ -157,7 +157,7 @@
   var N = 10;                 // questions per duel
   var CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   var db=null, auth=null, uid=null, roomRef=null, roomCode=null, isHost=false, unsub=null;
-  var Q=[], myIdx=0, myScore=0, locked=false, me=null, started=false, resultShown=false;
+  var Q=[], myIdx=0, myScore=0, locked=false, me=null, started=false, resultShown=false, curSeed=null;
 
   function $(id){ return document.getElementById(id); }
   function show(id){ ['s-lobby','s-wait','s-battle','s-result','s-setup'].forEach(function(s){ $(s).classList.toggle('hidden', s!==id); }); }
@@ -274,7 +274,7 @@
       var players = r.players||{}; var ids = Object.keys(players);
       // host starts the game when two players are present
       if(isHost && r.status==='waiting' && ids.length>=2){ roomRef.update({status:'playing'}); return; }
-      if(r.status==='playing' && !started){ startBattle(r); }
+      if(r.status==='playing' && (!started || r.seed !== curSeed)){ startBattle(r); }
       if(started && !resultShown){ renderLive(r); }
       if(r.status==='done' && !resultShown){ showResult(r); }
       // if a non-host and host left before start
@@ -283,7 +283,7 @@
   }
 
   function startBattle(r){
-    started=true; resultShown=false; myIdx=0; myScore=0; locked=false;
+    started=true; resultShown=false; myIdx=0; myScore=0; locked=false; curSeed=r.seed;
     Q = buildQuestions(r.mode, r.seed);
     var av = (window.IOW&&IOW.getAvatar)?IOW.getAvatar():{emoji:'🧑‍🚀',color:'#00f3ff'};
     var id = (window.IOW&&IOW.getIdentity)?IOW.getIdentity():{name:'Tú'};
@@ -382,7 +382,7 @@
   function leave(){
     try{ if(roomRef&&uid){ roomRef.child('players/'+uid).onDisconnect().cancel(); roomRef.child('players/'+uid).remove(); } }catch(e){}
     if(unsub&&roomRef){ roomRef.off('value', unsub); }
-    roomRef=null; roomCode=null; started=false; resultShown=false; isHost=false; Q=[]; myIdx=0; myScore=0;
+    roomRef=null; roomCode=null; started=false; resultShown=false; isHost=false; Q=[]; myIdx=0; myScore=0; curSeed=null;
     $('meBar').style.width='0'; $('opBar').style.width='0'; $('meSc').textContent='0'; $('opSc').textContent='0';
     show('s-lobby');
   }
