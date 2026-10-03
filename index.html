@@ -134,10 +134,12 @@
   .card.debug{--glow:var(--debug);}
   .card.signal{--glow:var(--signal);}
   .card.boss{--glow:var(--boss);}
+  .card.duel{--glow:#ff2d6f;}
   .card:hover.idiom{border-color:rgba(253,224,71,0.5);}
   .card:hover.debug{border-color:rgba(132,204,22,0.5);}
   .card:hover.signal{border-color:rgba(129,140,248,0.5);}
   .card:hover.boss{border-color:rgba(249,115,22,0.5);}
+  .card:hover.duel{border-color:rgba(255,45,111,0.5);}
   .card:hover.tweet{border-color:rgba(29,155,240,0.5);}
   .card:hover.vocab{border-color:rgba(167,139,250,0.5);}
   .card:hover.lab{border-color:rgba(45,212,191,0.5);}
@@ -192,6 +194,7 @@
   .card.striker .cta{color:var(--striker);}
   .card.quest .cta{color:var(--quest-2);}
   .card.tense .cta{color:var(--quest-2);}
+  .card.duel .cta{color:#ff5c8a;}
   .card.blaster .cta{color:var(--striker-2);}
   .card.trap .cta{color:var(--trap);}
   .card.mission .cta{color:var(--mission);}
@@ -487,6 +490,21 @@
         <span class="mode">⏱ Timed · 🧘 chill mode available</span>
         <p>Seven tense duels in one game: present simple vs continuous, the past tenses, used to vs would, present perfect, and will vs going to — plus a mixed mode.</p>
         <span class="cta">Pick the right tense <span>→</span></span>
+      </a>
+
+      <a class="card duel" href="tense-duel.html" target="_blank" rel="noopener" data-grades="1 2 3 4 b">
+        <div class="top-row">
+          <span class="kicker">1v1 live</span>
+          <span class="top-row-right">
+            <span class="level all">All levels</span>
+            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('tense-duel.html','Tense Duel')" title="Asignar en Google Classroom">📋</button>
+          </span>
+        </div>
+        <span class="glyph">⚔️</span>
+        <h3>Tense Duel</h3>
+        <span class="mode">👥 Real-time duel · 🏆 most correct wins</span>
+        <p>Challenge a classmate in real time: create a room, share the code, and race through ten tense questions head-to-head. Live scoreboard and rematch.</p>
+        <span class="cta">Challenge a friend <span>→</span></span>
       </a>
 
       <a class="card debug" href="debug-transmission.html" target="_blank" rel="noopener" data-grades="1 2 3 4 b">
