@@ -140,6 +140,7 @@ h1,h2,h3{font-family:'Unbounded',system-ui,sans-serif; text-wrap:balance;}
       <div class="qmeta"><span>QUESTION <b id="qNum">1</b>/<span id="qTotal">12</span></span><span class="skill" id="skill"></span></div>
       <div class="prompt" id="prompt"></div>
       <button class="listen-btn" id="listenBtn" style="display:none" onclick="speakCurrent()">🔊 Play the sentence</button>
+      <button class="listen-btn" id="skipListenBtn" style="display:none;background:#5a5a5a;color:#fff" onclick="skipListen()">🔇 Can't listen now — skip</button>
       <div class="opts" id="opts"></div>
       <div class="feedback" id="feedback" role="status" aria-live="polite"></div>
       <button class="btn primary next" id="nextBtn" style="display:none" onclick="nextQ()">Next attack →</button>
@@ -315,11 +316,13 @@ function renderQ(){
     if(hasTTS){ document.getElementById('prompt').textContent = 'Listen. Which sentence did you hear?'; }
     else { document.getElementById('prompt').innerHTML = 'Audio isn\'t available in this browser. Read it instead: <span class="gap">' + esc(q.say) + '</span>'; }
     lb.style.display = hasTTS ? 'inline-flex' : 'none';
+    document.getElementById('skipListenBtn').style.display = hasTTS ? 'inline-flex' : 'none';
     opts.className = 'opts single';
     setTimeout(speakCurrent, 300);
   } else {
     document.getElementById('prompt').innerHTML = esc(q.q).replace('___', '<span class="gap">?</span>');
     lb.style.display = 'none';
+    document.getElementById('skipListenBtn').style.display = 'none';
     opts.className = 'opts';
   }
   opts.innerHTML = '';
@@ -339,9 +342,26 @@ function speakCurrent(){
   speechSynthesis.speak(u);
 }
 
+function skipListen(){
+  if(S.answered) return;
+  S.answered = true;
+  if(hasTTS) speechSynthesis.cancel();
+  var q = S.qs[S.i];
+  document.querySelectorAll('.opt').forEach(function(b){ b.disabled = true; if(b.textContent === q.a) b.classList.add('right'); });
+  S.log.push({q:q, ok:false, skipped:true});
+  document.getElementById('skipListenBtn').style.display = 'none';
+  document.getElementById('listenBtn').style.display = 'none';
+  document.getElementById('feedback').innerHTML = '⏭️ <b>Listening skipped</b> — no shield lost. The sentence was: <b>' + esc(q.say) + '</b>';
+  var over = S.hp === 0 || S.shields === 0 || S.i === S.qs.length - 1;
+  var nb = document.getElementById('nextBtn');
+  nb.textContent = over ? 'See the outcome →' : 'Next attack →';
+  nb.style.display = 'block'; nb.focus();
+}
+
 function answer(choice, el){
   if(S.answered) return;
   S.answered = true;
+  document.getElementById('skipListenBtn').style.display = 'none';
   var q = S.qs[S.i], ok = choice === q.a;
   document.querySelectorAll('.opt').forEach(function(b){ b.disabled = true; if(b.textContent === q.a) b.classList.add('right'); });
   var em = document.getElementById('bossEm');
