@@ -4,34 +4,43 @@
    themes paint an atmospheric gradient + a layered particle scene on a canvas
    behind the UI, and hide the page's own starfield. Remembered per device.
    Cheap "fake glow" (stacked translucent circles) keeps it smooth on phones.
+
+   Light pages (study sheets, units, vocab) get a soft PALE wash of the same
+   theme — readable, no animated particles over dense text — so the theme is
+   present on every screen without harming legibility.
 */
 (function(){
   var THEMES = [
     { id:'space',  emoji:'🌌', name:'Space' },   // default: the page's own background
     { id:'forest', emoji:'🌲', name:'Forest',
       grad:'radial-gradient(ellipse at 50% -15%, #1f6b3c 0%, #0e3f23 48%, #05170d 100%)',
+      litegrad:'linear-gradient(165deg, #eef7ea 0%, #dceee1 100%)',
       sky:[['#1f6b3c',0],['#0e3f23',0.5],['#05170d',1]],
       orbs:[{c:'rgba(150,235,140,0.10)',r:0.55},{c:'rgba(90,200,120,0.08)',r:0.7}],
       part:{kind:'mote', n:64, colors:['#bff09a','#e8f58a','#7fd98f','#d4ff9e'], dir:-1, rise:0.22, sway:0.9, size:[1.2,3.2]} },
     { id:'sea',    emoji:'🌊', name:'Sea',
       grad:'radial-gradient(ellipse at 50% -15%, #1189c0 0%, #0a5277 45%, #042234 100%)',
+      litegrad:'linear-gradient(165deg, #ecf6fb 0%, #d6ebf6 100%)',
       sky:[['#1189c0',0],['#0a5277',0.5],['#042234',1]],
       orbs:[{c:'rgba(150,230,255,0.10)',r:0.5},{c:'rgba(90,200,240,0.08)',r:0.65}],
       caustic:true,
       part:{kind:'bubble', n:46, colors:['#bfefff','#8fd4ef','#e6faff'], dir:-1, rise:0.30, sway:1.4, size:[1.6,5.5]} },
     { id:'sunset', emoji:'🌅', name:'Sunset',
       grad:'linear-gradient(180deg, #2a1950 0%, #6e2b63 30%, #b24a4e 56%, #e98a4c 78%, #2a1526 100%)',
+      litegrad:'linear-gradient(165deg, #fdf2e8 0%, #f8e4ee 100%)',
       sky:[['#2a1950',0],['#6e2b63',0.3],['#b24a4e',0.56],['#e98a4c',0.80],['#2a1526',1]],
       sun:{x:0.5,y:0.74,c:'rgba(255,190,120,0.35)'},
       orbs:[{c:'rgba(255,170,110,0.10)',r:0.6}],
       part:{kind:'ember', n:42, colors:['#ffd89e','#ff9e5e','#ffe8b0','#ff7e5f'], dir:-1, rise:0.26, sway:1.0, size:[1.2,3.0]} },
     { id:'sakura', emoji:'🌸', name:'Blossom',
       grad:'radial-gradient(ellipse at 50% -15%, #4a2c66 0%, #7a3f7e 45%, #2a1840 100%)',
+      litegrad:'linear-gradient(165deg, #fcf0f7 0%, #f0e7fb 100%)',
       sky:[['#4a2c66',0],['#7a3f7e',0.45],['#2a1840',1]],
       orbs:[{c:'rgba(255,180,220,0.12)',r:0.55},{c:'rgba(210,150,255,0.09)',r:0.7}],
       part:{kind:'petal', n:40, colors:['#ffc2dd','#ffd6ea','#ff9ec4','#f7b3ff'], dir:1, rise:0.5, sway:2.0, size:[4,8]} },
     { id:'aurora', emoji:'🌠', name:'Aurora',
       grad:'radial-gradient(ellipse at 50% 120%, #0c2e40 0%, #07192a 50%, #03060f 100%)',
+      litegrad:'linear-gradient(165deg, #e9f5f1 0%, #e2ecfb 100%)',
       sky:[['#0c2e40',0],['#07192a',0.5],['#03060f',1]],
       aurora:[{y:0.30,amp:0.05,h:0.22,c1:'rgba(80,255,170,0)',c2:'rgba(80,255,170,0.22)',sp:0.00035,fr:1.6,ph:0},
               {y:0.40,amp:0.06,h:0.26,c1:'rgba(120,150,255,0)',c2:'rgba(120,150,255,0.18)',sp:0.00026,fr:1.1,ph:2},
@@ -40,13 +49,31 @@
       part:{kind:'mote', n:28, colors:['#bfffe0','#cfe0ff','#ffffff'], dir:-1, rise:0.1, sway:0.5, size:[0.8,1.8]} }
   ];
 
-  var idx = 0, canvas = null, cx = null, parts = [], orbs = [], stars = [], raf = null, t0 = 0, DPR = 1, reduce = false;
+  var idx = 0, canvas = null, cx = null, parts = [], orbs = [], stars = [], raf = null, t0 = 0, DPR = 1, reduce = false, LIGHT = false;
   try{ reduce = window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches; }catch(e){}
 
   function ls(k,v){ try{ if(v===undefined) return localStorage.getItem(k); localStorage.setItem(k,v); }catch(e){ return null; } }
   function rnd(a,b){ return a + Math.random()*(b-a); }
   function W(){ return canvas ? canvas.width/DPR : innerWidth; }
   function H(){ return canvas ? canvas.height/DPR : innerHeight; }
+
+  // Decide if this page is a light-background page (study sheet / units / vocab).
+  function detectLight(){
+    try{
+      var probe = function(el){
+        if(!el) return null;
+        var c = getComputedStyle(el).backgroundColor || '';
+        var m = c.match(/rgba?\(([^)]+)\)/); if(!m) return null;
+        var p = m[1].split(',').map(function(x){ return parseFloat(x); });
+        if(p.length>=4 && p[3]===0) return null; // transparent, keep looking
+        var lum = (0.299*p[0] + 0.587*p[1] + 0.114*p[2]) / 255;
+        return lum;
+      };
+      var lb = probe(document.body); var lh = probe(document.documentElement);
+      var lum = (lb!==null) ? lb : (lh!==null ? lh : 0);
+      return lum > 0.62;
+    }catch(e){ return false; }
+  }
 
   function ensureFx(){
     if(canvas) return;
@@ -181,9 +208,16 @@
       });
     }
 
-    // occasional shooting star on aurora
     cx.globalAlpha = 1;
     raf = requestAnimationFrame(function(n){ frame(theme, n); });
+  }
+
+  function clearTheme(){
+    if(raf){ cancelAnimationFrame(raf); raf = null; }
+    document.documentElement.removeAttribute('data-iow-theme');
+    document.body.style.removeProperty('background');
+    document.body.style.removeProperty('background-attachment');
+    if(canvas) canvas.style.display='none';
   }
 
   function apply(i){
@@ -192,14 +226,20 @@
     ls('iow_theme', t.id);
     var btn = document.getElementById('iowThemeBtn'); if(btn){ btn.textContent = t.emoji; btn.title = 'Background: ' + t.name + ' (tap to change)'; }
     if(raf){ cancelAnimationFrame(raf); raf = null; }
-    if(t.id === 'space'){
-      document.documentElement.removeAttribute('data-iow-theme');
-      document.body.style.removeProperty('background');
-      document.body.style.removeProperty('background-attachment');
+
+    if(t.id === 'space'){ clearTheme(); return; }
+
+    document.documentElement.setAttribute('data-iow-theme', t.id);
+
+    // Light pages: pale wash only (keeps dense study text perfectly readable).
+    if(LIGHT){
+      document.body.style.setProperty('background', t.litegrad || t.grad, 'important');
+      document.body.style.setProperty('background-attachment', 'fixed', 'important');
       if(canvas) canvas.style.display='none';
       return;
     }
-    document.documentElement.setAttribute('data-iow-theme', t.id);
+
+    // Dark pages: full animated scene.
     document.body.style.setProperty('background', t.grad, 'important');
     document.body.style.setProperty('background-attachment', 'fixed', 'important');
     ensureFx(); resize(); canvas.style.display='block';
@@ -213,6 +253,7 @@
 
   function mountBtn(){
     if(document.getElementById('iowThemeBtn')) return;
+    LIGHT = detectLight();
     var css = document.createElement('style');
     css.textContent = '#iowThemeBtn{position:fixed;left:12px;bottom:104px;z-index:2147483000;width:42px;height:42px;border-radius:50%;'
       +'display:flex;align-items:center;justify-content:center;font-size:19px;cursor:pointer;'
@@ -232,7 +273,7 @@
   // pause animation when tab hidden (save battery)
   document.addEventListener('visibilitychange', function(){
     if(document.hidden){ if(raf){ cancelAnimationFrame(raf); raf=null; } }
-    else if(THEMES[idx] && THEMES[idx].id!=='space' && !reduce){ t0=0; raf=requestAnimationFrame(function(n){ frame(THEMES[idx], n); }); }
+    else if(!LIGHT && THEMES[idx] && THEMES[idx].id!=='space' && !reduce){ t0=0; raf=requestAnimationFrame(function(n){ frame(THEMES[idx], n); }); }
   });
 
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mountBtn);
