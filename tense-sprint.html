@@ -1,0 +1,208 @@
+<!doctype html><html translate="no"><head>
+<meta name="google" content="notranslate"><meta charset="utf8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TENSE SPRINT</title>
+<meta name="description" content="Fast tense challenge: 5 seconds per sentence, points for speed.">
+<meta name="theme-color" content="#060a18">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23060a18'/%3E%3Ctext x='50' y='70' font-size='56' text-anchor='middle'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --blue:#00e5ff; --pink:#ff2e74; --yellow:#ffe600; --green:#00ff88; --bg:#060a18; --panel:rgba(12,18,38,.92); --line:rgba(255,255,255,.14); --sub:#9fb0e6; }
+  *{box-sizing:border-box;margin:0;padding:0;font-family:'Rajdhani',sans-serif;}
+  html,body{min-height:100%;background:var(--bg);color:#fff;}
+  #stars{position:fixed;inset:0;z-index:0;}
+  .wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:18px 16px 60px;}
+  .home-fab{position:fixed;top:12px;left:12px;z-index:30;display:inline-flex;gap:7px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:8px 14px;color:#fff;text-decoration:none;font-weight:700;font-size:13px;}
+  h1{font-family:'Orbitron';font-size:clamp(28px,7vw,46px);color:var(--yellow);text-align:center;text-shadow:0 0 16px rgba(255,230,0,.45);letter-spacing:.04em;}
+  .tag{text-align:center;color:var(--sub);font-weight:700;margin-top:4px;font-size:14px;}
+  .card{background:var(--panel);border:2px solid rgba(0,229,255,.35);border-radius:18px;padding:20px;margin-top:16px;box-shadow:0 0 28px rgba(0,229,255,.12);backdrop-filter:blur(8px);}
+  #idmount{margin-bottom:6px;}
+  .btn{display:block;width:100%;border:none;border-radius:13px;padding:15px;font-family:'Orbitron';font-weight:900;font-size:16px;letter-spacing:.04em;cursor:pointer;margin-top:14px;}
+  .btn.go{background:linear-gradient(120deg,var(--green),#00b35e);color:#032012;}
+  .btn.ghost{background:rgba(255,255,255,.06);color:#fff;border:1px solid var(--line);}
+  .muted{color:var(--sub);font-size:14px;line-height:1.55;}
+  .hud{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:4px;}
+  .hud .b{font-family:'Orbitron';font-weight:900;}
+  .hud .score{color:var(--green);font-size:26px;}
+  .hud .qn{color:var(--sub);font-size:13px;letter-spacing:.08em;}
+  .hud .streak{color:var(--yellow);font-size:15px;}
+  .timebar{height:10px;background:rgba(255,255,255,.1);border-radius:99px;overflow:hidden;margin:10px 0 18px;}
+  .timebar>div{height:100%;width:100%;background:linear-gradient(90deg,var(--green),var(--yellow),var(--pink));transition:width .1s linear;}
+  .sentence{background:radial-gradient(circle,rgba(0,229,255,.1),rgba(0,0,0,.55));border:2px dashed rgba(0,229,255,.4);border-radius:14px;padding:26px 16px;text-align:center;font-size:clamp(19px,4.8vw,26px);font-weight:700;line-height:1.4;}
+  .gap{display:inline-block;min-width:66px;border-bottom:3px solid var(--yellow);}
+  .opts{display:flex;flex-direction:column;gap:12px;margin-top:16px;}
+  .opt{width:100%;background:rgba(255,255,255,.05);border:2px solid var(--line);border-radius:12px;color:#fff;font:inherit;font-weight:700;font-size:19px;padding:16px;cursor:pointer;}
+  .opt:hover:not(:disabled){border-color:var(--blue);}
+  .opt.ok{border-color:var(--green);background:rgba(0,255,136,.16);}
+  .opt.no{border-color:var(--pink);background:rgba(255,46,116,.16);}
+  .opt:disabled{cursor:default;}
+  .fb{text-align:center;font-weight:700;margin-top:12px;min-height:22px;color:var(--sub);}
+  .pop{position:fixed;left:50%;top:40%;transform:translateX(-50%);font-family:'Orbitron';font-weight:900;font-size:38px;color:var(--yellow);text-shadow:0 0 12px rgba(0,0,0,.6);pointer-events:none;opacity:0;z-index:50;}
+  .pop.show{animation:pp .7s ease;}
+  @keyframes pp{0%{opacity:0;transform:translate(-50%,10px) scale(.8);}30%{opacity:1;transform:translate(-50%,-6px) scale(1.1);}100%{opacity:0;transform:translate(-50%,-30px) scale(1);}}
+  .result-em{font-size:58px;text-align:center;}
+  .rtitle{font-family:'Orbitron';font-weight:900;font-size:28px;text-align:center;margin-top:4px;color:var(--yellow);}
+  .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:16px 0;}
+  .stat{background:rgba(0,0,0,.3);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center;}
+  .stat b{display:block;font-family:'Orbitron';font-size:22px;}
+  .stat span{font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.06em;}
+  .hidden{display:none!important;}
+</style>
+<a class="home-fab" href="index.html">🏠 Home</a>
+<canvas id="stars"></canvas>
+<div class="wrap">
+  <h1>⚡ TENSE SPRINT</h1>
+  <div class="tag">15 sentences · 5 seconds each · the faster you are, the more points</div>
+
+  <!-- START -->
+  <div id="s-start" class="card">
+    <div id="idmount"></div>
+    <label style="display:block;font-family:'Orbitron';font-size:11px;letter-spacing:.08em;color:var(--sub);text-transform:uppercase;margin:12px 0 5px;">Tense mode</label>
+    <select id="mode" style="width:100%;background:rgba(0,0,0,.4);border:2px solid var(--line);border-radius:10px;color:#fff;font:inherit;font-weight:700;font-size:16px;padding:12px 14px;"></select>
+    <button class="btn go" id="btnStart">⚡ Start the sprint</button>
+    <p class="muted" style="margin-top:12px">Pick the correct verb form before the timer runs out. A correct answer is worth up to <b>180 points</b> — answer in the first instant for the maximum. Keep a streak for bonus points!</p>
+  </div>
+
+  <!-- GAME -->
+  <div id="s-game" class="card hidden">
+    <div class="hud">
+      <span class="qn" id="qn">1 / 15</span>
+      <span class="b score" id="score">0</span>
+      <span class="b streak" id="streak">🔥 0</span>
+    </div>
+    <div class="timebar"><div id="tbar"></div></div>
+    <div class="sentence" id="sentence">…</div>
+    <div class="opts" id="opts"></div>
+    <div class="fb" id="fb"></div>
+  </div>
+
+  <!-- RESULT -->
+  <div id="s-result" class="card hidden" style="text-align:center">
+    <div class="result-em" id="rEm">⚡</div>
+    <div class="rtitle" id="rTitle">Sprint complete!</div>
+    <div class="stats">
+      <div class="stat"><b id="rScore" style="color:var(--green)">0</b><span>Points</span></div>
+      <div class="stat"><b id="rAcc" style="color:var(--blue)">0%</b><span>Accuracy</span></div>
+      <div class="stat"><b id="rStreak" style="color:var(--yellow)">0</b><span>Best streak</span></div>
+    </div>
+    <div class="muted" id="rBest"></div>
+    <button class="btn go" id="btnAgain" style="margin-top:14px">🔁 Sprint again</button>
+    <a class="btn ghost" href="index.html">Home</a>
+  </div>
+</div>
+<div class="pop" id="pop"></div>
+
+<script src="tense-data.js"></script>
+<script src="class-sync.js"></script>
+<script>
+(function(){
+  var N = 15, PER = 5000; // 15 questions, 5s each
+  var Q=[], i=0, score=0, streak=0, bestStreak=0, correct=0, locked=false, tstart=0, traf=null, me=null;
+
+  function $(id){ return document.getElementById(id); }
+  function show(id){ ['s-start','s-game','s-result'].forEach(function(s){ $(s).classList.toggle('hidden', s!==id); }); }
+  function esc(t){ return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+
+  /* starfield */
+  (function(){ var c=$('stars'), x=c.getContext('2d'), st=[]; function rs(){ c.width=innerWidth;c.height=innerHeight; st=Array.from({length:110},function(){return{x:Math.random()*c.width,y:Math.random()*c.height,s:Math.random()*2,v:Math.random()*.5+.2};}); } addEventListener('resize',rs); rs();
+    (function loop(){ x.clearRect(0,0,c.width,c.height); x.fillStyle='#fff'; st.forEach(function(p){ p.y+=p.v; if(p.y>c.height)p.y=0; x.globalAlpha=.6; x.fillRect(p.x,p.y,p.s,p.s); }); x.globalAlpha=1; requestAnimationFrame(loop); })(); })();
+
+  function ansArr(it){ return Array.isArray(it.answer)?it.answer:[it.answer]; }
+
+  function fillModes(){
+    var L = window.IOW_TENSE_LABELS || {};
+    var order = ['ALL','PS_PC','PAS_PAC','PAS_PP','USED_WOULD','PAS_PRESP','WILL_GOING','MIXED'];
+    $('mode').innerHTML = order.map(function(k){ return '<option value="'+k+'">'+(k==='ALL'?'🎲 All tenses (mixed)':(L[k]||k))+'</option>'; }).join('');
+  }
+
+  function build(mode){
+    var src = (window.IOW_TENSE_DB||[]).slice();
+    var pool = (mode==='ALL'||mode==='MIXED') ? src : src.filter(function(q){ return q.mode===mode; });
+    for(var k=pool.length-1;k>0;k--){ var j=Math.floor(Math.random()*(k+1)); var t=pool[k]; pool[k]=pool[j]; pool[j]=t; }
+    return pool.slice(0, N).map(function(q){ var o=q.options.slice(); if(o.length===2 && Math.random()<0.5) o.reverse(); return {sentence:q.sentence, options:o, answer:q.answer, es:q.es}; });
+  }
+
+  function start(){
+    if(window.IOW && IOW.ensureIdentity){ IOW.ensureIdentity(function(){ run(); }); } else { run(); }
+  }
+  function run(){
+    Q = build($('mode').value);
+    i=0; score=0; streak=0; bestStreak=0; correct=0;
+    $('score').textContent='0'; $('streak').textContent='🔥 0';
+    show('s-game'); renderQ();
+  }
+
+  function renderQ(){
+    locked=false;
+    if(i>=Q.length){ finish(); return; }
+    var q=Q[i];
+    $('qn').textContent=(i+1)+' / '+Q.length;
+    $('sentence').innerHTML = esc(q.sentence.split('___')[0]) + '<span class="gap">&nbsp;&nbsp;&nbsp;</span>' + esc(q.sentence.split('___')[1]||'');
+    $('fb').textContent='';
+    var box=$('opts'); box.innerHTML='';
+    q.options.forEach(function(o){
+      var b=document.createElement('button'); b.type='button'; b.className='opt'; b.textContent=o;
+      b.onclick=function(){ answer(o, b); };
+      box.appendChild(b);
+    });
+    tstart=performance.now();
+    tick();
+  }
+  function tick(){
+    var el=performance.now()-tstart, left=Math.max(0, PER-el);
+    $('tbar').style.width=(left/PER*100)+'%';
+    if(left<=0){ answer(null, null); return; }
+    traf=requestAnimationFrame(tick);
+  }
+
+  function popPts(txt, color){ var p=$('pop'); p.textContent=txt; p.style.color=color||'var(--yellow)'; p.classList.remove('show'); void p.offsetWidth; p.classList.add('show'); }
+
+  function answer(chosen, btn){
+    if(locked) return; locked=true;
+    if(traf){ cancelAnimationFrame(traf); traf=null; }
+    var q=Q[i], arr=ansArr(q), ok = chosen!==null && arr.indexOf(chosen)>-1;
+    var left=Math.max(0, PER-(performance.now()-tstart));
+    $('opts').querySelectorAll('.opt').forEach(function(b){ b.disabled=true; });
+    if(ok){
+      var pts = Math.round(20 + 160*(left/PER)); // 20..180
+      streak++; if(streak>bestStreak) bestStreak=streak;
+      var bonus = Math.min(streak-1,5)*10; pts += bonus;
+      score += pts; correct++;
+      if(btn) btn.classList.add('ok');
+      $('fb').textContent = '✅ +'+pts+(bonus?(' (streak +'+bonus+')'):'');
+      popPts('+'+pts, 'var(--green)');
+      try{ if(window.IOWAudio) IOWAudio.correct(); }catch(e){}
+    } else {
+      streak=0;
+      if(btn) btn.classList.add('no');
+      $('opts').querySelectorAll('.opt').forEach(function(b){ if(arr.indexOf(b.textContent)>-1) b.classList.add('ok'); });
+      $('fb').innerHTML = (chosen===null?'⏱️ Too slow! ':'❌ ') + 'Answer: <b>'+esc(arr.join(' / '))+'</b> — '+esc(q.es);
+      try{ if(window.IOWAudio) IOWAudio.wrong(); }catch(e){}
+    }
+    $('score').textContent=score; $('streak').textContent='🔥 '+streak;
+    i++;
+    setTimeout(renderQ, ok?700:1500);
+  }
+
+  function finish(){
+    show('s-result');
+    var acc = Math.round(correct/Q.length*100);
+    $('rScore').textContent=score; $('rAcc').textContent=acc+'%'; $('rStreak').textContent=bestStreak;
+    $('rEm').textContent = acc>=80?'🏆':(acc>=50?'⚡':'💪');
+    $('rTitle').textContent = acc>=80?'Lightning fast!':(acc>=50?'Nice sprint!':'Keep sprinting!');
+    try{ var k='tenseSprintBest', best=parseInt(localStorage.getItem(k)||'0',10); if(score>best){ localStorage.setItem(k,score); $('rBest').textContent='🎉 New personal best!'; } else { $('rBest').textContent='Your best: '+best+' points'; } }catch(e){}
+    try{ if(window.IOWAudio && acc>=80) IOWAudio.win(); }catch(e){}
+    try{ if(window.IOW && IOW.postScore && score>0){ IOW.postScore('Tense Sprint', score, {correct:correct, wrong:Q.length-correct}); } }catch(e){}
+  }
+
+  /* wire */
+  fillModes();
+  try{ if(window.IOW){ if(IOW.mountIdentity) IOW.mountIdentity($('idmount')); if(IOW.codeBanner) IOW.codeBanner(); } }catch(e){}
+  $('btnStart').onclick=start;
+  $('btnAgain').onclick=run;
+})();
+</script>
+<script>window.IOW_HELP={title:"Tense Sprint",goal:"Pick the correct verb tense before the 5-second timer runs out.",steps:["Choose a tense mode, then tap 'Start the sprint'.","A sentence appears with a gap and two forms. Tap the correct one fast.","The quicker you answer, the more points (up to 180). A streak adds bonus points.","15 sentences in total — then see your score, accuracy and best streak."],tip:"Enter your name and class code so your score counts on the ranking."};</script>
+<script src="how-to-play.js"></script>
+<script src="game-audio.js"></script>
+<script src="theme-switcher.js"></script>
+</body></html>
