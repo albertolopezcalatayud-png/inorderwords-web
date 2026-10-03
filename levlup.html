@@ -2092,7 +2092,7 @@
       var polarity = rnd(["some","any"]);
       var opts = shuffleCopy(["some","any"]);
       var correct = polarity;
-      return {type:"choice", instruction:"Choose some or any.", prompt: polarity==="some" ? "There is "+" ___ "+noun+" on the table." : "Is there ___ "+noun+" left?", options: opts, answer: correct, explanation: "Some in affirmatives/offers; any in negatives and questions."};
+      return {type:"choice", instruction:"Choose some or any.", prompt: polarity==="some" ? ("There "+(isPlural?"are":"is")+" ___ "+noun+" on the table.") : ((isPlural?"Are":"Is")+" there ___ "+noun+" left?"), options: opts, answer: correct, explanation: "Some in affirmatives/offers; any in negatives and questions."};
     }
   ];
 
@@ -4735,12 +4735,12 @@ GRAMMAR_GEN["present-perfect-for-since"] = [
     var verb = rnd(VERBS);
     var aux = haveAux(subj.person);
     var word = rnd(["for", "since"]);
-    var correctPhrase = word === "for" ? rnd(DURATIONS) : rnd(STARTPOINTS);
-    var otherPool = word === "for" ? STARTPOINTS : DURATIONS;
-    var wrongPhrase = rnd(otherPool);
-    var samePool = (word === "for" ? DURATIONS : STARTPOINTS).filter(function (p) { return p !== correctPhrase; });
-    var wrongPhrase2 = rnd(samePool);
-    var options = shuffleCopy([correctPhrase, wrongPhrase, wrongPhrase2]);
+    var rightPool = word === "for" ? DURATIONS : STARTPOINTS;
+    var wrongPool = word === "for" ? STARTPOINTS : DURATIONS;
+    var correctPhrase = rnd(rightPool);
+    var d1 = rnd(wrongPool);
+    var d2 = rnd(wrongPool.filter(function (p) { return p !== d1; }));
+    var options = shuffleCopy([correctPhrase, d1, d2]);
     var prompt = cap(subj.text) + " " + aux + " " + verb.pp + " here " + word + " ___.";
     return {
       type: "choice",
@@ -4748,7 +4748,7 @@ GRAMMAR_GEN["present-perfect-for-since"] = [
       prompt: prompt,
       options: options,
       answer: correctPhrase,
-      explanation: word === "for" ? "'For' needs a length of time." : "'Since' needs a starting point."
+      explanation: word === "for" ? "'For' needs a length of time; the other options are starting points (used with 'since')." : "'Since' needs a starting point; the other options are lengths of time (used with 'for')."
     };
   }
 ];

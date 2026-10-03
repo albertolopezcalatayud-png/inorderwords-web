@@ -738,7 +738,7 @@
         document.getElementById('verb-form').style.display = 'none';
         const box = document.getElementById('sentence-box');
         box.style.display = 'block';
-        document.getElementById('sentence-text').innerText = currentVerb.sentence;
+        document.getElementById('sentence-text').innerHTML = '⭐ <b>BONUS</b> — type ONLY the missing verb in the correct tense:<br>' + currentVerb.sentence;
         document.getElementById('sentence-input').value = '';
         document.getElementById('sentence-input').focus();
     }
