@@ -22,6 +22,8 @@
 
   function ls(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
   function lsSet(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
+  var ALWAYS_ASK = true;  // ask name + class on every game entry (best for shared/classroom devices)
+  if(ALWAYS_ASK){ try{ localStorage.removeItem('iow_student_name'); localStorage.removeItem('iow_vocabrush_name'); localStorage.removeItem('iow_student_course'); var _mp = JSON.parse(localStorage.getItem('missionLogPilot')||'{}'); if(_mp && (_mp.name || _mp.course)){ delete _mp.name; delete _mp.course; localStorage.setItem('missionLogPilot', JSON.stringify(_mp)); } }catch(e){} }
   function esc(t){ return String(t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
   function cleanName(n){ return String(n || '').replace(/\s+/g, ' ').trim().slice(0, 40).toUpperCase(); }
   function boardName(game, grade){ return game + ' · ' + grade; }
@@ -42,6 +44,7 @@
       if(GRADES.indexOf(grade) > -1) p.course = grade;
       lsSet('missionLogPilot', JSON.stringify(p));
     }catch(e){}
+    try{ var _pn=document.getElementById('player-name'); if(_pn && name) _pn.value=name; var _pc=document.getElementById('player-course'); if(_pc && GRADES.indexOf(grade)>-1) _pc.value=grade; }catch(e){}
     document.querySelectorAll('[data-iow-identity]').forEach(renderIdentity);
   }
 
@@ -206,6 +209,7 @@
   }
   function codeBanner(){
     if(!CODE_ON) return;
+    if(ALWAYS_ASK) return;   // identity is asked on entry via the modal
     injectCss();
     if(hasCode()) return;                                  // already has a valid code: nothing to ask
     var chose = ''; try{ chose = sessionStorage.getItem(CHOICE_KEY) || ''; }catch(e){}
@@ -234,6 +238,11 @@
   }
   function autoBanner(){
     var page = (location.pathname.split('/').pop() || '').toLowerCase();
+    if(ALWAYS_ASK){
+      var ASK_ON_LOAD = ['verb-striker.html','phrasal-command.html','preposition-blaster.html','collocation-match.html','question-control.html','levlup.html','tense-control.html'];
+      if(ASK_ON_LOAD.indexOf(page) > -1 && !document.querySelector('.iow-modal-bg')) openModal(null, true);
+      return;
+    }
     var SCORING = ['verb-striker.html','phrasal-command.html','preposition-blaster.html','collocation-match.html','question-control.html','docking-sequence.html','idiom-detective.html','debug-transmission.html','missing-signal.html','boss-checkpoint.html','vocab-rush.html'];
     if(SCORING.indexOf(page) > -1) codeBanner();
   }
