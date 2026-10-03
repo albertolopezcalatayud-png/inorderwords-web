@@ -136,12 +136,14 @@
   .card.boss{--glow:var(--boss);}
   .card.duel{--glow:#ff2d6f;}
   .card.sprint{--glow:#ffe600;}
+  .card.muncher{--glow:#ffd60a;}
   .card:hover.idiom{border-color:rgba(253,224,71,0.5);}
   .card:hover.debug{border-color:rgba(132,204,22,0.5);}
   .card:hover.signal{border-color:rgba(129,140,248,0.5);}
   .card:hover.boss{border-color:rgba(249,115,22,0.5);}
   .card:hover.duel{border-color:rgba(255,45,111,0.5);}
   .card:hover.sprint{border-color:rgba(255,230,0,0.5);}
+  .card:hover.muncher{border-color:rgba(255,214,10,0.5);}
   .card:hover.tweet{border-color:rgba(29,155,240,0.5);}
   .card:hover.vocab{border-color:rgba(167,139,250,0.5);}
   .card:hover.lab{border-color:rgba(45,212,191,0.5);}
@@ -198,6 +200,7 @@
   .card.tense .cta{color:var(--quest-2);}
   .card.duel .cta{color:#ff5c8a;}
   .card.sprint .cta{color:#ffe600;}
+  .card.muncher .cta{color:#ffd60a;}
   .card.blaster .cta{color:var(--striker-2);}
   .card.trap .cta{color:var(--trap);}
   .card.mission .cta{color:var(--mission);}
@@ -523,6 +526,21 @@
         <span class="mode">⏱ 5 s per sentence · 🏆 points for speed</span>
         <p>Fifteen tense sentences against the clock: five seconds each, and the faster you answer, the more points. Keep a streak going for bonus points.</p>
         <span class="cta">Beat the clock <span>→</span></span>
+      </a>
+
+      <a class="card muncher" href="word-muncher.html" target="_blank" rel="noopener" data-grades="1 2 3 4 b">
+        <div class="top-row">
+          <span class="kicker">Use of English · maze</span>
+          <span class="top-row-right">
+            <span class="level all">A2–C1</span>
+            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('word-muncher.html','Word Muncher')" title="Asignar en Google Classroom">📋</button>
+          </span>
+        </div>
+        <span class="glyph">🟡</span>
+        <h3>Word Muncher</h3>
+        <span class="mode">👾 Catch = question · 🏆 Cambridge levels</span>
+        <p>Munch the words through the maze and dodge the grammar bugs. Get caught and you face a Cambridge-style Use of English question &mdash; answer right to zap the bug, wrong and you lose a life. Pick A2, B1, B2 or C1.</p>
+        <span class="cta">Start munching <span>&rarr;</span></span>
       </a>
 
       <a class="card debug" href="debug-transmission.html" target="_blank" rel="noopener" data-grades="1 2 3 4 b">

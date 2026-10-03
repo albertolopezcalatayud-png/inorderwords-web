@@ -1,0 +1,369 @@
+<!doctype html><html translate="no"><head>
+<meta name="google" content="notranslate"><meta charset="utf8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>WORD MUNCHER</title>
+<meta name="description" content="Maze chase: munch the words, dodge the grammar bugs, and answer Cambridge-style Use of English questions.">
+<meta name="theme-color" content="#070a16">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23070a16'/%3E%3Ctext x='50' y='72' font-size='58' text-anchor='middle'%3E%F0%9F%9F%A1%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --blue:#00e0ff; --pink:#ff2e74; --yellow:#ffd60a; --green:#00ff88; --wall:#1f3a8a; --bg:#070a16; --panel:rgba(12,18,38,.95); --line:rgba(255,255,255,.14); --sub:#9fb0e6; }
+  *{box-sizing:border-box;margin:0;padding:0;font-family:'Rajdhani',sans-serif;}
+  html,body{min-height:100%;background:var(--bg);color:#fff;}
+  .wrap{max-width:620px;margin:0 auto;padding:16px 14px 40px;}
+  .home-fab{position:fixed;top:12px;left:12px;z-index:30;display:inline-flex;gap:7px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:8px 14px;color:#fff;text-decoration:none;font-weight:700;font-size:13px;}
+  h1{font-family:'Orbitron';font-size:clamp(26px,6.5vw,40px);color:var(--yellow);text-align:center;text-shadow:0 0 16px rgba(255,214,10,.45);letter-spacing:.03em;}
+  .tag{text-align:center;color:var(--sub);font-weight:700;margin-top:4px;font-size:13.5px;}
+  .card{background:var(--panel);border:2px solid rgba(0,224,255,.3);border-radius:16px;padding:18px;margin-top:14px;box-shadow:0 0 26px rgba(0,224,255,.1);}
+  #idmount{margin-bottom:6px;}
+  label.fld{display:block;font-family:'Orbitron';font-size:11px;letter-spacing:.08em;color:var(--sub);text-transform:uppercase;margin:10px 0 5px;}
+  select{width:100%;background:rgba(0,0,0,.4);border:2px solid var(--line);border-radius:10px;color:#fff;font:inherit;font-weight:700;font-size:16px;padding:12px 14px;}
+  .btn{display:block;width:100%;border:none;border-radius:12px;padding:14px;font-family:'Orbitron';font-weight:900;font-size:15px;letter-spacing:.04em;cursor:pointer;margin-top:12px;}
+  .btn.go{background:linear-gradient(120deg,var(--yellow),#ffae00);color:#2a1e00;}
+  .btn.ghost{background:rgba(255,255,255,.06);color:#fff;border:1px solid var(--line);}
+  .muted{color:var(--sub);font-size:13.5px;line-height:1.5;}
+  .hud{display:flex;justify-content:space-between;align-items:center;font-family:'Orbitron';font-weight:900;margin-bottom:8px;}
+  .hud .sc{color:var(--yellow);font-size:22px;} .hud .lv{color:var(--sub);font-size:12px;letter-spacing:.06em;} .hud .lives{font-size:18px;}
+  #board{display:block;margin:0 auto;background:#05070f;border-radius:10px;max-width:100%;height:auto;touch-action:none;}
+  .dpad{display:grid;grid-template-columns:repeat(3,56px);grid-template-rows:repeat(3,56px);gap:6px;justify-content:center;margin:14px auto 0;}
+  .dpad button{background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:12px;color:#fff;font-size:22px;cursor:pointer;}
+  .dpad button:active{background:rgba(0,224,255,.25);}
+  .dpad .sp{visibility:hidden;}
+  /* question overlay */
+  #qov{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;background:rgba(3,5,12,.8);padding:16px;}
+  #qov.on{display:flex;}
+  #qcard{max-width:460px;width:100%;background:#0e1430;border:2px solid rgba(0,224,255,.4);border-radius:16px;padding:20px;}
+  #qcard .lvtag{font-family:'Orbitron';font-size:11px;color:var(--pink);letter-spacing:.08em;}
+  #qcard .qtext{font-size:clamp(18px,4.6vw,22px);font-weight:700;margin:8px 0 14px;line-height:1.4;}
+  .qgap{display:inline-block;min-width:54px;border-bottom:3px solid var(--yellow);}
+  #qopts{display:flex;flex-direction:column;gap:10px;}
+  .qopt{width:100%;background:rgba(255,255,255,.05);border:2px solid var(--line);border-radius:11px;color:#fff;font:inherit;font-weight:700;font-size:18px;padding:14px;cursor:pointer;}
+  .qopt:hover:not(:disabled){border-color:var(--blue);}
+  .qopt.ok{border-color:var(--green);background:rgba(0,255,136,.16);}
+  .qopt.no{border-color:var(--pink);background:rgba(255,46,116,.16);}
+  .qfb{text-align:center;font-weight:700;margin-top:12px;min-height:20px;color:var(--sub);}
+  .result-em{font-size:54px;text-align:center;} .rtitle{font-family:'Orbitron';font-weight:900;font-size:26px;text-align:center;color:var(--yellow);}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0;}
+  .stat{background:rgba(0,0,0,.3);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center;}
+  .stat b{display:block;font-family:'Orbitron';font-size:20px;} .stat span{font-size:11px;color:var(--sub);text-transform:uppercase;}
+  .hidden{display:none!important;}
+</style>
+<a class="home-fab" href="index.html">🏠 Home</a>
+<div class="wrap">
+  <h1>🟡 WORD MUNCHER</h1>
+  <div class="tag">Munch the words · dodge the grammar bugs · answer to survive</div>
+
+  <div id="s-start" class="card">
+    <div id="idmount"></div>
+    <label class="fld">Cambridge level (Use of English &amp; vocabulary)</label>
+    <select id="level">
+      <option value="A2">A2 Key (KET)</option>
+      <option value="B1">B1 Preliminary (PET)</option>
+      <option value="B2" selected>B2 First (FCE)</option>
+      <option value="C1">C1 Advanced (CAE)</option>
+    </select>
+    <button class="btn go" id="btnStart">🟡 Start munching</button>
+    <p class="muted" style="margin-top:12px">Move with the <b>arrow keys</b> (or the buttons below on a phone). Eat every word-dot to clear the maze. If a grammar <b>bug 🐞</b> catches you, answer a Use-of-English question: get it right to zap the bug, get it wrong and you lose a life. You have 3 lives.</p>
+  </div>
+
+  <div id="s-game" class="card hidden">
+    <div class="hud">
+      <span class="sc" id="score">0</span>
+      <span class="lv" id="lvlabel">B2 First</span>
+      <span class="lives" id="lives">❤️❤️❤️</span>
+    </div>
+    <canvas id="board"></canvas>
+    <div class="dpad">
+      <span class="sp"></span><button data-d="up" aria-label="Up">▲</button><span class="sp"></span>
+      <button data-d="left" aria-label="Left">◀</button><span class="sp"></span><button data-d="right" aria-label="Right">▶</button>
+      <span class="sp"></span><button data-d="down" aria-label="Down">▼</button><span class="sp"></span>
+    </div>
+  </div>
+
+  <div id="s-result" class="card hidden" style="text-align:center">
+    <div class="result-em" id="rEm">🏆</div>
+    <div class="rtitle" id="rTitle">Maze cleared!</div>
+    <div class="stats">
+      <div class="stat"><b id="rScore" style="color:var(--yellow)">0</b><span>Score</span></div>
+      <div class="stat"><b id="rQ" style="color:var(--green)">0/0</b><span>Questions right</span></div>
+    </div>
+    <div class="muted" id="rBest"></div>
+    <button class="btn go" id="btnAgain" style="margin-top:14px">🔁 Play again</button>
+    <a class="btn ghost" href="index.html">Home</a>
+  </div>
+</div>
+
+<div id="qov"><div id="qcard">
+  <div class="lvtag" id="qlv">USE OF ENGLISH</div>
+  <div class="qtext" id="qtext"></div>
+  <div id="qopts"></div>
+  <div class="qfb" id="qfb"></div>
+</div></div>
+
+<script src="class-sync.js"></script>
+<script>
+/* ---- Original Cambridge-STYLE question banks (not copied from Cambridge) ---- */
+var BANKS = {
+ A2: [
+  {q:"My sister ___ got two cats and a dog.", o:["has","have","is"], a:"has", n:"have got: he/she/it → HAS got."},
+  {q:"We usually go ___ holiday in August.", o:["on","in","at"], a:"on", n:"Fixed phrase: ON holiday."},
+  {q:"I'm really good ___ maths.", o:["at","in","on"], a:"at", n:"good AT something."},
+  {q:"She ___ to school by bus every day.", o:["goes","go","going"], a:"goes", n:"Present simple, she → GOES."},
+  {q:"There aren't ___ apples in the fridge.", o:["any","some","a"], a:"any", n:"ANY in negatives."},
+  {q:"Can you ___ the lights, please? It's dark.", o:["turn on","turn in","put on"], a:"turn on", n:"TURN ON the lights."},
+  {q:"My birthday is ___ the 5th of May.", o:["on","in","at"], a:"on", n:"ON + dates."},
+  {q:"He is taller ___ his brother.", o:["than","that","then"], a:"than", n:"Comparative + THAN."},
+  {q:"Listen! The baby ___.", o:["is crying","cries","cry"], a:"is crying", n:"Happening now → present continuous."},
+  {q:"I'd like ___ orange juice, please.", o:["an","a","some"], a:"an", n:"AN before a vowel sound: AN orange."},
+  {q:"We ___ to the cinema last Saturday.", o:["went","go","gone"], a:"went", n:"Past simple of GO = WENT."},
+  {q:"The opposite of 'expensive' is…", o:["cheap","rich","poor"], a:"cheap", n:"Expensive ↔ CHEAP."},
+  {q:"You wear this on your head: a…", o:["hat","glove","shoe"], a:"hat", n:"A HAT goes on your head."},
+  {q:"___ you like some tea?", o:["Would","Do","Are"], a:"Would", n:"WOULD you like…? for offers."},
+  {q:"I'm hungry. Let's ___ a sandwich.", o:["make","do","take"], a:"make", n:"MAKE a sandwich."},
+  {q:"There is ___ milk left, don't worry.", o:["some","any","a"], a:"some", n:"SOME in affirmatives."}
+ ],
+ B1: [
+  {q:"I'm really looking forward ___ seeing you.", o:["to","for","at"], a:"to", n:"LOOK FORWARD TO + -ing."},
+  {q:"She apologised ___ being late.", o:["for","of","about"], a:"for", n:"APOLOGISE FOR something."},
+  {q:"If it rains, we ___ at home.", o:["will stay","stay","would stay"], a:"will stay", n:"First conditional: will + base."},
+  {q:"I've lived here ___ 2015.", o:["since","for","during"], a:"since", n:"SINCE + a starting point."},
+  {q:"You ___ smoke here — it's forbidden.", o:["mustn't","don't have to","needn't"], a:"mustn't", n:"MUSTN'T = prohibition."},
+  {q:"He's the man ___ car was stolen.", o:["whose","who","which"], a:"whose", n:"WHOSE shows possession."},
+  {q:"We ran out ___ milk this morning.", o:["of","off","from"], a:"of", n:"RUN OUT OF something."},
+  {q:"I'm not used ___ getting up so early.", o:["to","for","at"], a:"to", n:"BE USED TO + -ing."},
+  {q:"The film was ___ boring that I fell asleep.", o:["so","such","very"], a:"so", n:"SO + adjective (that…)."},
+  {q:"Could you ___ me a favour?", o:["do","make","give"], a:"do", n:"DO someone a favour."},
+  {q:"By the time we arrived, the show ___.", o:["had started","has started","started"], a:"had started", n:"Past perfect for the earlier action."},
+  {q:"She's responsible ___ the whole project.", o:["for","of","about"], a:"for", n:"RESPONSIBLE FOR."},
+  {q:"I'd rather ___ at home tonight.", o:["stay","to stay","staying"], a:"stay", n:"WOULD RATHER + base verb."},
+  {q:"A person who can't see is…", o:["blind","deaf","dumb"], a:"blind", n:"BLIND = cannot see."},
+  {q:"They finally ___ up with a solution.", o:["came","got","made"], a:"came", n:"COME UP WITH an idea/solution."},
+  {q:"Despite ___ hard, she failed.", o:["studying","to study","she studied"], a:"studying", n:"DESPITE + -ing/noun."}
+ ],
+ B2: [
+  {q:"I couldn't ___ out what the sign meant.", o:["make","find","take"], a:"make", n:"MAKE OUT = understand/see with difficulty."},
+  {q:"Her success was largely ___ to hard work.", o:["due","owing","thanks"], a:"due", n:"DUE TO = because of."},
+  {q:"He was ___ in a traffic jam for an hour.", o:["stuck","caught","held"], a:"stuck", n:"STUCK in a traffic jam (collocation)."},
+  {q:"Please ___ into account the extra costs.", o:["take","make","put"], a:"take", n:"TAKE something INTO ACCOUNT."},
+  {q:"There's no point ___ about it now.", o:["worrying","to worry","worry"], a:"worrying", n:"THERE'S NO POINT + -ing."},
+  {q:"The new policy will come into ___ next month.", o:["effect","action","force"], a:"effect", n:"COME INTO EFFECT (collocation)."},
+  {q:"She has a tendency ___ interrupt people.", o:["to","of","for"], a:"to", n:"A TENDENCY TO + base verb."},
+  {q:"It was such a convincing ___ that nobody doubted it.", o:["argument","discussion","quarrel"], a:"argument", n:"A convincing ARGUMENT."},
+  {q:"I'd sooner you ___ tell anyone about this.", o:["didn't","don't","won't"], a:"didn't", n:"WOULD SOONER + past form."},
+  {q:"The weather was ___ (BEAUTY) all week.", o:["beautiful","beautifully","beauty"], a:"beautiful", n:"Word formation: adjective BEAUTIFUL."},
+  {q:"Scientists made an important ___ (DISCOVER).", o:["discovery","discoverer","discovering"], a:"discovery", n:"Word formation: noun DISCOVERY."},
+  {q:"He behaved very ___ (RESPONSIBLE).", o:["responsibly","responsible","responsibility"], a:"responsibly", n:"Word formation: adverb RESPONSIBLY."},
+  {q:"On no account ___ the door be left open.", o:["must","must not","should not"], a:"must", n:"Inversion: ON NO ACCOUNT MUST…"},
+  {q:"The report ___ light on the problem.", o:["shed","put","gave"], a:"shed", n:"SHED LIGHT ON = clarify (collocation)."},
+  {q:"I'm in two ___ about accepting the job.", o:["minds","thoughts","ideas"], a:"minds", n:"IN TWO MINDS = undecided (idiom)."},
+  {q:"We'll have to ___ do without a car for now.", o:["make","get","put"], a:"make", n:"MAKE DO (without) = manage."}
+ ],
+ C1: [
+  {q:"The negotiations reached a ___ and talks broke down.", o:["deadlock","dead end","standstill"], a:"deadlock", n:"Reach a DEADLOCK (collocation)."},
+  {q:"She took my remark the wrong ___.", o:["way","side","sense"], a:"way", n:"Take something the wrong WAY (idiom)."},
+  {q:"His argument doesn't hold ___.", o:["water","ground","up"], a:"water", n:"HOLD WATER = be logically sound (idiom)."},
+  {q:"They are bound ___ find out eventually.", o:["to","for","on"], a:"to", n:"BE BOUND TO = certain to."},
+  {q:"The company is on the ___ of bankruptcy.", o:["verge","edge","point"], a:"verge", n:"ON THE VERGE OF (collocation)."},
+  {q:"Little ___ he know what was waiting for him.", o:["did","does","had"], a:"did", n:"Inversion after 'Little': LITTLE DID he know."},
+  {q:"Her comments were met ___ fierce criticism.", o:["with","by","from"], a:"with", n:"BE MET WITH (collocation)."},
+  {q:"Were it ___ for your help, I'd have failed.", o:["not","no","never"], a:"not", n:"WERE IT NOT FOR (inverted conditional)."},
+  {q:"The scandal ___ (ULTIMATE) led to his resignation.", o:["ultimately","ultimate","ultimateness"], a:"ultimately", n:"Word formation: adverb ULTIMATELY."},
+  {q:"Such ___ (PERSIST) eventually paid off.", o:["persistence","persistent","persistently"], a:"persistence", n:"Word formation: noun PERSISTENCE."},
+  {q:"His speech was remarkably ___ (PERSUADE).", o:["persuasive","persuasion","persuasively"], a:"persuasive", n:"Word formation: adjective PERSUASIVE."},
+  {q:"I'd take his promises with a pinch of ___.", o:["salt","sugar","pepper"], a:"salt", n:"A PINCH OF SALT = with scepticism (idiom)."},
+  {q:"The proposal was turned ___ by the board.", o:["down","off","over"], a:"down", n:"TURN DOWN = reject."},
+  {q:"She has a vested ___ in the outcome.", o:["interest","concern","stake"], a:"interest", n:"A VESTED INTEREST (collocation)."},
+  {q:"No sooner ___ we sat down than the phone rang.", o:["had","did","have"], a:"had", n:"NO SOONER HAD + subject + past participle."},
+  {q:"The plan backfired, with ___ consequences.", o:["dire","deep","strong"], a:"dire", n:"DIRE consequences (collocation)."}
+ ]
+};
+</script>
+<script>
+(function(){
+  /* ================= MAZE ================= */
+  // # wall, . dot, o big dot, ' ' empty, P pac, G ghost
+  var MAZE = [
+    "#################",
+    "#.......#.......#",
+    "#o##.##.#.##.##o#",
+    "#...............#",
+    "#.##.#.###.#.##.#",
+    "#....#..#..#....#",
+    "##.#.##.#.##.#.##",
+    "#..#....G....#..#",
+    "##.#.#######.#.##",
+    "#......#G#......#",
+    "#.####.#.#.####.#",
+    "#o...#..P..#...o#",
+    "#.##.#.###.#.##.#",
+    "#...............#",
+    "#################"
+  ];
+  var ROWS=MAZE.length, COLS=MAZE[0].length, TILE=24;
+  var grid=[], dotsLeft=0;
+  function reset(){
+    grid=[]; dotsLeft=0;
+    for(var r=0;r<ROWS;r++){ grid[r]=[]; for(var c=0;c<COLS;c++){ var ch=MAZE[r][c]; grid[r][c]=ch; if(ch==='.'||ch==='o') dotsLeft++; } }
+  }
+  function isWall(r,c){ if(r<0||c<0||r>=ROWS||c>=COLS) return true; return grid[r][c]==='#'; }
+
+  var canvas, ctx, pac, ghosts, score=0, lives=3, qRight=0, qTotal=0, running=false, bank=[], paused=false, level='B2', mouth=0, raf=null, last=0;
+  function $(id){ return document.getElementById(id); }
+  function show(id){ ['s-start','s-game','s-result'].forEach(function(s){ $(s).classList.toggle('hidden', s!==id); }); }
+  function esc(t){ return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  var DIRS={up:[-1,0],down:[1,0],left:[0,-1],right:[0,1]};
+
+  function findTiles(ch){ var out=[]; for(var r=0;r<ROWS;r++)for(var c=0;c<COLS;c++) if(MAZE[r][c]===ch) out.push({r:r,c:c}); return out; }
+
+  function newEntity(t,color){ return {r:t.r,c:t.c,pr:t.r,pc:t.c,prog:0,dir:null,next:null,color:color,home:{r:t.r,c:t.c}}; }
+
+  function start(){
+    if(window.IOW && IOW.ensureIdentity){ IOW.ensureIdentity(function(){ run(); }); } else run();
+  }
+  function run(){
+    level=$('level').value; bank=(BANKS[level]||BANKS.B2).slice();
+    $('lvlabel').textContent = $('level').options[$('level').selectedIndex].text;
+    reset(); score=0; lives=3; qRight=0; qTotal=0; paused=false;
+    var pt=findTiles('P')[0]||{r:11,c:7}; pac=newEntity(pt,'#ffd60a'); pac.dir='left'; pac.next='left';
+    var gt=findTiles('G'); var colors=['#ff2e74','#00e0ff','#ff8a3d','#b388ff'];
+    ghosts=gt.map(function(t,i){ var g=newEntity(t,colors[i%colors.length]); g.dir='up'; return g; });
+    $('score').textContent='0'; $('lives').textContent='❤️❤️❤️';
+    var w=COLS*TILE, h=ROWS*TILE; canvas.width=w; canvas.height=h;
+    show('s-game'); running=true; last=performance.now(); raf=requestAnimationFrame(loop);
+  }
+
+  function canGo(ent,dir){ var d=DIRS[dir]; return !isWall(ent.r+d[0], ent.c+d[1]); }
+
+  function stepEntity(ent, speed, chooser){
+    if(ent.prog===0){
+      // at a tile: choose direction
+      var nd = chooser(ent);
+      if(nd && canGo(ent,nd)) ent.dir=nd;
+      if(!ent.dir || !canGo(ent,ent.dir)){ return; } // blocked, stay
+      ent.pr=ent.r; ent.pc=ent.c;
+    }
+    ent.prog += speed;
+    if(ent.prog>=1){
+      var d=DIRS[ent.dir]; ent.r+=d[0]; ent.c+=d[1]; ent.prog=0; ent.pr=ent.r; ent.pc=ent.c;
+    }
+  }
+
+  function pacChooser(ent){ if(pac.next && canGo(ent,pac.next)) return pac.next; return ent.dir; }
+  function ghostChooser(g){
+    return function(ent){
+      var opts=[]; for(var k in DIRS){ if(canGo(ent,k)){ var d=DIRS[k]; if(!(ent.dir && d[0]===-DIRS[ent.dir][0] && d[1]===-DIRS[ent.dir][1])) opts.push(k); } }
+      if(opts.length===0){ for(var k2 in DIRS) if(canGo(ent,k2)) opts.push(k2); }
+      // 60% chase pac, else random
+      if(Math.random()<0.6){
+        opts.sort(function(a,b){ return dist(ent,DIRS[a])-dist(ent,DIRS[b]); });
+        return opts[0];
+      }
+      return opts[Math.floor(Math.random()*opts.length)];
+    };
+  }
+  function dist(ent,d){ var nr=ent.r+d[0], nc=ent.c+d[1]; return Math.abs(nr-pac.r)+Math.abs(nc-pac.c); }
+
+  function px(ent){ var d=ent.dir?DIRS[ent.dir]:[0,0]; return { x:(ent.c + d[1]*ent.prog)*TILE+TILE/2, y:(ent.r + d[0]*ent.prog)*TILE+TILE/2 }; }
+
+  function loop(t){
+    if(!running) return;
+    var dt=Math.min(40,t-last); last=t;
+    if(!paused){
+      var pspeed=0.10, gspeed=0.075;
+      stepEntity(pac, pspeed, pacChooser);
+      // eat dot
+      if(pac.prog===0){ var ch=grid[pac.r][pac.c]; if(ch==='.'){ grid[pac.r][pac.c]=' '; score+=10; dotsLeft--; $('score').textContent=score; } else if(ch==='o'){ grid[pac.r][pac.c]=' '; score+=50; dotsLeft--; $('score').textContent=score; } }
+      ghosts.forEach(function(g){ stepEntity(g, gspeed, ghostChooser(g)); });
+      // collision (tile proximity)
+      var pp=px(pac);
+      for(var i=0;i<ghosts.length;i++){ var gp=px(ghosts[i]); if(Math.abs(pp.x-gp.x)<TILE*0.7 && Math.abs(pp.y-gp.y)<TILE*0.7){ askQuestion(ghosts[i]); break; } }
+      if(dotsLeft<=0){ finish(true); return; }
+      mouth=(mouth+0.15)%1;
+    }
+    draw();
+    raf=requestAnimationFrame(loop);
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    for(var r=0;r<ROWS;r++)for(var c=0;c<COLS;c++){
+      var ch=grid[r][c], x=c*TILE, y=r*TILE;
+      if(ch==='#'){ ctx.fillStyle='rgba(31,58,138,.35)'; ctx.strokeStyle='#2f55d4'; ctx.lineWidth=2; ctx.beginPath(); ctx.roundRect(x+2,y+2,TILE-4,TILE-4,5); ctx.fill(); ctx.stroke(); }
+      else if(ch==='.'){ ctx.fillStyle='#cfe3ff'; ctx.beginPath(); ctx.arc(x+TILE/2,y+TILE/2,2.5,0,7); ctx.fill(); }
+      else if(ch==='o'){ ctx.fillStyle='#ffd60a'; ctx.beginPath(); ctx.arc(x+TILE/2,y+TILE/2,6,0,7); ctx.fill(); }
+    }
+    // pac
+    var p=px(pac); var open=Math.abs(Math.sin(mouth*Math.PI))*0.32+0.05;
+    var ang={left:Math.PI,right:0,up:-Math.PI/2,down:Math.PI/2}[pac.dir||'left'];
+    ctx.fillStyle=pac.color; ctx.beginPath(); ctx.moveTo(p.x,p.y);
+    ctx.arc(p.x,p.y,TILE*0.42, ang+open, ang-open+Math.PI*2); ctx.closePath(); ctx.fill();
+    // ghosts (bugs)
+    ghosts.forEach(function(g){ var q=px(g); ctx.fillStyle=g.color; ctx.beginPath(); ctx.arc(q.x,q.y-2,TILE*0.36,Math.PI,0); ctx.lineTo(q.x+TILE*0.36,q.y+TILE*0.34); ctx.lineTo(q.x+TILE*0.18,q.y+TILE*0.18); ctx.lineTo(q.x,q.y+TILE*0.34); ctx.lineTo(q.x-TILE*0.18,q.y+TILE*0.18); ctx.lineTo(q.x-TILE*0.36,q.y+TILE*0.34); ctx.closePath(); ctx.fill();
+      ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(q.x-5,q.y-2,3,0,7); ctx.arc(q.x+5,q.y-2,3,0,7); ctx.fill();
+      ctx.fillStyle='#111'; ctx.beginPath(); ctx.arc(q.x-5,q.y-2,1.4,0,7); ctx.arc(q.x+5,q.y-2,1.4,0,7); ctx.fill(); });
+  }
+
+  /* ---- question on ghost contact ---- */
+  var curGhost=null;
+  function askQuestion(ghost){
+    paused=true; curGhost=ghost; qTotal++;
+    if(bank.length===0) bank=(BANKS[level]||BANKS.B2).slice();
+    var idx=Math.floor(Math.random()*bank.length); var item=bank.splice(idx,1)[0];
+    curItem=item;
+    $('qlv').textContent='USE OF ENGLISH · '+($('level').options[$('level').selectedIndex].text);
+    $('qtext').innerHTML = esc(item.q).replace('___','<span class="qgap">&nbsp;&nbsp;</span>');
+    var box=$('qopts'); box.innerHTML=''; $('qfb').textContent='';
+    var opts=item.o.slice(); for(var i=opts.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=opts[i];opts[i]=opts[j];opts[j]=t;}
+    opts.forEach(function(o){ var b=document.createElement('button'); b.className='qopt'; b.type='button'; b.textContent=o; b.onclick=function(){ answerQ(o,b); }; box.appendChild(b); });
+    $('qov').classList.add('on');
+  }
+  var curItem=null, qLocked=false;
+  function answerQ(choice, btn){
+    if(qLocked) return; qLocked=true;
+    var ok = choice===curItem.a;
+    $('qopts').querySelectorAll('.qopt').forEach(function(b){ b.disabled=true; if(b.textContent===curItem.a) b.classList.add('ok'); });
+    if(ok){ btn.classList.add('ok'); score+=100; qRight++; $('qfb').textContent='✅ +100 — bug zapped!'; try{ if(window.IOWAudio) IOWAudio.correct(); }catch(e){} }
+    else { btn.classList.add('no'); $('qfb').innerHTML='❌ Answer: <b>'+esc(curItem.a)+'</b> — '+esc(curItem.n); try{ if(window.IOWAudio) IOWAudio.wrong(); }catch(e){} }
+    $('score').textContent=score;
+    setTimeout(function(){
+      $('qov').classList.remove('on'); qLocked=false;
+      // send ghost home
+      if(curGhost){ curGhost.r=curGhost.home.r; curGhost.c=curGhost.home.c; curGhost.pr=curGhost.r; curGhost.pc=curGhost.c; curGhost.prog=0; curGhost.dir='up'; }
+      if(!ok){ lives--; $('lives').textContent='❤️'.repeat(Math.max(0,lives))+'🖤'.repeat(3-Math.max(0,lives)); if(lives<=0){ finish(false); return; } }
+      paused=false; last=performance.now();
+    }, ok?900:2100);
+  }
+
+  function finish(won){
+    running=false; if(raf) cancelAnimationFrame(raf);
+    show('s-result');
+    $('rEm').textContent = won?'🏆':'🐞';
+    $('rTitle').textContent = won?'Maze cleared!':'The bugs got you!';
+    $('rScore').textContent=score; $('rQ').textContent=qRight+' / '+qTotal;
+    try{ var k='wordMuncherBest_'+level, best=parseInt(localStorage.getItem(k)||'0',10); if(score>best){ localStorage.setItem(k,score); $('rBest').textContent='🎉 New best for '+level+'!'; } else { $('rBest').textContent='Your best ('+level+'): '+best; } }catch(e){}
+    try{ if(window.IOWAudio && won) IOWAudio.win(); }catch(e){}
+    try{ if(window.IOW && IOW.postScore && score>0){ IOW.postScore('Word Muncher', score, {correct:qRight, wrong:qTotal-qRight, level:level}); } }catch(e){}
+  }
+
+  /* ---- controls ---- */
+  function setDir(d){ if(!running) return; pac.next=d; }
+  document.addEventListener('keydown', function(e){ var m={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',s:'down',a:'left',d:'right'}; if(m[e.key]){ e.preventDefault(); setDir(m[e.key]); } });
+  document.querySelectorAll('.dpad button').forEach(function(b){ b.addEventListener('click', function(){ setDir(b.getAttribute('data-d')); }); });
+  // swipe on canvas
+  var tsx=0,tsy=0;
+  function initCanvas(){ canvas=$('board'); ctx=canvas.getContext('2d');
+    canvas.addEventListener('touchstart',function(e){ var t=e.touches[0]; tsx=t.clientX; tsy=t.clientY; },{passive:true});
+    canvas.addEventListener('touchend',function(e){ var t=e.changedTouches[0]; var dx=t.clientX-tsx, dy=t.clientY-tsy; if(Math.abs(dx)<20&&Math.abs(dy)<20) return; if(Math.abs(dx)>Math.abs(dy)) setDir(dx>0?'right':'left'); else setDir(dy>0?'down':'up'); },{passive:true});
+  }
+
+  /* wire */
+  initCanvas();
+  try{ if(window.IOW){ if(IOW.mountIdentity) IOW.mountIdentity($('idmount')); if(IOW.codeBanner) IOW.codeBanner(); } }catch(e){}
+  $('btnStart').onclick=start;
+  $('btnAgain').onclick=run;
+})();
+</script>
+<script>window.IOW_HELP={title:"Word Muncher",goal:"Munch every word-dot in the maze while dodging the grammar bugs.",steps:["Pick a Cambridge level (A2–C1), then tap 'Start munching'.","Move with the arrow keys, the on-screen buttons, or by swiping.","Eat all the dots to clear the maze. Big dots are worth more.","If a bug 🐞 catches you, answer a Use-of-English question: right = zap the bug (+100), wrong = lose a life."],tip:"Enter your name and class code so your score counts on the ranking."};</script>
+<script src="how-to-play.js"></script>
+<script src="game-audio.js"></script>
+<script src="theme-switcher.js"></script>
+</body></html>
