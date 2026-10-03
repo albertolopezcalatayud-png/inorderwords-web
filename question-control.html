@@ -393,7 +393,7 @@
             fb.style.display = 'block'; fb.className = 'status-msg incorrect';
             fb.innerText = (timedOut ? 'TIME UP! ' : 'SIGNAL LOST! ') + `→ ${model}`;
             document.getElementById('es-hint').textContent = currentItem.es;
-            setTimeout(nextRound, 2600);
+            setTimeout(nextRound, 4500);
         }
         updateStats();
     }
@@ -500,4 +500,5 @@
 <script src="helper-bot.js" defer></script>
 <script>window.IOW_HELP={"title": "Question Control", "goal": "Write the question that matches the answer.", "steps": ["You're given an answer; write the question using do/does/did or have/has.", "Watch out for subject questions (Who broke the window?) which need no auxiliary.", "Type your question and submit."], "tip": "Chill mode removes the timer."};</script>
 <script src="how-to-play.js"></script>
+<script src="game-audio.js"></script>
 </body></html>

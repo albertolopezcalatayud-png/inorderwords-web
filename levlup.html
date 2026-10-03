@@ -5439,7 +5439,7 @@ GRAMMAR_GEN["extraposition-it-subject"] = [
     var gens = GRAMMAR_GEN[topic.id];
     if(!gens || !gens.length){ return []; }
     var out = [], seenPrompts = {}, tries = 0;
-    while(out.length < 6 && tries < 60){
+    while(out.length < 8 && tries < 100){
       tries++;
       var fn = gens[out.length % gens.length === 0 && out.length < gens.length ? out.length : rndInt(0, gens.length-1)];
       var ex;
@@ -19179,6 +19179,7 @@ GRAMMAR_GEN["extraposition-it-subject"] = [
     document.getElementById("checkBtn").disabled = true;
     if(ctx.onDone) ctx.onDone(correctCount, list.length);
     try{ if(window.IOW && IOW.postScore && correctCount>0){ IOW.postScore("Level Up", correctCount, {correct:correctCount, wrong:list.length-correctCount}); } }catch(e){}
+    try{ if(window.IOWAudio){ if(correctCount===list.length) IOWAudio.win(); } }catch(e){}
   }
 
   /* =========================== LISTENING MODULE =========================== */
@@ -20398,4 +20399,5 @@ GRAMMAR_GEN["extraposition-it-subject"] = [
 <script src="helper-bot.js" defer></script>
 <script>window.IOW_HELP={"title": "Levlup", "goal": "Study and practise everything for your course, unit by unit.", "steps": ["Pick your course (1st ESO to 2nd Bach) and a tab: Grammar, Listening, Speaking, Reading, Writing or Exam.", "Choose a topic on the left to read the rules, then do the unlimited practice, checked instantly.", "Enter your name and class code (top right) so your practice counts on the ranking."], "tip": "Green ticks mark the topics you've already practised."};</script>
 <script src="how-to-play.js"></script>
+<script src="game-audio.js"></script>
 </body></html>
