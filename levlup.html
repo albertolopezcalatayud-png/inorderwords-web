@@ -795,9 +795,22 @@
   <p class="footnote">Levlup · An English study resource for ESL students, from 1st ESO to 2nd Bachillerato · Grammar practice is generated instantly in your browser — no account or login needed</p>
 </div>
 
+<script src="class-sync.js"></script>
 <script>
 (function(){
   "use strict";
+  /* ---- class ranking (IOW) ---- */
+  window.addEventListener("load", function(){
+    if(!window.IOW) return;
+    try{
+      var _b=document.createElement("div");
+      _b.setAttribute("data-iow-identity","");
+      _b.style.cssText="position:fixed;top:6px;right:8px;z-index:99999";
+      document.body.appendChild(_b);
+      if(IOW.mountIdentity) IOW.mountIdentity(_b);
+      if(IOW.codeBanner) IOW.codeBanner();
+    }catch(e){}
+  });
 
   /* =========================== DATA =========================== */
   var LEVELS = [
@@ -19315,6 +19328,7 @@ GRAMMAR_GEN["extraposition-it-subject"] = [
 
     document.getElementById("checkBtn").disabled = true;
     if(ctx.onDone) ctx.onDone(correctCount, list.length);
+    try{ if(window.IOW && IOW.postScore && correctCount>0){ IOW.postScore("Level Up", correctCount, {correct:correctCount, wrong:list.length-correctCount}); } }catch(e){}
   }
 
   /* =========================== LISTENING MODULE =========================== */
