@@ -2165,10 +2165,7 @@
       if(mode==="neg") return {type:"short", instruction:"Write this as a negative imperative.", prompt: "Tell someone NOT to: "+a+".", answer: "Don't "+a+".", acceptableAnswers:[], explanation: "Negative imperative: don't + base verb."};
       return {type:"short", instruction:"Make a suggestion using Let's.", prompt: "Suggest doing this together: "+rnd(["go to the park","watch a film","start now","have a break"])+".", answer: "Let's "+rnd(["go to the park","watch a film","start now","have a break"])+".", acceptableAnswers:[], explanation: "Let's + base verb makes a suggestion that includes the speaker."};
     },
-    function(){
-      var opts = shuffleCopy(["Open","Opens","Opening","To open"]);
-      return {type:"choice", instruction:"Choose the correct form for an instruction.", prompt: "___ your books, please.", options: opts, answer: "Open", explanation: "Imperatives use the base form of the verb."};
-    }
+    function(){ var b=[{p:"___ your books, please.",o:["Open", "Opens", "Opening", "To open"],a:"Open",e:"Imperatives use the base form of the verb."},{p:"___ quiet during the test.",o:["Be", "Being", "Are", "To be"],a:"Be",e:"The imperative of 'to be' is just 'Be'."},{p:"Please ___ the door when you leave.",o:["close", "closes", "closing", "to close"],a:"close",e:"Imperatives use the base form."},{p:"Don't ___ late tomorrow.",o:["be", "being", "are", "to be"],a:"be",e:"Negative imperative: Don't + base form."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct form for an instruction.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   /* ---------- 2nd ESO ---------- */
@@ -2198,11 +2195,7 @@
       var answer = useCont ? beNow(subj.person)+" "+v.ing : sForm(v, subj.person);
       return {type:"gap", instruction:"Choose present simple or present continuous.", prompt: cap(subj.text)+" ___ ("+v.base+") "+time+".", answer: answer, acceptableAnswers:[], explanation: useCont ? "\""+time+"\" signals present continuous." : "\""+time+"\" signals present simple (routine)."};
     },
-    function(){
-      var opts = shuffleCopy(["usually","right now","every day","at the moment"]);
-      var correct = rnd(["usually","every day","right now","at the moment"]);
-      return {type:"choice", instruction:"Which time expression matches a routine (present simple)?", prompt: "She ___ walks to school. Choose a matching time word.", options: ["usually","right now","at the moment","this minute"], answer: "usually", explanation: "Routines use words like always/usually/every day."};
-    }
+    function(){ var b=[{p:"Listen! The baby ___.",o:["is crying", "cries", "cry"],a:"is crying",e:"'Listen!' signals something happening now → present continuous."},{p:"They ___ football every Saturday.",o:["play", "are playing", "plays"],a:"play",e:"'every Saturday' is a routine → present simple."},{p:"Right now I ___ my homework.",o:["am doing", "do", "does"],a:"am doing",e:"'Right now' → present continuous."},{p:"Water ___ at 100 degrees.",o:["boils", "is boiling", "boil"],a:"boils",e:"A general fact → present simple."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose present simple (routine/fact) or present continuous (happening now).", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   GRAMMAR_GEN["comparatives-superlatives"] = [
@@ -2238,10 +2231,7 @@
       if(mode==="could") return {type:"gap", instruction:"Complete with could (past ability).", prompt: "When she was young, she ___ ("+ability+").", answer: "could "+ability, acceptableAnswers:[], explanation: "Could expresses past ability."};
       return {type:"gap", instruction:"Complete with a form of be able to.", prompt: "I haven't ___ (be able to / "+ability+") this month.", answer: "been able to "+ability, acceptableAnswers:[], explanation: "Be able to replaces can/could in perfect tenses."};
     },
-    function(){
-      var opts = shuffleCopy(["Could you help me","Can you helped me","You can to help me"]);
-      return {type:"choice", instruction:"Choose the correct polite request.", prompt: "How do you politely ask for help?", options: opts, answer: "Could you help me", explanation: "Could you + base verb is a polite request."};
-    }
+    function(){ var b=[{p:"How do you politely ask for help?",o:["Could you help me", "Can you helped me", "You can to help me"],a:"Could you help me",e:"'Could you + base verb' is a polite request."},{p:"When I was five, I ___ ride a bike.",o:["could", "can", "could to"],a:"could",e:"'Could' is the past of 'can' for ability."},{p:"She's amazing — she ___ speak four languages.",o:["can", "cans", "can to"],a:"can",e:"'Can' + base verb, with no 's' and no 'to'."},{p:"___ I open the window, please?",o:["Could", "Do", "Am"],a:"Could",e:"'Could I...?' politely asks for permission."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct form with can/could.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   GRAMMAR_GEN["countable-uncountable"] = [
@@ -2276,10 +2266,7 @@
       if(mode==="neg") return {type:"gap", instruction:"Complete the negative form.", prompt: cap(subj.text)+" ___ ("+v.base+") "+obj+" tonight.", answer: be+" not going to "+v.base, acceptableAnswers:[], explanation: "Negative: be + not + going to + base verb."};
       return {type:"gap", instruction:"Complete the question.", prompt: cap(be)+" "+subj.text+" going to ___ ("+v.base+") "+obj+"?", answer: v.base, acceptableAnswers:[], explanation: "Question word order: be + subject + going to + base verb."};
     },
-    function(){
-      var opts = shuffleCopy(["going to rain","go to rain","going to rains"]);
-      return {type:"choice", instruction:"Choose the correct prediction based on evidence.", prompt: "Look at those clouds! It's ___.", options: opts, answer: "going to rain", explanation: "Going to + base verb for predictions with present evidence."};
-    }
+    function(){ var b=[{p:"Look at those clouds! It's ___.",o:["going to rain", "go to rain", "going to rains"],a:"going to rain",e:"Going to + base verb for a prediction based on present evidence."},{p:"I've decided: I ___ study medicine.",o:["am going to", "go to", "am going"],a:"am going to",e:"'Am/is/are going to' + base verb for a plan."},{p:"Careful! You ___ fall!",o:["are going to", "go to", "are going"],a:"are going to",e:"Evidence now → 'are going to' + base verb."},{p:"She ___ visit her grandma next weekend.",o:["is going to", "go to", "is going"],a:"is going to",e:"A future plan → 'is going to' + base verb."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct 'going to' form (plan or prediction with evidence).", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   GRAMMAR_GEN["wh-questions"] = [
@@ -2292,9 +2279,7 @@
       var q = rnd(qs);
       return {type:"gap", instruction:"Complete the wh- question with the correct auxiliary.", prompt: q.wh+" ___ "+q.subj+" ("+q.verb+")?", answer: q.ans, acceptableAnswers:[], explanation: "Wh- questions use the same auxiliary word order as yes/no questions."};
     },
-    function(){
-      return {type:"choice", instruction:"Choose the correct question (the wh- word is the subject).", prompt: "Someone broke the window. How do you ask who did it?", options: shuffleCopy(["Who broke the window?","Who did break the window?","Who did the window break?"]), answer: "Who broke the window?", explanation: "When the wh- word is the subject, no auxiliary do/does/did is needed."};
-    }
+    function(){ var b=[{p:"Someone broke the window. How do you ask who did it?",o:["Who broke the window?", "Who did break the window?", "Who did the window break?"],a:"Who broke the window?",e:"When the wh- word is the subject, no auxiliary (do/does/did) is needed."},{p:"Someone phoned you. How do you ask who?",o:["Who phoned you?", "Who did phone you?", "Who you phoned?"],a:"Who phoned you?",e:"Subject question → no auxiliary."},{p:"How do you ask where she lives?",o:["Where does she live?", "Where she lives?", "Where lives she?"],a:"Where does she live?",e:"Object/normal question → use the auxiliary 'does' + base verb."},{p:"How do you ask what time the film starts?",o:["What time does the film start?", "What time the film starts?", "What time starts the film?"],a:"What time does the film start?",e:"Use 'does' + base verb in present-simple questions."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct question.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   GRAMMAR_GEN["suggestions-offers"] = [
@@ -2305,9 +2290,7 @@
       if(mode==="why") return {type:"short", instruction:"Make a friendly suggestion using Why don't.", prompt: "Suggest to a friend: "+act+".", answer: "Why don't we "+act+"?", acceptableAnswers:["Why don't you "+act+"?"], explanation: "Why don't we/you + base verb makes a friendly suggestion."};
       return {type:"short", instruction:"Politely offer something using Would you like.", prompt: "Offer this politely: "+act+".", answer: "Would you like to "+act+"?", acceptableAnswers:[], explanation: "Would you like + to + infinitive politely offers something."};
     },
-    function(){
-      return {type:"choice", instruction:"Choose the correct polite offer.", prompt: "Offering someone tea, you say:", options: shuffleCopy(["Would you like some tea?","Do you want some tea?","You like some tea?"]), answer: "Would you like some tea?", explanation: "Would you like + noun politely offers something."};
-    }
+    function(){ var b=[{p:"Offering someone tea, you say:",o:["Would you like some tea?", "Do you want some tea?", "You like some tea?"],a:"Would you like some tea?",e:"'Would you like + noun' politely offers something."},{p:"Suggesting going to the cinema:",o:["Why don't we go to the cinema?", "Why we don't go to the cinema?", "Why not we go to the cinema?"],a:"Why don't we go to the cinema?",e:"'Why don't we + base verb' makes a suggestion."},{p:"Offering to carry a bag:",o:["Shall I carry it?", "Shall I carrying it?", "Do I carry it?"],a:"Shall I carry it?",e:"'Shall I + base verb' offers to do something."},{p:"Suggesting a break:",o:["How about taking a break?", "How about take a break?", "How about to take a break?"],a:"How about taking a break?",e:"'How about + -ing' makes a suggestion."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct suggestion or offer.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   /* ---------- 3rd ESO ---------- */
@@ -2372,10 +2355,7 @@
       if(mode==="should") return {type:"gap", instruction:"Give advice.", prompt: "You ___ (advice) ask your teacher for help.", answer: "should", acceptableAnswers:[], explanation: "Should gives advice."};
       return {type:"gap", instruction:"Express an external obligation (a rule).", prompt: "She ___ (rule) hand in the project on Monday.", answer: "has to", acceptableAnswers:[], explanation: "Have to = obligation from outside (a rule)."};
     },
-    function(){
-      var opts = shuffleCopy(["mustn't","don't have to","shouldn't"]);
-      return {type:"choice", instruction:"Choose: it's prohibited to do this.", prompt: "You ___ smoke here — it's against the law.", options: opts, answer: "mustn't", explanation: "Mustn't expresses prohibition, not simply lack of obligation."};
-    }
+    function(){ var b=[{p:"You ___ smoke here — it's against the law.",o:["mustn't", "don't have to", "shouldn't"],a:"mustn't",e:"'Mustn't' expresses prohibition."},{p:"Entry is free, so you ___ pay.",o:["don't have to", "mustn't", "shouldn't"],a:"don't have to",e:"'Don't have to' = no obligation (it's optional)."},{p:"You look tired. You ___ rest.",o:["should", "mustn't", "don't have to"],a:"should",e:"'Should' gives advice."},{p:"Students ___ wear a uniform; it's a school rule.",o:["have to", "don't have to", "mustn't"],a:"have to",e:"'Have to' expresses obligation from a rule."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct modal of obligation.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   GRAMMAR_GEN["adverbs-frequency-manner"] = [
@@ -2402,10 +2382,7 @@
       var it = rnd(items);
       return {type:"gap", instruction:"Complete the question tag.", prompt: it.s+", ___?", answer: it.tag, acceptableAnswers:[], explanation: "Affirmative sentence → negative tag, and vice versa; the tag repeats the auxiliary."};
     },
-    function(){
-      var opts = shuffleCopy(["isn't it","is it","doesn't it"]);
-      return {type:"choice", instruction:"Choose the correct question tag.", prompt: "It's a beautiful day, ___?", options: opts, answer: "isn't it", explanation: "Affirmative + negative tag, repeating the verb be."};
-    }
+    function(){ var b=[{p:"It's a beautiful day, ___?",o:["isn't it", "is it", "doesn't it"],a:"isn't it",e:"Affirmative statement → negative tag, repeating the verb 'be'."},{p:"You like pizza, ___?",o:["don't you", "do you", "aren't you"],a:"don't you",e:"Present simple affirmative → 'don't + you'."},{p:"She can drive, ___?",o:["can't she", "can she", "doesn't she"],a:"can't she",e:"Repeat the modal 'can' in the negative tag."},{p:"They aren't here, ___?",o:["are they", "aren't they", "do they"],a:"are they",e:"Negative statement → affirmative tag."},{p:"He went home, ___?",o:["didn't he", "did he", "doesn't he"],a:"didn't he",e:"Past simple affirmative → 'didn't + he'."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct question tag.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   GRAMMAR_GEN["so-neither"] = [
@@ -2416,9 +2393,7 @@
       var negAux = rnd([{s:"I don't like spiders", a:"do"},{s:"She hasn't seen the film", a:"has"},{s:"They can't come", a:"can"}]);
       return {type:"gap", instruction:"Agree with the negative statement using Neither.", prompt: negAux.s+". ___ I.", answer: "Neither "+negAux.a+" I", acceptableAnswers:["Nor "+negAux.a+" I"], explanation: "Neither/Nor + auxiliary + subject agrees with a negative statement."};
     },
-    function(){
-      return {type:"choice", instruction:"Choose the correct agreement.", prompt: "\"I haven't seen that film.\" \"___ have I.\"", options: shuffleCopy(["Neither","So","Either"]), answer: "Neither", explanation: "Neither agrees with a negative statement."};
-    }
+    function(){ var b=[{p:"\"I haven't seen that film.\" \"___ have I.\"",o:["Neither", "So", "Either"],a:"Neither",e:"'Neither' agrees with a negative statement."},{p:"\"I love coffee.\" \"___ do I.\"",o:["So", "Neither", "Either"],a:"So",e:"'So' agrees with an affirmative statement."},{p:"\"I can't swim.\" \"___ can I.\"",o:["Neither", "So", "Either"],a:"Neither",e:"'Neither + auxiliary + subject' agrees with a negative."},{p:"\"I'm tired.\" \"___ am I.\"",o:["So", "Neither", "Either"],a:"So",e:"'So + auxiliary + subject' agrees with an affirmative."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct short agreement (so / neither).", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   GRAMMAR_GEN["too-enough"] = [
@@ -2428,10 +2403,7 @@
       if(mode==="too") return {type:"gap", instruction:"Complete with too + adjective.", prompt: "This is ___ ("+adj+") to carry.", answer: "too "+adj, acceptableAnswers:[], explanation: "Too + adjective means more than necessary."};
       return {type:"gap", instruction:"Complete with adjective + enough.", prompt: "Is the water warm ___?", answer: "enough", acceptableAnswers:[], explanation: "Enough comes after the adjective."};
     },
-    function(){
-      var opts = shuffleCopy(["too old","old enough","enough old"]);
-      return {type:"choice", instruction:"Choose the correct structure.", prompt: "She isn't ___ to drive yet.", options: opts, answer: "old enough", explanation: "Adjective + enough = as much as necessary."};
-    }
+    function(){ var b=[{p:"She isn't ___ to drive yet.",o:["old enough", "too old", "enough old"],a:"old enough",e:"Adjective + enough = as much as necessary."},{p:"This coffee is ___ to drink.",o:["too hot", "hot enough", "enough hot"],a:"too hot",e:"Too + adjective = more than necessary (a problem)."},{p:"He isn't ___ to reach the shelf.",o:["tall enough", "too tall", "enough tall"],a:"tall enough",e:"'enough' goes after the adjective."},{p:"The box is ___ to carry alone.",o:["too heavy", "heavy enough", "enough heavy"],a:"too heavy",e:"'too' goes before the adjective."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose 'too + adjective' or 'adjective + enough'.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   /* ---------- 4th ESO ---------- */
@@ -2445,10 +2417,7 @@
       var pastTime = rnd(TIMES_PAST);
       return {type:"gap", instruction:"Complete with the past simple (specific time).", prompt: cap(subj.text)+" ___ ("+v.base+") "+pastTime+".", answer: v.past, acceptableAnswers:[], explanation: "A specific past time (\""+pastTime+"\") needs the past simple."};
     },
-    function(){
-      var opts = shuffleCopy(["since 2019","yesterday","last week","in 2019"]);
-      return {type:"choice", instruction:"Which time expression goes with the present perfect?", prompt: "I've lived here ___.", options: ["since 2019","in 2019","yesterday","last year"], answer: "since 2019", explanation: "Since marks the starting point for the present perfect; specific past dates need the past simple."};
-    }
+    function(){ var b=[{p:"I've lived here ___.",o:["since 2019", "in 2019", "yesterday"],a:"since 2019",e:"'Since' + a starting point goes with the present perfect."},{p:"She ___ to Paris last summer.",o:["went", "has gone", "has been"],a:"went",e:"'last summer' is a finished time → past simple."},{p:"We ___ this film three times.",o:["have seen", "saw", "see"],a:"have seen",e:"Life experience up to now → present perfect."},{p:"He arrived ___.",o:["two hours ago", "since two hours", "for two hours ago"],a:"two hours ago",e:"'ago' marks a finished past time (past simple)."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct tense or time expression.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   GRAMMAR_GEN["first-second-conditional"] = [
@@ -2458,10 +2427,7 @@
       if(mode==="first") return {type:"gap", instruction:"Complete the first conditional (realistic future).", prompt: "If you ("+v1.base+", present) hard, you ___ ("+v2.base+") the exam.", answer: "will "+v2.base, acceptableAnswers:["'ll "+v2.base], explanation: "First conditional: if + present simple, will + infinitive."};
       return {type:"gap", instruction:"Complete the second conditional (hypothetical).", prompt: "If I ("+v1.base+", past: "+v1.past+") more time, I ___ ("+v2.base+") Japanese.", answer: "would "+v2.base, acceptableAnswers:["'d "+v2.base], explanation: "Second conditional: if + past simple, would + infinitive."};
     },
-    function(){
-      var opts = shuffleCopy(["were","was","am"]);
-      return {type:"choice", instruction:"Choose the preferred form in the second conditional.", prompt: "If I ___ you, I wouldn't say that.", options: opts, answer: "were", explanation: "In the second conditional, \"were\" is preferred for all persons with the verb to be."};
-    }
+    function(){ var b=[{p:"If I ___ you, I wouldn't say that.",o:["were", "was", "am"],a:"were",e:"In the second conditional, 'were' is preferred for all persons."},{p:"If it ___ tomorrow, we'll stay in.",o:["rains", "will rain", "rained"],a:"rains",e:"First conditional if-clause → present simple."},{p:"If I had a car, I ___ to work.",o:["would drive", "will drive", "drive"],a:"would drive",e:"Second conditional result → would + base verb."},{p:"If you heat ice, it ___.",o:["melts", "will melt", "would melt"],a:"melts",e:"Zero conditional (a general truth) → present simple."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct conditional form.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   GRAMMAR_GEN["passive-present-past"] = [
@@ -2489,10 +2455,7 @@
       var it = rnd(items);
       return {type:"gap", instruction:"Report the statement, back-shifting the tense.", prompt: "\""+it.d+"\" → She/He said (that) ___.", answer: it.r, acceptableAnswers:[], explanation: "The verb tense usually moves one step back in reported speech."};
     },
-    function(){
-      var opts = shuffleCopy(["would call","will call","calls"]);
-      return {type:"choice", instruction:"Choose the correct reported form of will.", prompt: "\"I will call you.\" → He said he ___ me.", options: opts, answer: "would call", explanation: "Will becomes would in reported speech."};
-    }
+    function(){ var b=[{p:"\"I will call you.\" → He said he ___ me.",o:["would call", "will call", "calls"],a:"would call",e:"'Will' becomes 'would' in reported speech."},{p:"\"I am tired.\" → She said she ___ tired.",o:["was", "is", "will be"],a:"was",e:"Present simple 'am/is' backshifts to 'was'."},{p:"\"We live in Madrid.\" → They said they ___ in Madrid.",o:["lived", "live", "will live"],a:"lived",e:"Present simple backshifts to past simple."},{p:"\"I can help.\" → He said he ___ help.",o:["could", "can", "will can"],a:"could",e:"'Can' becomes 'could' in reported speech."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct reported (backshifted) form.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   GRAMMAR_GEN["used-to"] = [
@@ -2503,10 +2466,7 @@
       if(mode==="neg") return {type:"gap", instruction:"Complete the negative form.", prompt: "He ___ ("+v.base+", used to) vegetables.", answer: "didn't use to "+v.base, acceptableAnswers:[], explanation: "Negative: didn't use to + base verb."};
       return {type:"gap", instruction:"Complete the question.", prompt: "___ you use to ("+v.base+") to school?", answer: "Did", acceptableAnswers:[], explanation: "Question: Did...use to + verb?"};
     },
-    function(){
-      var opts = shuffleCopy(["would be shy","used to be shy","would used to be shy"]);
-      return {type:"choice", instruction:"Choose the correct form (a past STATE, not a repeated action).", prompt: "As a child, she ___.", options: opts, answer: "used to be shy", explanation: "Would cannot describe past states, only repeated actions — states need used to."};
-    }
+    function(){ var b=[{p:"As a child, she ___ (a past STATE).",o:["used to be shy", "would be shy", "would used to be shy"],a:"used to be shy",e:"'Would' can't describe past states, only repeated actions — states need 'used to'."},{p:"When I was young, I ___ long hair.",o:["used to have", "use to have", "used have"],a:"used to have",e:"'used to' + base verb for a past state."},{p:"She ___ live in Paris, but now she lives here.",o:["used to", "use to", "uses to"],a:"used to",e:"The correct form is 'used to' + base verb."},{p:"They ___ believe in ghosts when they were kids.",o:["used to", "would to", "use to"],a:"used to",e:"'used to' + base verb for a past habit."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct 'used to' form (past habits and states).", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   GRAMMAR_GEN["relative-clauses"] = [
@@ -2519,10 +2479,7 @@
       var it = rnd(items);
       return {type:"gap", instruction:"Complete with the correct relative pronoun.", prompt: it.s, answer: it.a, acceptableAnswers: it.a==="who"?["that"]:(it.a==="which"?["that"]:[]), explanation: "Who = people, which = things/animals, that = both, where = places, whose = possession."};
     },
-    function(){
-      var opts = shuffleCopy(["who","which","whose"]);
-      return {type:"choice", instruction:"Choose the correct relative pronoun (possession).", prompt: "I met a boy ___ father is a famous actor.", options: opts, answer: "whose", explanation: "Whose shows possession."};
-    }
+    function(){ var b=[{p:"I met a boy ___ father is a famous actor.",o:["whose", "who", "which"],a:"whose",e:"'Whose' shows possession."},{p:"This is the man ___ helped me.",o:["who", "which", "whose"],a:"who",e:"Use 'who' for people."},{p:"I lost the pen ___ you gave me.",o:["which", "who", "whose"],a:"which",e:"Use 'which' for things."},{p:"She's the teacher ___ car is red.",o:["whose", "who", "which"],a:"whose",e:"'Whose' shows possession."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct relative pronoun.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   GRAMMAR_GEN["causative"] = [
@@ -2534,10 +2491,7 @@
       var it = rnd(items);
       return {type:"gap", instruction:"Complete with have + object + past participle (causative).", prompt: it.subj+" had "+"___ ("+it.thing+", "+it.verb+").", answer: it.thing+" "+it.verb, acceptableAnswers:[], explanation: "have/get + object + past participle: someone else does it for you."};
     },
-    function(){
-      var opts = shuffleCopy(["had her car repaired","had repaired her car","had her car repair"]);
-      return {type:"choice", instruction:"Choose the correct word order.", prompt: "Last week, she ___.", options: opts, answer: "had her car repaired", explanation: "Word order: have/get + object + past participle."};
-    }
+    function(){ var b=[{p:"Last week, she ___.",o:["had her car repaired", "had repaired her car", "had her car repair"],a:"had her car repaired",e:"Word order: have/get + object + past participle."},{p:"I need to ___ next week.",o:["have my hair cut", "have cut my hair", "have my hair cutting"],a:"have my hair cut",e:"have + object + past participle."},{p:"They ___ last month.",o:["had their house painted", "had painted their house", "had their house paint"],a:"had their house painted",e:"have + object + past participle."},{p:"He's going to ___ tomorrow.",o:["get his phone fixed", "get fixed his phone", "get his phone fix"],a:"get his phone fixed",e:"get + object + past participle."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct causative word order (have/get + object + past participle).", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   GRAMMAR_GEN["both-either-neither"] = [
@@ -2549,10 +2503,7 @@
       if(mode==="either") return {type:"gap", instruction:"Complete with either.", prompt: "You can take ___ "+nounSg+".", answer: "either", acceptableAnswers:[], explanation: "Either = one or the other, with a singular noun."};
       return {type:"gap", instruction:"Complete with neither.", prompt: "___ "+nounSg+" was open.", answer: "Neither", acceptableAnswers:[], explanation: "Neither = not one and not the other, with a singular noun."};
     },
-    function(){
-      var opts = shuffleCopy(["Both","Either","Neither"]);
-      return {type:"choice", instruction:"Choose the correct word.", prompt: "___ of my parents speak English.", options: opts, answer: "Both", explanation: "Both + of + plural noun/pronoun."};
-    }
+    function(){ var b=[{p:"___ of my parents speak English.",o:["Both", "Either", "Neither"],a:"Both",e:"'Both' + of + plural = the two of them."},{p:"I don't like ___ of these two shirts.",o:["either", "both", "neither"],a:"either",e:"In a negative sentence, use 'either'."},{p:"___ of them came; the room was empty.",o:["Neither", "Both", "Either"],a:"Neither",e:"'Neither' = not one and not the other."},{p:"You can have ___ cake or ice cream.",o:["either", "both", "neither"],a:"either",e:"'either ... or ...' offers a choice of one."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose both / either / neither.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   /* ---------- 1st Bachillerato ---------- */
@@ -2561,10 +2512,7 @@
       var v1 = rnd(VERBS), v2 = rnd(VERBS);
       return {type:"gap", instruction:"Complete the third conditional (hypothetical past).", prompt: "If she had ("+v1.base+", pp: "+v1.pp+") earlier, she ___ ("+v2.base+", pp: "+v2.pp+") the train.", answer: "wouldn't have "+v2.pp, acceptableAnswers:["would not have "+v2.pp], explanation: "Third conditional: if + past perfect, would have + past participle."};
     },
-    function(){
-      var opts = shuffleCopy(["would have believed","would believe","had believed"]);
-      return {type:"choice", instruction:"Choose the correct result clause.", prompt: "If I hadn't seen it, I ___ it.", options: opts, answer: "would have believed", explanation: "Result clause: would have + past participle."};
-    }
+    function(){ var b=[{p:"If I hadn't seen it, I ___ it.",o:["wouldn't have believed", "wouldn't believe", "hadn't believed"],a:"wouldn't have believed",e:"Result of a third conditional: would (not) have + past participle."},{p:"If I had known, I ___ you.",o:["would have told", "would tell", "had told"],a:"would have told",e:"would have + past participle."},{p:"If they had left earlier, they ___ the train.",o:["wouldn't have missed", "wouldn't miss", "hadn't missed"],a:"wouldn't have missed",e:"would (not) have + past participle."},{p:"If she had studied, she ___ the exam.",o:["would have passed", "would pass", "had passed"],a:"would have passed",e:"would have + past participle."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct third conditional (would have + past participle).", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   GRAMMAR_GEN["passive-all-tenses"] = [
@@ -2575,10 +2523,7 @@
       if(mode==="futurepassive") return {type:"gap", instruction:"Complete the future passive.", prompt: "The results ___ ("+v.base+", pp: "+v.pp+") tomorrow.", answer: "will be "+v.pp, acceptableAnswers:[], explanation: "Future passive: will be + past participle."};
       return {type:"gap", instruction:"Complete the modal passive.", prompt: "The rules ___ (must, "+v.base+", pp: "+v.pp+").", answer: "must be "+v.pp, acceptableAnswers:[], explanation: "Modal passive: modal + be + past participle."};
     },
-    function(){
-      var opts = shuffleCopy(["is being repaired","is being repair","is repaired being"]);
-      return {type:"choice", instruction:"Choose the correct continuous passive.", prompt: "The bridge ___ this month.", options: opts, answer: "is being repaired", explanation: "Present continuous passive: is/are being + past participle."};
-    }
+    function(){ var b=[{p:"The bridge ___ this month.",o:["is being repaired", "is being repair", "is repaired being"],a:"is being repaired",e:"Present continuous passive: is/are being + past participle."},{p:"The letters ___ yesterday.",o:["were sent", "were send", "was sent"],a:"were sent",e:"Past simple passive (plural): were + past participle."},{p:"The work ___ by Friday.",o:["will be finished", "will finished", "will be finish"],a:"will be finished",e:"Future passive: will be + past participle."},{p:"This house ___ in 1990.",o:["was built", "was build", "is built"],a:"was built",e:"Past simple passive: was + past participle."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct passive form.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   GRAMMAR_GEN["reported-questions-commands"] = [
@@ -2590,9 +2535,7 @@
       var it = rnd(items);
       return {type:"gap", instruction:"Report the question.", prompt: "\""+it.d+"\" → She "+it.verb+" ___.", answer: it.r, acceptableAnswers:[], explanation: "Yes/no questions: asked if/whether; wh- questions keep the question word."};
     },
-    function(){
-      return {type:"transform", instruction:"Report this command.", prompt: "\"Don't touch that,\" she said to him.", answer: "She told him not to touch that.", acceptableAnswers:[], explanation: "Negative command: told/asked + person + not to + infinitive."};
-    }
+    function(){ var b=[{p:"\"Don't touch that,\" she said to him.",a:"She told him not to touch that."},{p:"\"Please help me,\" he said to her.",a:"He asked her to help him."},{p:"\"Sit down,\" the teacher said to us.",a:"The teacher told us to sit down."},{p:"\"Don't be late,\" she said to me.",a:"She told me not to be late."}]; var q=b[Math.floor(Math.random()*b.length)]; return {type:"transform", instruction:"Report this command.", prompt:q.p, answer:q.a, acceptableAnswers:[], explanation:"Commands: told/asked + person (+ not) + to + infinitive."}; }
   ];
 
   GRAMMAR_GEN["modals-deduction"] = [
@@ -2602,10 +2545,7 @@
       if(mode==="might") return {type:"gap", instruction:"Express possibility (not certainty).", prompt: "It ___ rain later, I'm not sure.", answer: "might", acceptableAnswers:["could","may"], explanation: "Might/could/may + infinitive express possibility."};
       return {type:"gap", instruction:"Express that something is impossible.", prompt: "She ___ be at home, I just saw her outside.", answer: "can't", acceptableAnswers:["cannot"], explanation: "Can't + infinitive expresses a certain, negative conclusion."};
     },
-    function(){
-      var opts = shuffleCopy(["must","might","can't"]);
-      return {type:"choice", instruction:"Choose the modal that best fits.", prompt: "That story can't be true — it ___ be a joke.", options: opts, answer: "must", explanation: "Must expresses a strong, logical conclusion."};
-    }
+    function(){ var b=[{p:"That story can't be true — it ___ be a joke.",o:["must", "might", "can't"],a:"must",e:"'Must' expresses a strong, logical conclusion."},{p:"He's not answering; he ___ be asleep.",o:["might", "must", "can't"],a:"might",e:"'Might' expresses possibility."},{p:"She ___ be rich; she has three cars.",o:["must", "might", "can't"],a:"must",e:"'Must' = you are almost sure."},{p:"That ___ be John; he's in Japan right now.",o:["can't", "must", "might"],a:"can't",e:"'Can't' = you are sure it's impossible."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the modal of deduction (must = sure, might = possible, can't = impossible).", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   GRAMMAR_GEN["present-perfect-continuous"] = [
@@ -2616,10 +2556,7 @@
       var dur = rnd(["for three hours","since 2020","for the last hour","since this morning"]);
       return {type:"gap", instruction:"Complete with the present perfect continuous.", prompt: cap(subj.text)+" "+haveForm+" ___ ("+v.base+") "+dur+".", answer: "been "+v.ing, acceptableAnswers:[], explanation: "have/has been + verb-ing emphasises duration."};
     },
-    function(){
-      var opts = shuffleCopy(["for","since","during"]);
-      return {type:"choice", instruction:"Choose the word for a starting point in time.", prompt: "She has been working here ___ 2020.", options: opts, answer: "since", explanation: "Since marks a starting point; for marks duration."};
-    }
+    function(){ var b=[{p:"She has been working here ___ 2020.",o:["since", "for", "during"],a:"since",e:"'Since' marks a starting point."},{p:"They've been playing ___ two hours.",o:["for", "since", "during"],a:"for",e:"'For' marks a length of time."},{p:"I've been waiting ___ this morning.",o:["since", "for", "during"],a:"since",e:"'Since' + a point in time."},{p:"He's been studying ___ a long time.",o:["for", "since", "during"],a:"for",e:"'For' + a period of time."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose 'for' (duration) or 'since' (starting point).", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   GRAMMAR_GEN["gerund-infinitive"] = [
@@ -2631,10 +2568,7 @@
       if(mode==="ing") return {type:"gap", instruction:"Complete with the gerund.", prompt: rnd(["I","She","We"])+" "+rnd(ingVerbs)+" ___ ("+v2.base+").", answer: v2.ing, acceptableAnswers:[], explanation: "This verb is followed by the -ing form (gerund)."};
       return {type:"gap", instruction:"Complete with the to-infinitive.", prompt: rnd(["He","They","I"])+" "+rnd(toVerbs)+" ___ ("+v2.base+").", answer: "to "+v2.base, acceptableAnswers:[], explanation: "This verb is followed by the to-infinitive."};
     },
-    function(){
-      var opts = shuffleCopy(["to take","taking","take"]);
-      return {type:"choice", instruction:"Choose the correct form (pausing in order to do something).", prompt: "We stopped ___ a photo of the view.", options: opts, answer: "to take", explanation: "Stop + to-infinitive = pause in order to do something."};
-    }
+    function(){ var b=[{p:"We stopped ___ a photo of the view.",o:["to take", "taking", "take"],a:"to take",e:"stop + to-infinitive = pause in order to do something."},{p:"Please stop ___ so much noise.",o:["making", "to make", "make"],a:"making",e:"stop + -ing = finish an activity."},{p:"I enjoy ___ to music.",o:["listening", "to listen", "listen"],a:"listening",e:"'enjoy' is followed by -ing."},{p:"She wants ___ a doctor.",o:["to be", "being", "be"],a:"to be",e:"'want' is followed by the to-infinitive."},{p:"He decided ___ early.",o:["to leave", "leaving", "leave"],a:"to leave",e:"'decide' is followed by the to-infinitive."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the gerund (-ing) or the to-infinitive.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   GRAMMAR_GEN["cleft-sentences"] = [
@@ -2648,10 +2582,7 @@
       var it = rnd(items);
       return {type:"transform", instruction:"Rewrite as a cleft sentence to emphasise the underlined idea.", prompt: it.plain, answer: it.cleft, acceptableAnswers:[], explanation: "It is/was + focused element + that/who + rest of the sentence."};
     },
-    function(){
-      var opts = shuffleCopy(["who","that","which"]);
-      return {type:"choice", instruction:"Choose the correct word for a cleft sentence about a person.", prompt: "It was my sister ___ found the wallet.", options: opts, answer: "who", explanation: "Use who for people in cleft sentences (that also works)."};
-    }
+    function(){ var b=[{p:"It was my sister ___ found the wallet.",o:["who", "which", "whose"],a:"who",e:"Use 'who' for people in cleft sentences ('that' also works)."},{p:"It's the noise ___ annoys me most.",o:["that", "who", "whose"],a:"that",e:"Use 'that' for things."},{p:"It was in 2010 ___ they met.",o:["that", "who", "which"],a:"that",e:"Use 'that' for time/place in cleft sentences."},{p:"It's John ___ broke the window.",o:["who", "which", "whose"],a:"who",e:"Use 'who' for people."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct word for the cleft sentence.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   GRAMMAR_GEN["linking-contrast"] = [
@@ -2661,10 +2592,7 @@
       if(mode==="despite") return {type:"gap", instruction:"Complete with despite/in spite of (+ noun/-ing).", prompt: "___ the heavy traffic, we arrived on time.", answer: "Despite", acceptableAnswers:["In spite of"], explanation: "Despite/in spite of + noun or gerund, never a full clause."};
       return {type:"gap", instruction:"Complete with however (starts a new sentence).", prompt: "The plan sounded good. ___, nobody agreed to it.", answer: "However", acceptableAnswers:[], explanation: "However usually starts a new sentence, followed by a comma."};
     },
-    function(){
-      var opts = shuffleCopy(["Despite","Although","However"]);
-      return {type:"choice", instruction:"Choose the word that can be followed directly by a gerund.", prompt: "___ losing, they celebrated.", options: opts, answer: "Despite", explanation: "Despite/in spite of are followed by a noun or gerund, not a clause."};
-    }
+    function(){ var b=[{p:"___ losing, they celebrated.",o:["Despite", "Although", "However"],a:"Despite",e:"'Despite' + noun/gerund (not a full clause)."},{p:"___ it was raining, we went out.",o:["Although", "Despite", "However"],a:"Although",e:"'Although' + a full clause (subject + verb)."},{p:"He was tired. ___, he kept running.",o:["However", "Despite", "Although"],a:"However",e:"'However' starts a new sentence, followed by a comma."},{p:"___ the bad weather, the match went ahead.",o:["Despite", "Although", "However"],a:"Despite",e:"'Despite' + noun phrase."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct linking word of contrast.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   /* ---------- 2nd Bachillerato ---------- */
@@ -2675,10 +2603,7 @@
       if(mode==="pastpresent") return {type:"gap", instruction:"Complete the mixed conditional (past condition, present result).", prompt: "If I hadn't ("+v1.base+", pp: "+v1.pp+") the flight, I ___ (be) in Rome now.", answer: "would be", acceptableAnswers:[], explanation: "Past → present: if + past perfect, would + infinitive."};
       return {type:"gap", instruction:"Complete the mixed conditional (general condition, past result).", prompt: "If she ("+"be"+", weren't) so shy, she ___ ("+v2.base+", pp: "+v2.pp+") up.", answer: "would have "+v2.pp, acceptableAnswers:[], explanation: "Present/general → past: if + past simple, would have + participle."};
     },
-    function(){
-      var opts = shuffleCopy(["would be","would have been","had been"]);
-      return {type:"choice", instruction:"Choose the correct present result.", prompt: "If I had studied medicine, I ___ a doctor now.", options: opts, answer: "would be", explanation: "The result is in the present, so it uses would + infinitive, not would have + participle."};
-    }
+    function(){ var b=[{p:"If I had studied medicine, I ___ a doctor now.",o:["would be", "would have been", "had been"],a:"would be",e:"Past cause, present result → would + base verb."},{p:"If he hadn't missed the train, he ___ here now.",o:["would be", "would have been", "had been"],a:"would be",e:"The result is in the present → would + base verb."},{p:"If I spoke French, I ___ that job last year.",o:["would have got", "would get", "had got"],a:"would have got",e:"Present condition, past result → would have + past participle."},{p:"If she were more organised, she ___ the deadline yesterday.",o:["wouldn't have missed", "wouldn't miss", "hadn't missed"],a:"wouldn't have missed",e:"Present condition, past result → would (not) have + past participle."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct mixed conditional form.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   GRAMMAR_GEN["wish-if-only"] = [
@@ -2689,10 +2614,7 @@
       if(mode==="pastregret") return {type:"gap", instruction:"Express a past regret (past perfect after wish).", prompt: "I wish I had ___ ("+v.base+", pp: "+v.pp+") harder for the exam.", answer: v.pp, acceptableAnswers:[], explanation: "Wish + past perfect expresses regret about the past."};
       return {type:"gap", instruction:"Express a complaint about someone else's behaviour.", prompt: "I wish he ___ (stop, complaint) shouting.", answer: "would stop", acceptableAnswers:[], explanation: "Wish + subject + would + infinitive expresses a complaint."};
     },
-    function(){
-      var opts = shuffleCopy(["had studied","studied","would study"]);
-      return {type:"choice", instruction:"Choose the correct form for a past regret.", prompt: "If only I ___ harder!", options: opts, answer: "had studied", explanation: "If only + past perfect expresses regret about the past."};
-    }
+    function(){ var b=[{p:"If only I ___ harder!",o:["had studied", "studied", "would study"],a:"had studied",e:"'If only' + past perfect expresses regret about the past."},{p:"I wish I ___ taller.",o:["were", "was", "am"],a:"were",e:"Wish + past (were for all persons) for an unreal present."},{p:"I wish you ___ so much noise.",o:["wouldn't make", "don't make", "didn't made"],a:"wouldn't make",e:"Wish + would for an annoying habit you want to change."},{p:"I wish I ___ to the party last night.",o:["had gone", "went", "would go"],a:"had gone",e:"Wish + past perfect for a past regret."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct form after wish / if only.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   GRAMMAR_GEN["passive-advanced"] = [
@@ -2703,10 +2625,7 @@
       var v = rnd(verbs);
       return {type:"gap", instruction:"Complete the formal reporting structure.", prompt: "The ship ___ ("+v+") to have sunk in a storm.", answer: "is "+v, acceptableAnswers:[], explanation: "Subject + is said/believed/thought + to + infinitive reports a general belief formally."};
     },
-    function(){
-      var opts = shuffleCopy(["is said to be","says to be","is saying to be"]);
-      return {type:"choice", instruction:"Choose the correct formal reporting structure.", prompt: "He ___ one of the best musicians alive.", options: opts, answer: "is said to be", explanation: "Subject + is said + to + infinitive."};
-    }
+    function(){ var b=[{p:"He ___ one of the best musicians alive.",o:["is said to be", "says to be", "is saying to be"],a:"is said to be",e:"Subject + is said + to + infinitive."},{p:"The thief ___ to have left the country.",o:["is believed", "believes", "is believing"],a:"is believed",e:"Subject + is believed + to have + past participle."},{p:"She ___ to be very rich.",o:["is thought", "thinks", "is thinking"],a:"is thought",e:"Subject + is thought + to + infinitive."},{p:"They ___ to have found a cure.",o:["are reported", "report", "are reporting"],a:"are reported",e:"Subject + are reported + to have + past participle."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct passive reporting structure.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   GRAMMAR_GEN["inversion"] = [
@@ -2720,10 +2639,7 @@
       var it = rnd(items);
       return {type:"transform", instruction:"Rewrite using inversion for emphasis.", prompt: it.a, answer: it.inv, acceptableAnswers:[], explanation: "A negative/restrictive adverb at the start inverts the word order, as in a question."};
     },
-    function(){
-      var opts = shuffleCopy(["have I","I have","did I have"]);
-      return {type:"choice", instruction:"Choose the correct inverted word order.", prompt: "Never ___ seen such a mess.", options: opts, answer: "have I", explanation: "Never + auxiliary + subject, inverted as in a question."};
-    }
+    function(){ var b=[{p:"Never ___ seen such a mess.",o:["have I", "I have", "did I have"],a:"have I",e:"Never + auxiliary + subject, inverted as in a question."},{p:"Rarely ___ such kindness.",o:["do we see", "we see", "we do see"],a:"do we see",e:"Rarely + auxiliary + subject + base verb."},{p:"Hardly ___ arrived when it started to rain.",o:["had we", "we had", "did we have"],a:"had we",e:"Hardly + had + subject + past participle."},{p:"Not only ___ late, but he also forgot the tickets.",o:["was he", "he was", "did he was"],a:"was he",e:"Not only + auxiliary + subject."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct inverted word order (after a negative adverb).", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   GRAMMAR_GEN["non-defining-participle"] = [
@@ -2733,10 +2649,7 @@
       if(mode==="reduce-ing") return {type:"transform", instruction:"Reduce to a participle clause (the subject performs the action).", prompt: "The people who were waiting outside were getting cold.", answer: "The people waiting outside were getting cold.", acceptableAnswers:[], explanation: "Active meaning → present participle (-ing)."};
       return {type:"transform", instruction:"Reduce to a participle clause (the subject receives the action).", prompt: "The novel, which was written in 1997, became an instant classic.", answer: "Written in 1997, the novel became an instant classic.", acceptableAnswers:["The novel, written in 1997, became an instant classic."], explanation: "Passive meaning → past participle (-ed)."};
     },
-    function(){
-      var opts = shuffleCopy(["waiting","waited","wait"]);
-      return {type:"choice", instruction:"Choose the correct reduced form.", prompt: "The people ___ outside were getting cold.", options: opts, answer: "waiting", explanation: "The subject performs the action, so use the -ing participle."};
-    }
+    function(){ var b=[{p:"The people ___ outside were getting cold.",o:["waiting", "waited", "wait"],a:"waiting",e:"The subject does the action → -ing participle."},{p:"The man ___ by the police was released.",o:["arrested", "arresting", "arrest"],a:"arrested",e:"The subject receives the action → -ed participle (passive)."},{p:"The students ___ the exam looked nervous.",o:["taking", "taken", "take"],a:"taking",e:"Active meaning → -ing participle."},{p:"The letter ___ last week finally arrived.",o:["sent", "sending", "send"],a:"sent",e:"Passive meaning → -ed participle."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct participle (-ing = active, -ed = passive).", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   GRAMMAR_GEN["advanced-modals"] = [
@@ -2748,10 +2661,7 @@
       if(mode==="neednthave") return {type:"gap", instruction:"Say something was done but wasn't necessary.", prompt: "I ___ (bring, unnecessary) an umbrella — it didn't rain.", answer: "needn't have brought", acceptableAnswers:[], explanation: "Needn't have + participle: done, but unnecessary."};
       return {type:"gap", instruction:"Say something was possible but didn't happen.", prompt: "She ___ (win, possible but didn't happen), but she gave up too early.", answer: "could have won", acceptableAnswers:[], explanation: "Could have + participle: possible, but it didn't happen."};
     },
-    function(){
-      var opts = shuffleCopy(["should have told","should tell","should have telling"]);
-      return {type:"choice", instruction:"Choose the correct form for a criticism about the past.", prompt: "They ___ us about the change.", options: opts, answer: "should have told", explanation: "Should have + past participle."};
-    }
+    function(){ var b=[{p:"They ___ us about the change.",o:["should have told", "should tell", "should have telling"],a:"should have told",e:"'Should have + past participle' criticises a past action."},{p:"She's late; she ___ have missed the bus.",o:["might", "must", "can't"],a:"might",e:"'Might have' expresses a past possibility."},{p:"He ___ have passed; he barely studied.",o:["can't", "must", "should"],a:"can't",e:"'Can't have' = it's impossible it happened."},{p:"The light's on; someone ___ have forgotten it.",o:["must", "might", "can't"],a:"must",e:"'Must have' = a confident conclusion about the past."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct modal + have + past participle.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   GRAMMAR_GEN["ellipsis-substitution"] = [
@@ -2761,10 +2671,7 @@
       if(mode==="doso") return {type:"gap", instruction:"Complete using do so (substituting a verb already mentioned).", prompt: "If you'd like to complain, please ___ in writing.", answer: "do so", acceptableAnswers:[], explanation: "Do so substitutes a verb (and its object) already mentioned."};
       return {type:"gap", instruction:"Complete using the same one (substituting a noun already mentioned).", prompt: "I need a new phone; this ___ is too old.", answer: "one", acceptableAnswers:[], explanation: "One/ones substitute a noun already mentioned to avoid repetition."};
     },
-    function(){
-      var opts = shuffleCopy(["so can I","I so can","can so I"]);
-      return {type:"choice", instruction:"Choose the correct order for agreement with so.", prompt: "He can swim well, and ___.", options: opts, answer: "so can I", explanation: "So + auxiliary + subject (the auxiliary matches the original sentence)."};
-    }
+    function(){ var b=[{p:"He can swim well, and ___.",o:["so can I", "I so can", "can so I"],a:"so can I",e:"So + auxiliary + subject (the auxiliary matches the sentence)."},{p:"She likes tea, and ___.",o:["so do I", "I so do", "do so I"],a:"so do I",e:"So + do/does + subject for present simple."},{p:"They didn't come, and ___.",o:["neither did we", "we neither did", "did neither we"],a:"neither did we",e:"Neither + auxiliary + subject agrees with a negative."},{p:"I've finished, and ___.",o:["so has she", "she so has", "has so she"],a:"so has she",e:"So + have/has + subject for present perfect."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct order for agreement (so/neither + auxiliary + subject).", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   GRAMMAR_GEN["formal-register"] = [
@@ -2777,10 +2684,7 @@
       }
       return {type:"gap", instruction:"Complete the formal subjunctive-like structure (base verb, even for he/she/it).", prompt: "It is essential that every student ___ (submit) the form by Friday.", answer: "submit", acceptableAnswers:["should submit"], explanation: "After essential/vital/important/suggest/recommend, the following clause uses the base verb form."};
     },
-    function(){
-      var opts = shuffleCopy(["arrive","arrives","arrived"]);
-      return {type:"choice", instruction:"Choose the correct formal form.", prompt: "It is essential that she ___ on time.", options: opts, answer: "arrive", explanation: "The subjunctive-like structure uses the base form, even for she."};
-    }
+    function(){ var b=[{p:"It is essential that she ___ on time.",o:["arrive", "arrives", "arrived"],a:"arrive",e:"The subjunctive uses the base verb, even for she."},{p:"The teacher insists that every student ___ present.",o:["be", "is", "was"],a:"be",e:"Subjunctive of 'to be' is 'be' for all persons."},{p:"We recommend that he ___ a lawyer.",o:["consult", "consults", "consulted"],a:"consult",e:"Base verb after 'recommend that...'."},{p:"It is important that they ___ early.",o:["leave", "leaves", "left"],a:"leave",e:"Base verb in this formal structure."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct formal (subjunctive) form — base verb for all persons.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   
@@ -4453,20 +4357,7 @@
         explanation:"The repeated adjective is omitted; only the verb 'to be' remains: than + subject + " + aux2 + "."
       };
     },
-    function(){
-      var adj = rnd(ADJ_SHORT);
-      var correct = "the " + adj.er;
-      var options = ["the " + adj.er, "the more " + adj.base, adj.er];
-      var prompt = "The more you practise, ___ you become.";
-      return {
-        type:"choice",
-        instruction:"Choose the correct comparative structure.",
-        prompt: prompt,
-        options: options,
-        answer: correct,
-        explanation:"Correlative comparatives use 'the + comparative' in both halves: 'the more..., " + correct + "...'."
-      };
-    }
+    function(){ var b=[{p:"The more you practise, ___ you get.",o:["the better", "the more good", "more better"],a:"the better",e:"Correlative comparatives: 'the + comparative' in both halves."},{p:"The faster you drive, ___ it is.",o:["the more dangerous", "the dangerouser", "more dangerous"],a:"the more dangerous",e:"Long adjectives use 'the more + adjective'."},{p:"The hotter the weather, ___ I feel.",o:["the worse", "the more bad", "worse"],a:"the worse",e:"Irregular comparative: bad → worse."},{p:"The more we talk, ___ we understand.",o:["the more", "the much more", "more the"],a:"the more",e:"'the more ..., the more ...' links the two clauses."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the comparative to complete the correlative structure (the ...er, the ...er).", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
   ];
 
   // ---------- local helper data (do not collide with real_helpers_v2.js) ----------
@@ -5075,27 +4966,7 @@ GRAMMAR_GEN["adverbs-of-manner"] = [
       explanation: "'" + pair.adj + "' becomes '" + pair.adv + "' as an adverb of manner."
     };
   },
-  function () {
-    var pair = rnd(ADV_MAP);
-    var wrong1 = pair.adj + "ly";
-    var others = pickN(ADV_MAP.filter(function (p) { return p.adv !== pair.adv; }), 2).map(function (p) { return p.adv; });
-    var pool = [pair.adv, wrong1].concat(others);
-    var seen = {};
-    var options = [];
-    for (var i = 0; i < pool.length; i++) {
-      if (!seen[pool[i]]) { seen[pool[i]] = true; options.push(pool[i]); }
-    }
-    options = shuffleCopy(options).slice(0, 4);
-    if (options.indexOf(pair.adv) === -1) options[0] = pair.adv;
-    return {
-      type: "choice",
-      instruction: "Which is the correct adverb of manner for '" + pair.adj + "'?",
-      prompt: "He did it very ___.",
-      options: options,
-      answer: pair.adv,
-      explanation: "'" + pair.adj + "' → '" + pair.adv + "'."
-    };
-  }
+  function(){ var b=[{p:"She speaks English ___ (fluent).",o:["fluently", "fluent", "fluentely"],a:"fluently",e:"Most adverbs of manner add -ly to the adjective."},{p:"He answered ___ (quick).",o:["quickly", "quick", "quicklie"],a:"quickly",e:"quick → quickly."},{p:"They behaved ___ (good).",o:["well", "good", "goodly"],a:"well",e:"The adverb of 'good' is the irregular 'well'."},{p:"She sang ___ (beautiful).",o:["beautifully", "beautiful", "beautifuly"],a:"beautifully",e:"beautiful → beautifully."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the correct adverb of manner.", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
 ];
 
 // ---- 4eso ----
@@ -5561,22 +5432,7 @@ GRAMMAR_GEN["extraposition-it-subject"] = [
       explanation: "'It' postpones the long that-clause subject to the end of the sentence."
     };
   },
-  function () {
-    var c = rnd(EXTRAPOSITION_CASES);
-    var correct = "It is " + c.adj + " that " + c.clause + ".";
-    var wrong1 = "That " + c.clause + " is " + c.adj + ".";
-    var wrong2 = "Is it " + c.adj + " that " + c.clause + ".";
-    var options = shuffleCopy([correct, wrong1, wrong2]);
-    var prompt = "Which sentence sounds more natural in standard English?";
-    return {
-      type: "choice",
-      instruction: "Choose the most natural sentence structure.",
-      prompt: prompt,
-      options: options,
-      answer: correct,
-      explanation: "English prefers 'It is + adjective + that-clause' over starting with the long that-clause."
-    };
-  }
+  function(){ var b=[{p:"___ nice to see you again.",o:["It's", "That's", "Is it"],a:"It's",e:"English uses 'it' as an empty subject before a to-infinitive."},{p:"___ important to arrive on time.",o:["It is", "That is", "Is it"],a:"It is",e:"'It is + adjective + to-infinitive' is the natural order."},{p:"___ clear that they were wrong.",o:["It is", "That is", "Is it"],a:"It is",e:"'It is + adjective + that-clause' is preferred."},{p:"___ a pity that she left so early.",o:["It is", "That is", "Is it"],a:"It is",e:"'It is a pity that...' uses the empty subject 'it'."}]; var q=b[Math.floor(Math.random()*b.length)]; var o=q.o.slice(); for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=o[i];o[i]=o[j];o[j]=t;} return {type:"choice", instruction:"Choose the natural 'it' subject (extraposition).", prompt:q.p, options:o, answer:q.a, explanation:q.e}; }
 ];
 
   function buildLocalGrammarSet(topic){
