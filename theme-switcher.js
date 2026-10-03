@@ -1,41 +1,39 @@
 /* Reusable background-theme switcher for In Order Words games.
    Adds a palette button (bottom-left, above the music button) that cycles
    the page background: Space (default) -> Forest -> Sea -> Sunset.
-   Each non-default theme paints a full-screen gradient + themed particles
-   behind the game UI and hides the game's own starfield. Remembered per device.
+   Each non-default theme paints the body with a themed gradient + themed
+   particles behind the game UI and hides the game's own starfield.
+   Remembered per device.
 */
 (function(){
   var THEMES = [
     { id:'space',  emoji:'🌌', name:'Space'  },
-    { id:'forest', emoji:'🌲', name:'Forest', grad:'radial-gradient(circle at 50% -10%, #12402a, #0a2419 55%, #05140d)', p:{color:['#6fcf97','#b7e778','#3fae5c'], dir:1, drift:true} },
-    { id:'sea',    emoji:'🌊', name:'Sea',    grad:'radial-gradient(circle at 50% -10%, #0a4a70, #053049 55%, #02121f)', p:{color:['#9fe3ff','#5fb8e6','#c9f3ff'], dir:-1, drift:false} },
+    { id:'forest', emoji:'🌲', name:'Forest', grad:'radial-gradient(circle at 50% -10%, #17512f, #0c3420 55%, #06180e)', p:{color:['#8fe6a4','#c7ee88','#5ac46f'], dir:1, drift:true} },
+    { id:'sea',    emoji:'🌊', name:'Sea',    grad:'radial-gradient(circle at 50% -10%, #0d5c88, #06395a 55%, #021726)', p:{color:['#aee8ff','#6fc4ef','#d6f5ff'], dir:-1, drift:false} },
     { id:'sunset', emoji:'🌇', name:'Sunset', grad:'linear-gradient(180deg, #4a2550 0%, #7a2f4a 35%, #b5533a 70%, #2a1326 100%)', p:{color:['#ffd27f','#ff9e5e','#ffe8b0'], dir:-1, drift:true} }
   ];
   var idx = 0, canvas = null, cctx = null, parts = [], raf = null;
 
   function ls(k,v){ try{ if(v===undefined) return localStorage.getItem(k); localStorage.setItem(k,v); }catch(e){ return null; } }
 
-  function ensureLayers(){
-    if(document.getElementById('iowThemeBg')) return;
-    var bg = document.createElement('div'); bg.id = 'iowThemeBg';
-    bg.style.cssText = 'position:fixed;inset:0;z-index:-2;pointer-events:none;display:none;';
-    document.body.appendChild(bg);
+  function ensureFx(){
+    if(canvas) return;
     canvas = document.createElement('canvas'); canvas.id = 'iowThemeFx';
-    canvas.style.cssText = 'position:fixed;inset:0;z-index:-1;pointer-events:none;display:none;';
+    canvas.style.cssText = 'position:fixed;inset:0;z-index:0;pointer-events:none;display:none;';
     document.body.appendChild(canvas);
     cctx = canvas.getContext('2d');
     var st = document.createElement('style');
-    st.textContent = 'html[data-iow-theme] #stars,html[data-iow-theme] #starfield,html[data-iow-theme] canvas#bg,html[data-iow-theme] #space{display:none!important;}';
+    st.textContent = 'html[data-iow-theme] #stars,html[data-iow-theme] #starfield,html[data-iow-theme] canvas#bg,html[data-iow-theme] #space,html[data-iow-theme] #bgCanvas{display:none!important;}';
     document.head.appendChild(st);
     window.addEventListener('resize', resize);
   }
   function resize(){ if(!canvas) return; canvas.width = innerWidth; canvas.height = innerHeight; }
 
   function makeParts(theme){
-    parts = []; var n = 60;
+    parts = []; var n = 55;
     for(var i=0;i<n;i++){
       parts.push({ x:Math.random()*innerWidth, y:Math.random()*innerHeight,
-        r:Math.random()*2.6+1.2, s:Math.random()*0.5+0.25,
+        r:Math.random()*2.6+1.2, s:Math.random()*0.5+0.22,
         sway:Math.random()*0.6+0.2, ph:Math.random()*Math.PI*2,
         c: theme.p.color[Math.floor(Math.random()*theme.p.color.length)] });
     }
@@ -50,7 +48,7 @@
       if(theme.p.drift) p.x += Math.sin(p.ph)*p.sway;
       if(dir>0 && p.y>canvas.height+6){ p.y=-6; p.x=Math.random()*canvas.width; }
       if(dir<0 && p.y<-6){ p.y=canvas.height+6; p.x=Math.random()*canvas.width; }
-      cctx.globalAlpha = 0.65; cctx.fillStyle = p.c;
+      cctx.globalAlpha = 0.6; cctx.fillStyle = p.c;
       cctx.beginPath(); cctx.arc(p.x,p.y,p.r,0,Math.PI*2); cctx.fill();
     }
     cctx.globalAlpha = 1;
@@ -65,14 +63,15 @@
     if(raf){ cancelAnimationFrame(raf); raf = null; }
     if(t.id === 'space'){
       document.documentElement.removeAttribute('data-iow-theme');
-      var bg0 = document.getElementById('iowThemeBg'), fx0 = document.getElementById('iowThemeFx');
-      if(bg0) bg0.style.display='none'; if(fx0) fx0.style.display='none';
+      document.body.style.removeProperty('background');
+      document.body.style.removeProperty('background-attachment');
+      if(canvas) canvas.style.display='none';
       return;
     }
-    ensureLayers(); resize();
     document.documentElement.setAttribute('data-iow-theme', t.id);
-    var bg = document.getElementById('iowThemeBg'); bg.style.background = t.grad; bg.style.display='block';
-    canvas.style.display='block';
+    document.body.style.setProperty('background', t.grad, 'important');
+    document.body.style.setProperty('background-attachment', 'fixed', 'important');
+    ensureFx(); resize(); canvas.style.display='block';
     makeParts(t); loop(t);
   }
 
