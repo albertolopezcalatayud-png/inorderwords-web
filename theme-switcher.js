@@ -8,7 +8,7 @@
 (function(){
   var THEMES = [
     { id:'space',  emoji:'🌌', name:'Space' },
-    { id:'forest', emoji:'🌲', name:'Forest', img:'bg-forest.jpg',
+    { id:'forest', emoji:'🌳', name:'Forest', img:'bg-forest.jpg',
       litegrad:'linear-gradient(165deg, #eef7ea 0%, #dceee1 100%)',
       part:{kind:'firefly', n:30, colors:['#d6ff8a','#ecff9c','#bdf06a'], size:[1.6,3.4], rise:0.5} },
     { id:'sea',    emoji:'🌊', name:'Sea', img:'bg-sea.jpg',
@@ -153,7 +153,7 @@
 
     ensureLayers(); resize();
     document.body.style.removeProperty('background');
-    bgImg.style.backgroundImage="url('"+BASE+t.img+"?v=5')"; bgImg.style.display='block';
+    bgImg.style.backgroundImage="url('"+BASE+t.img+"?v=6')"; bgImg.style.display='block';
     scrim.style.display='block'; canvas.style.display='block';
     build(t); t0=0;
     if(reduce){ frame(t,16); if(raf){ cancelAnimationFrame(raf); raf=null; } }
