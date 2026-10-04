@@ -305,7 +305,29 @@ function startLevel(n, label){
   document.getElementById('topMoves').textContent = '0';
   renderGrid();
   showScreen('game');
-  startTimer();
+  previewDeck();
+}
+
+function previewDeck(){
+  // Flash all cards face-up for 3s so players can memorise before it starts.
+  state.locked = true;
+  if(state.previewTimeout) clearTimeout(state.previewTimeout);
+  var tt = document.getElementById('topTime'); if(tt) tt.textContent = '00:00';
+  var els = document.querySelectorAll('#grid .dcard');
+  els.forEach(function(el){ el.classList.add('flipped'); });
+  var tip = document.createElement('div'); tip.id = 'iowPeek';
+  tip.innerHTML = '👀 ¡Memoriza las cartas! <b id="iowPeekN">3</b>';
+  tip.style.cssText = 'position:fixed;left:50%;top:13%;transform:translateX(-50%);z-index:99999;background:rgba(10,14,30,.9);color:#ffcc66;font:700 18px system-ui,Arial;padding:10px 20px;border-radius:999px;border:1px solid rgba(255,255,255,.25);box-shadow:0 6px 20px rgba(0,0,0,.45);pointer-events:none;';
+  document.body.appendChild(tip);
+  var n = 3;
+  state.previewCount = setInterval(function(){ n--; var e = document.getElementById('iowPeekN'); if(e) e.textContent = n > 0 ? n : ''; }, 1000);
+  state.previewTimeout = setTimeout(function(){
+    clearInterval(state.previewCount);
+    els.forEach(function(el){ el.classList.remove('flipped'); });
+    var t = document.getElementById('iowPeek'); if(t) t.remove();
+    state.locked = false;
+    startTimer();
+  }, 3000);
 }
 
 function restartCurrent(){
