@@ -60,9 +60,10 @@
       try{
         if(u && window.SpeechSynthesisUtterance && u instanceof SpeechSynthesisUtterance){
           var cur = u.voice;
-          if(!cur || score(cur) < 45){
-            var b = best(u.lang || (cur && cur.lang) || 'en-GB');
-            if(b){ u.voice = b; if(!u.lang) u.lang = b.lang; }
+          var b = best(u.lang || (cur && cur.lang) || 'en-GB');
+          // upgrade whenever a clearly better (more natural) voice is available
+          if(b && (!cur || score(cur) < score(b) - 20)){
+            u.voice = b; if(!u.lang) u.lang = b.lang;
           }
           // gentle, natural clamps (keep intentional A/B pitch differences)
           if(typeof u.rate === 'number'){ if(u.rate > 1.05) u.rate = 1.0; if(u.rate < 0.7) u.rate = 0.8; }
