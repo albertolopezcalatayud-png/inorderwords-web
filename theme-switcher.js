@@ -153,7 +153,7 @@
 
     ensureLayers(); resize();
     document.body.style.removeProperty('background');
-    bgImg.style.backgroundImage="url('"+BASE+t.img+"')"; bgImg.style.display='block';
+    bgImg.style.backgroundImage="url('"+BASE+t.img+"?v=5')"; bgImg.style.display='block';
     scrim.style.display='block'; canvas.style.display='block';
     build(t); t0=0;
     if(reduce){ frame(t,16); if(raf){ cancelAnimationFrame(raf); raf=null; } }
