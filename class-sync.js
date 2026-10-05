@@ -239,7 +239,7 @@
   function autoBanner(){
     var page = (location.pathname.split('/').pop() || '').toLowerCase();
     if(ALWAYS_ASK){
-      var ASK_ON_LOAD = ['verb-striker.html','phrasal-command.html','preposition-blaster.html','collocation-match.html','question-control.html','levlup.html','tense-control.html'];
+      var ASK_ON_LOAD = ['verb-striker.html','phrasal-command.html','preposition-blaster.html','collocation-match.html','question-control.html','tense-control.html'];
       if(ASK_ON_LOAD.indexOf(page) > -1 && !document.querySelector('.iow-modal-bg')) openModal(null, true);
       return;
     }

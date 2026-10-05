@@ -54,7 +54,7 @@
 
   function ensureLayers(){
     if(canvas) return;
-    var z='0';
+    var z='-1';  /* behind page content so it can never cover the UI */
     bgImg=document.createElement('div'); bgImg.id='iowBgImg';
     bgImg.style.cssText='position:fixed;inset:-6%;z-index:'+z+';pointer-events:none;background-size:cover;background-position:center;background-repeat:no-repeat;will-change:transform;display:none;';
     document.body.appendChild(bgImg);
@@ -133,6 +133,7 @@
     if(raf){ cancelAnimationFrame(raf); raf=null; }
     document.documentElement.removeAttribute('data-iow-theme');
     document.body.style.removeProperty('background'); document.body.style.removeProperty('background-attachment');
+    document.documentElement.style.removeProperty('background');
     if(bgImg) bgImg.style.display='none'; if(scrim) scrim.style.display='none'; if(canvas) canvas.style.display='none';
   }
 
@@ -152,7 +153,9 @@
     }
 
     ensureLayers(); resize();
-    document.body.style.removeProperty('background');
+    /* make page background transparent so the behind-content theme layers show through */
+    document.body.style.setProperty('background','transparent','important');
+    document.documentElement.style.setProperty('background','transparent','important');
     bgImg.style.backgroundImage="url('"+BASE+t.img+"?v=6')"; bgImg.style.display='block';
     scrim.style.display='block'; canvas.style.display='block';
     build(t); t0=0;
