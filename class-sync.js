@@ -46,6 +46,7 @@
     }catch(e){}
     try{ var _pn=document.getElementById('player-name'); if(_pn && name) _pn.value=name; var _pc=document.getElementById('player-course'); if(_pc && GRADES.indexOf(grade)>-1) _pc.value=grade; }catch(e){}
     document.querySelectorAll('[data-iow-identity]').forEach(renderIdentity);
+    try{ syncAvatar(); }catch(e){}
   }
 
   function jsonp(params, timeoutMs){
@@ -350,7 +351,33 @@
     if(!c || !COLORS.some(function(x){ return x.c === c && xp >= x.need; })) c = COLORS[0].c;
     return { emoji:e, color:c };
   }
-  function setAvatar(e, c){ if(e) lsSet('iow_avatar', e); if(c) lsSet('iow_avcolor', c); }
+  var avTouched = false, avRenders = [], avPushTimer = null;
+  function refreshPickers(){ avRenders.forEach(function(f){ try{ f(); }catch(e){} }); document.querySelectorAll('[data-iow-identity]').forEach(function(el){ try{ renderIdentity(el); }catch(e){} }); }
+  function avatarIdentity(){ var id = getIdentity(); return (id.name && id.grade && (!CODE_ON || hasCode())) ? id : null; }
+  function setAvatar(e, c){ if(e) lsSet('iow_avatar', e); if(c) lsSet('iow_avcolor', c); avTouched = true; pushAvatar(); }
+  /* the character is saved per student in the class Google Sheet, so it follows the pupil to any device */
+  function pushAvatar(){
+    clearTimeout(avPushTimer);
+    avPushTimer = setTimeout(function(){
+      var id = avatarIdentity(); if(!id) return; var a = getAvatar();
+      jsonp({action:'avatar_set', student:id.name, clase:id.grade, emoji:a.emoji, color:a.color}, 9000);
+    }, 500);
+  }
+  function syncAvatar(){
+    var id = avatarIdentity(); if(!id) return;
+    var owner = id.name + '|' + id.grade;
+    if(ls('iow_av_owner') !== owner){          // another pupil on this device: start clean
+      try{ localStorage.removeItem('iow_avatar'); localStorage.removeItem('iow_avcolor'); }catch(e){}
+      lsSet('iow_total_xp', '0'); lsSet('iow_av_owner', owner); avTouched = false; refreshPickers();
+    }
+    jsonp({action:'avatar_get', student:id.name, clase:id.grade}, 9000).then(function(r){
+      if(!r || !r.ok || !r.avatar) return;
+      var a = r.avatar, xp = Number(a.xp) || 0;
+      if(xp > totalXP()) lsSet('iow_total_xp', String(xp));
+      if(!avTouched){ if(a.emoji) lsSet('iow_avatar', a.emoji); if(a.color) lsSet('iow_avcolor', a.color); }
+      refreshPickers();
+    });
+  }
   function avTag(){ var a = getAvatar(); return '<span style="color:' + a.color + '">' + a.emoji + '</span>'; }
   function injectAvCss(){
     if(document.getElementById('iow-av-css')) return;
@@ -395,6 +422,7 @@
       wrap.appendChild(note);
     }
     render();
+    avRenders.push(render);
     return wrap;
   }
   function mountAvatarPicker(el){ if(!el) return null; var pk = buildAvatarPicker(); el.appendChild(pk); return pk; }
@@ -411,10 +439,12 @@
   function scheduleAutoMount(){ [0,300,800,1600,3000].forEach(function(t){ setTimeout(function(){ if(!document.querySelector('.iow-av')) autoMountAvatar(); }, t); }); }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', scheduleAutoMount); else scheduleAutoMount();
 
+  try{ setTimeout(syncAvatar, 400); }catch(e){}
+
   window.IOW = {
     GRADES:GRADES, LEVELS:LEVELS, GROUPS_BY_LEVEL:GROUPS_BY_LEVEL, gradeLevel:function(){ return gradeLevelOf(getIdentity().grade); }, gradeLevelOf:gradeLevelOf, getIdentity:getIdentity, setIdentity:setIdentity, ensureIdentity:ensureIdentity,
     mountIdentity:mountIdentity, postScore:postScore, leaderboard:leaderboard, leaderboardAll:leaderboardAll,
     fillBoard:fillBoard, prefill:prefill, toast:toast, boardName:boardName, jsonp:jsonp, cleanName:cleanName, needsCode:needsCode, promptCode:promptCode, hasCode:hasCode, codeBanner:codeBanner, code:savedCode,
-    getAvatar:getAvatar, setAvatar:setAvatar, totalXP:totalXP, addXP:addXP, mountAvatarPicker:mountAvatarPicker, AVATARS:AVATARS, COLORS:COLORS
+    getAvatar:getAvatar, setAvatar:setAvatar, syncAvatar:syncAvatar, totalXP:totalXP, addXP:addXP, mountAvatarPicker:mountAvatarPicker, AVATARS:AVATARS, COLORS:COLORS
   };
 })();
