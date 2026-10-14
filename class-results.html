@@ -116,7 +116,7 @@ function currentGame(){ return GAMES.filter(function(g){ return g.id === sel.gam
 function fetchVocabRush(grade){
   var list = grade === 'ALL' ? Object.keys(VR) : [grade];
   return Promise.all(list.map(function(g){
-    return IOW.jsonp({action:'leaderboard', course:VR[g]}, 9000).then(function(d){
+    return IOW.jsonpRead({action:'leaderboard', course:VR[g]}, 10000).then(function(d){
       if(!d || !d.ok || !Array.isArray(d.leaderboard)) return null;
       return d.leaderboard.filter(function(r){ return r.student && r.xp > 0; }).map(function(r){ return {student:r.student, xp:r.xp, grade:g}; });
     });
@@ -136,13 +136,31 @@ function load(){
   var p = g.vr ? fetchVocabRush(sel.grade) : IOW.leaderboardAll(g.id, sel.grade === 'ALL' ? null : sel.grade);
   p.then(function(r){
     if(t !== token) return;
-    if(r === null){ rows = []; document.getElementById('meta').textContent = ''; document.getElementById('out').innerHTML = '<p class="empty">⚠️ Couldn\'t reach the school backend. Check the connection and press Refresh.</p>'; return; }
+    var key = 'owCR|' + g.id + '|' + sel.grade, note = '', stamp = new Date();
+    if(r === null){
+      // Could not reach the backend: show the last ranking this browser saw for this game and grade, if any
+      var cached = null;
+      try{ cached = JSON.parse(localStorage.getItem(key) || 'null'); }catch(e){}
+      var why = (IOW.jsonp && IOW.jsonp.lastFail) || 'unknown';
+      if(cached && Array.isArray(cached.rows)){
+        r = cached.rows; stamp = new Date(cached.t);
+        note = '<p class="empty" style="padding:0 4px 12px;color:#ffb703">⚠️ Couldn\'t refresh just now, so this is the ranking saved on this device at ' + esc(new Date(cached.t).toLocaleString([], {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'})) + '. Press Refresh to try again.</p>';
+      } else {
+        rows = []; document.getElementById('meta').textContent = '';
+        document.getElementById('out').innerHTML = '<p class="empty">⚠️ Couldn\'t reach the school backend.</p>' +
+          '<p class="note" style="padding:0 4px 12px">Press Refresh in a few seconds — it is usually a short hiccup when many students connect at once. If it keeps happening: check the internet connection, turn off any ad-blocker, VPN or "strict" privacy shield for this site, or try another browser or network (some school networks block Google services).<br>Error code: <b>' + esc(why) + '</b></p>' +
+          '<button class="btn" onclick="load()">↻ Try again</button>';
+        return;
+      }
+    } else {
+      try{ localStorage.setItem(key, JSON.stringify({t:Date.now(), rows:r})); }catch(e){}
+    }
     rows = r;
     var total = r.reduce(function(s, x){ return s + x.xp; }, 0);
-    document.getElementById('meta').textContent = r.length + ' student' + (r.length === 1 ? '' : 's') + ' · ' + total + ' XP in total · updated ' + new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-    if(!r.length){ document.getElementById('out').innerHTML = '<p class="empty">No scores yet for this game and grade.</p>'; return; }
+    document.getElementById('meta').textContent = r.length + ' student' + (r.length === 1 ? '' : 's') + ' · ' + total + ' XP in total · ' + (note ? 'saved ' : 'updated ') + stamp.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    if(!r.length){ document.getElementById('out').innerHTML = note + '<p class="empty">No scores yet for this game and grade.</p>'; return; }
     var showGrade = sel.grade === 'ALL';
-    document.getElementById('out').innerHTML = '<table><thead><tr><th>#</th><th>Student</th>' + (showGrade ? '<th>Grade</th>' : '') + '<th class="n">XP</th></tr></thead><tbody>' +
+    document.getElementById('out').innerHTML = note + '<table><thead><tr><th>#</th><th>Student</th>' + (showGrade ? '<th>Grade</th>' : '') + '<th class="n">XP</th></tr></thead><tbody>' +
       r.map(function(x, i){ return '<tr><td class="rank">' + (i + 1) + '</td><td>' + esc(x.student) + '</td>' + (showGrade ? '<td>' + esc(x.grade) + '</td>' : '') + '<td class="n">' + x.xp + '</td></tr>'; }).join('') +
       '</tbody></table>';
   });
@@ -160,7 +178,7 @@ function downloadCsv(){
 
 var TEST_NAMES = ['ADMIN', 'TEST ALBERTO', 'DIAGTEST'];
 function boardRows(params, grade){
-  return IOW.jsonp(params, 15000).then(function(d){
+  return IOW.jsonpRead(params, 15000).then(function(d){
     if(!d || !d.ok || !Array.isArray(d.leaderboard)) return null;
     return d.leaderboard.filter(function(r){ return r && r.student && TEST_NAMES.indexOf(String(r.student).trim().toUpperCase()) === -1; })
       .map(function(r){ return {student:String(r.student).trim().toUpperCase(), xp:r.xp || 0, grade:grade}; })

@@ -53,13 +53,22 @@
     return new Promise(function(resolve){
       var cb = '__iow' + Date.now() + '_' + Math.floor(Math.random() * 1e6), done = false;
       var s = document.createElement('script');
-      function finish(v){ if(done) return; done = true; try{ delete window[cb]; }catch(e){ window[cb] = undefined; } if(s.parentNode) s.parentNode.removeChild(s); resolve(v); }
+      function finish(v, why){ if(done) return; done = true; if(v === null){ try{ jsonp.lastFail = why || 'unknown'; }catch(e){} } try{ delete window[cb]; }catch(e){ window[cb] = undefined; } if(s.parentNode) s.parentNode.removeChild(s); resolve(v); }
       window[cb] = function(d){ finish(d); };
-      s.onerror = function(){ finish(null); };
+      s.onerror = function(){ finish(null, 'blocked'); };   // script could not load: offline, filtered by a network/extension, or the server answered with an error page
       var q = new URLSearchParams(params); q.set('callback', cb);
       s.src = BACKEND + '?' + q.toString();
-      setTimeout(function(){ finish(null); }, timeoutMs || 8000);
+      setTimeout(function(){ finish(null, 'timeout'); }, timeoutMs || 8000);
       document.head.appendChild(s);
+    });
+  }
+  // Same as jsonp, but for read-only requests: one automatic second try after a short random pause
+  // (the server can be briefly overloaded when a whole class connects at once). Never use it for scores.
+  function jsonpRead(params, timeoutMs){
+    return jsonp(params, timeoutMs).then(function(r){
+      if(r) return r;
+      return new Promise(function(res){ setTimeout(res, 1200 + Math.floor(Math.random() * 1800)); })
+        .then(function(){ return jsonp(params, (timeoutMs || 8000) + 6000); });
     });
   }
 
@@ -271,7 +280,7 @@
     if(CODE_ON) params.code = savedCode();
     Object.keys(opts).forEach(function(k){ if(k !== 'name' && k !== 'grade' && opts[k] !== undefined && opts[k] !== null) params[k] = opts[k]; });
     toast('📡 Sending to the class ranking…');
-    return jsonp(params, 9000).then(function(r){
+    return jsonp(params, 20000).then(function(r){
       if(r && r.ok){ toast('✅ +' + xp + ' XP · ' + name + ' · ' + game + ' · ' + grade, 'ok'); return {ok:true, xp:xp}; }
       toast('⚠️ Couldn\'t reach the class ranking. Your score is still saved on this device.', 'warn');
       return {ok:false, reason:'offline'};
@@ -279,7 +288,7 @@
   }
 
   function leaderboardOne(game, grade){
-    return jsonp({action:'leaderboard', course:boardName(game, grade)}, 9000).then(function(d){
+    return jsonpRead({action:'leaderboard', course:boardName(game, grade)}, 10000).then(function(d){
       if(!d || !d.ok || !Array.isArray(d.leaderboard)) return null;
       return d.leaderboard.filter(function(r){ return r && r.student && (r.xp || 0) > 0; })
         .map(function(r){ return {student:r.student, xp:r.xp || 0, grade:grade}; })
@@ -444,7 +453,7 @@
   window.IOW = {
     GRADES:GRADES, LEVELS:LEVELS, GROUPS_BY_LEVEL:GROUPS_BY_LEVEL, gradeLevel:function(){ return gradeLevelOf(getIdentity().grade); }, gradeLevelOf:gradeLevelOf, getIdentity:getIdentity, setIdentity:setIdentity, ensureIdentity:ensureIdentity,
     mountIdentity:mountIdentity, postScore:postScore, leaderboard:leaderboard, leaderboardAll:leaderboardAll,
-    fillBoard:fillBoard, prefill:prefill, toast:toast, boardName:boardName, jsonp:jsonp, cleanName:cleanName, needsCode:needsCode, promptCode:promptCode, hasCode:hasCode, codeBanner:codeBanner, code:savedCode,
+    fillBoard:fillBoard, prefill:prefill, toast:toast, boardName:boardName, jsonp:jsonp, jsonpRead:jsonpRead, cleanName:cleanName, needsCode:needsCode, promptCode:promptCode, hasCode:hasCode, codeBanner:codeBanner, code:savedCode,
     getAvatar:getAvatar, setAvatar:setAvatar, syncAvatar:syncAvatar, totalXP:totalXP, addXP:addXP, mountAvatarPicker:mountAvatarPicker, AVATARS:AVATARS, COLORS:COLORS
   };
 })();

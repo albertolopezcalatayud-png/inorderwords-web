@@ -229,7 +229,7 @@ var BANKS = {
     ghosts=gt.map(function(t,i){ var g=newEntity(t,colors[i%colors.length]); g.dir='up'; return g; });
     $('score').textContent='0'; $('lives').textContent='❤️❤️❤️';
     var w=COLS*TILE, h=ROWS*TILE; canvas.width=w; canvas.height=h;
-    show('s-game'); running=true; last=performance.now(); raf=requestAnimationFrame(loop);
+    show('s-game'); running=true; acc=0; last=performance.now(); raf=requestAnimationFrame(loop);
   }
 
   function canGo(ent,dir){ var d=DIRS[dir]; return !isWall(ent.r+d[0], ent.c+d[1]); }
@@ -265,21 +265,35 @@ var BANKS = {
 
   function px(ent){ var d=ent.dir?DIRS[ent.dir]:[0,0]; return { x:(ent.c + d[1]*ent.prog)*TILE+TILE/2, y:(ent.r + d[0]*ent.prog)*TILE+TILE/2 }; }
 
+  // Game logic runs at a fixed 60 steps per second, whatever the screen's refresh rate
+  // (60, 90, 120, 144 Hz...). Drawing still happens on every screen frame.
+  var STEP=1000/60, acc=0;
+  function update(){
+    var pspeed=0.10, gspeed=0.075;
+    stepEntity(pac, pspeed, pacChooser);
+    // eat dot
+    if(pac.prog===0){ var ch=grid[pac.r][pac.c]; if(ch==='.'){ grid[pac.r][pac.c]=' '; score+=10; dotsLeft--; $('score').textContent=score; } else if(ch==='o'){ grid[pac.r][pac.c]=' '; score+=50; dotsLeft--; $('score').textContent=score; } }
+    ghosts.forEach(function(g){ stepEntity(g, gspeed, ghostChooser(g)); });
+    // collision (tile proximity)
+    var pp=px(pac);
+    for(var i=0;i<ghosts.length;i++){ var gp=px(ghosts[i]); if(Math.abs(pp.x-gp.x)<TILE*0.7 && Math.abs(pp.y-gp.y)<TILE*0.7){ askQuestion(ghosts[i]); break; } }
+    if(dotsLeft<=0){ finish(true); return true; }
+    mouth=(mouth+0.15)%1;
+    return false;
+  }
+
   function loop(t){
     if(!running) return;
-    var dt=Math.min(40,t-last); last=t;
+    var dt=Math.min(100,t-last); last=t;
     if(!paused){
-      var pspeed=0.10, gspeed=0.075;
-      stepEntity(pac, pspeed, pacChooser);
-      // eat dot
-      if(pac.prog===0){ var ch=grid[pac.r][pac.c]; if(ch==='.'){ grid[pac.r][pac.c]=' '; score+=10; dotsLeft--; $('score').textContent=score; } else if(ch==='o'){ grid[pac.r][pac.c]=' '; score+=50; dotsLeft--; $('score').textContent=score; } }
-      ghosts.forEach(function(g){ stepEntity(g, gspeed, ghostChooser(g)); });
-      // collision (tile proximity)
-      var pp=px(pac);
-      for(var i=0;i<ghosts.length;i++){ var gp=px(ghosts[i]); if(Math.abs(pp.x-gp.x)<TILE*0.7 && Math.abs(pp.y-gp.y)<TILE*0.7){ askQuestion(ghosts[i]); break; } }
-      if(dotsLeft<=0){ finish(true); return; }
-      mouth=(mouth+0.15)%1;
-    }
+      acc+=dt; var n=0;
+      while(acc>=STEP && n<6){
+        acc-=STEP; n++;
+        if(update()) return;       // maze cleared: finish() already ran
+        if(paused) break;          // a bug caught Pac: question on screen
+      }
+      if(n>=6) acc=0;              // very slow device: drop the backlog instead of racing to catch up
+    } else { acc=0; }
     draw();
     raf=requestAnimationFrame(loop);
   }
@@ -330,7 +344,7 @@ var BANKS = {
       // send ghost home
       if(curGhost){ curGhost.r=curGhost.home.r; curGhost.c=curGhost.home.c; curGhost.pr=curGhost.r; curGhost.pc=curGhost.c; curGhost.prog=0; curGhost.dir='up'; }
       if(!ok){ lives--; $('lives').textContent='❤️'.repeat(Math.max(0,lives))+'🖤'.repeat(3-Math.max(0,lives)); if(lives<=0){ finish(false); return; } }
-      paused=false; last=performance.now();
+      paused=false; acc=0; last=performance.now();
     }, ok?900:2100);
   }
 
