@@ -108,6 +108,8 @@
         .sentence-box input { width: 60%; padding: 8px; background: #000; border: 1px solid var(--neon-yellow); color: #fff; font-family: 'Orbitron'; font-size: 1.1rem; }
 
         @media (max-width: 900px) { .app-viewport { grid-template-columns: 1fr; overflow-y: auto; height: auto; } body { overflow-y: auto; } }
+        /* mobile-fit (phones): column may shrink; bottom room so the floating buttons never cover the game buttons */
+        @media (max-width: 900px) { .app-viewport { grid-template-columns: minmax(0,1fr); padding-bottom: 150px !important; } .panel-box { min-width: 0; } }
 
         .ow-home-fab{
           position:fixed; top:14px; left:14px; z-index:9999;

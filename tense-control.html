@@ -89,6 +89,8 @@
     canvas#confetti { position: fixed; inset: 0; pointer-events: none; z-index: 99; }
 
     @media (max-width: 900px) { .app-viewport { grid-template-columns: 1fr; overflow-y: auto; height: auto; } body { overflow-y: auto; } .asteroid-field{grid-template-columns:repeat(2,1fr);} }
+        /* mobile-fit (phones): column may shrink; bottom room so the floating buttons never cover the game buttons */
+        @media (max-width: 900px) { .app-viewport { grid-template-columns: minmax(0,1fr); padding-bottom: 150px !important; } .panel-box { min-width: 0; } }
 
     .ow-home-fab{
       position:fixed; top:14px; left:14px; z-index:9999;

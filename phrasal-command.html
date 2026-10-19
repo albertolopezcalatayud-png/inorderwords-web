@@ -110,6 +110,18 @@
 
         @media (max-width: 900px) { .app-viewport { grid-template-columns: 1fr; overflow-y: auto; height: auto; } body { overflow-y: auto; } }
 
+        /* mobile-fit (phones): let the single column shrink instead of growing with its widest child */
+        @media (max-width: 900px) { .app-viewport { grid-template-columns: minmax(0,1fr); padding-bottom: 150px !important; } .panel-box { min-width: 0; } }
+        @media (max-width: 600px) {
+          .app-viewport { padding: 12px; gap: 14px; }
+          .panel-box { padding: 16px 14px; }
+          .modal-screen { padding: 16px 14px; }
+          .modal-screen h2 { font-size: 1.5rem !important; overflow-wrap: anywhere; }
+          h1 { font-size: 1.35rem; }
+          .header-bar { flex-wrap: wrap; gap: 8px; }
+          .hud-stats { gap: 8px; grid-template-columns: repeat(2, minmax(0,1fr)); }
+          .hud-card span { font-size: 1.4rem; }
+        }
         .ow-home-fab{
           position:fixed; top:14px; left:14px; z-index:9999;
           display:flex; align-items:center; gap:7px;
