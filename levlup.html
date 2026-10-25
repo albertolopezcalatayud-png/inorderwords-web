@@ -7502,6 +7502,544 @@ GRAMMAR_GEN["extraposition-it-subject"] = [
     ["If we lived near the sea, we ___ swimming every day.","would go","will go","went","Second conditional: if + past simple, would + base verb.",["'d go"]]
   ], "Complete the conditional.", "Choose the correct form.");
 
+  /* =================== UNIT-FILE COVERAGE GAPS (q6e) =================== */
+  /* Adds topics present in the school units (1º–4º ESO) not yet in Levlup */
+
+  /* ===================== 1º ESO ===================== */
+
+  /* 1eso: Comparatives and superlatives (Unit 3) */
+  aliasTopic("1eso", "have-got", "comparatives-superlatives-1eso", "comparatives-superlatives",
+    "Comparatives and superlatives");
+
+  /* 1eso: Present simple vs present continuous (Unit 4) */
+  aliasTopic("1eso", "present-continuous", "present-simple-vs-continuous-1eso",
+    "present-simple-continuous", "Present simple vs present continuous");
+
+  /* 1eso: Must and mustn't (Unit 5) */
+  var MUST_1ESO = NB([
+    ["You ___ wear a seatbelt. It's the law.", "must", "mustn't", "can", "Must expresses obligation or a rule you have to follow.", ["have to"]],
+    ["You ___ run near the swimming pool. It's dangerous.", "mustn't", "must", "don't have to", "Mustn't = prohibition. It means something is not allowed."],
+    ["Students ___ arrive on time for their exams.", "must", "mustn't", "might", "Must = obligation (here, a school rule).", ["have to"]],
+    ["You ___ touch that wire — it could give you an electric shock.", "mustn't", "must", "don't have to", "Mustn't = prohibition. The action is forbidden."],
+    ["You ___ eat in the library.", "mustn't", "must", "can", "Mustn't = not allowed. Libraries have a no-eating rule."],
+    ["You ___ bring a pen to the test. It's required.", "must", "mustn't", "might", "Must = obligation. You are required to do it.", ["have to"]],
+    ["You ___ shout in the hospital. Please be quiet.", "mustn't", "must", "can", "Mustn't = prohibition. Shouting in a hospital is not allowed."],
+    ["You ___ wash your hands before eating.", "must", "mustn't", "might", "Must = strong obligation or advice.", ["should", "have to"]],
+    ["You ___ copy your classmate's homework. That's cheating.", "mustn't", "must", "can", "Mustn't = prohibition (school rule)."],
+    ["Passengers ___ show their ticket on the bus.", "must", "mustn't", "might", "Must = obligation (rule on public transport).", ["have to"]]
+  ]);
+  GRAMMAR_GEN["must-mustnt-1eso"] = gensFromBank(MUST_1ESO,
+    "Complete the sentence with must or mustn't.",
+    "Choose must or mustn't.",
+    TF_GRAM);
+  addTopicAfter("1eso", "can-ability-permission", {
+    id:"must-mustnt-1eso", title:"Must and mustn't (rules)",
+    formula:"must + infinitive | mustn't + infinitive",
+    rules:[
+      "Use <strong>must</strong> to express <strong>obligation</strong> — something you are required to do: \"You must wear a helmet.\"",
+      "Use <strong>mustn't</strong> to express <strong>prohibition</strong> — something you are NOT allowed to do: \"You mustn't use your phone in class.\"",
+      "Both must and mustn't are followed by the <strong>base form</strong> of the verb (no to, no -ing, no past form): \"You must be quiet.\" NOT \"You must to be quiet.\"",
+      "Must has <strong>no -s</strong> in the third person: \"She must study.\" NOT \"She musts study.\""
+    ],
+    examples:["You must wear a seatbelt.","You mustn't run in the corridor.","Students must bring their ID cards.","You mustn't talk during the exam."]
+  });
+
+  /* 1eso: Countable and uncountable nouns: some, any (Unit 5) */
+  aliasTopic("1eso", "must-mustnt-1eso", "countable-uncountable-1eso",
+    "countable-uncountable", "Countable and uncountable nouns: some and any");
+
+  /* 1eso: There was / There were (Unit 6) */
+  var THERE_WAS = NB([
+    ["___ a large park near our old house.", "There was", "There were", "There is", "Singular noun (a large park) → there was.", ["There was a"]],
+    ["___ a lot of people at the concert last night.", "There were", "There was", "There is", "Plural noun (a lot of people) → there were.", ["There were a lot of"]],
+    ["___ a cinema on this street fifty years ago.", "There was", "There were", "There are", "Singular noun (a cinema) → there was."],
+    ["___ any eggs in the fridge this morning.", "There weren't", "There wasn't", "There aren't", "Plural noun (eggs) → there were not (weren't).", ["There were not"]],
+    ["___ a terrible storm last Sunday.", "There was", "There were", "There has been", "Singular noun (a storm) → there was."],
+    ["___ many cars in the town centre in the 1950s.", "There weren't", "There wasn't", "There aren't", "Plural noun (cars) → there weren't.", ["There were not"]],
+    ["___ a phone box outside the school.", "There was", "There were", "There is", "Singular noun (a phone box) → there was."],
+    ["___ no computers in classrooms thirty years ago.", "There were", "There was", "There are", "Plural noun (no computers) → there were."],
+    ["___ a fire in the old factory last year.", "There was", "There were", "There has been", "Singular noun (a fire) → there was."],
+    ["___ two swimming pools in our town when I was young.", "There were", "There was", "There are", "Two pools → plural → there were."]
+  ]);
+  GRAMMAR_GEN["there-was-there-were"] = gensFromBank(THERE_WAS,
+    "Choose there was or there were.",
+    "Choose the correct option.",
+    TF_GRAM);
+  addTopicAfter("1eso", "was-were-past-of-be", {
+    id:"there-was-there-were", title:"There was / There were",
+    formula:"There was + singular | There were + plural (past of there is / there are)",
+    rules:[
+      "Use <strong>there was</strong> with singular or uncountable nouns: \"There was a dog in the garden.\" \"There was a lot of noise.\"",
+      "Use <strong>there were</strong> with plural nouns: \"There were two children in the park.\"",
+      "Negative: <strong>there wasn't</strong> (singular) / <strong>there weren't</strong> (plural): \"There wasn't a supermarket here.\" \"There weren't any buses.\"",
+      "Question: <strong>Was there…?</strong> / <strong>Were there…?</strong>: \"Was there a pool?\" \"Were there any shops?\""
+    ],
+    examples:["There was a big castle in this town.","There were lots of people at the party.","There wasn't a school here a hundred years ago.","Were there any famous people at the event?"]
+  });
+
+  /* 1eso: Past simple negative and questions (Unit 7) */
+  var PAST_NEG_Q = NB([
+    ["She ___ (not go) to school yesterday. She had a cold.", "didn't go", "not went", "doesn't go", "Negative past simple: didn't + base verb. Never use the past form after didn't.", ["did not go"]],
+    ["___ you enjoy the film? It looked great in the trailer.", "Did", "Do", "Were", "Question past simple: Did + subject + base verb."],
+    ["They ___ (not watch) the match because they were tired.", "didn't watch", "not watched", "weren't watching", "Negative: didn't + base verb.", ["did not watch"]],
+    ["___ he play football last Saturday?", "Did", "Does", "Was", "Past simple question: Did + subject + base verb."],
+    ["I ___ (not understand) the homework yesterday.", "didn't understand", "not understood", "don't understand", "Negative: didn't + base verb. Don't use the past form.", ["did not understand"]],
+    ["___ they arrive on time for the concert?", "Did", "Were", "Have", "Past simple yes/no question: Did + subject + base verb."],
+    ["My mum ___ (not like) the new restaurant at all.", "didn't like", "not liked", "doesn't like", "Negative: didn't + base verb.", ["did not like"]],
+    ["Where ___ you go on holiday last summer?", "did", "were", "have", "Wh- question past simple: Wh- word + did + subject + base verb."],
+    ["We ___ (not know) the answer to that question.", "didn't know", "not knew", "don't know", "Negative: didn't + base verb.", ["did not know"]],
+    ["___ she finish her project on time?", "Did", "Has", "Was", "Past simple question: Did + subject + base verb."],
+    ["He ___ (not come) to the party. He was ill.", "didn't come", "not came", "hasn't come", "Negative: didn't + base verb (come, not came).", ["did not come"]],
+    ["What time ___ the match start?", "did", "does", "was", "Wh- past simple question: What time + did + subject + base verb."]
+  ]);
+  GRAMMAR_GEN["past-simple-neg-questions"] = gensFromBank(PAST_NEG_Q,
+    "Complete with the correct past simple form.",
+    "Choose the correct option.",
+    TF_GRAM);
+  addTopicAfter("1eso", "past-simple-intro", {
+    id:"past-simple-neg-questions", title:"Past simple: negatives and questions",
+    formula:"didn't + base verb | Did + subject + base verb?",
+    rules:[
+      "Negative: <strong>didn't</strong> (= did not) + <strong>base verb</strong>: \"I didn't go.\" \"She didn't like it.\" NOT \"I didn't went.\"",
+      "Question: <strong>Did</strong> + subject + <strong>base verb</strong>: \"Did you eat lunch?\" \"Did he finish?\" NOT \"Did you ate…?\"",
+      "Wh- questions: <strong>Wh- word + did + subject + base verb</strong>: \"Where did you go?\" \"What did she say?\"",
+      "Short answers: \"Yes, I did.\" / \"No, she didn't.\""
+    ],
+    examples:["I didn't watch TV last night.","Did you enjoy the film?","She didn't come to the party.","Where did they go on holiday?"]
+  });
+
+  /* 1eso: Will for predictions (Unit 8) */
+  aliasTopic("1eso", "past-simple-neg-questions", "will-predictions-1eso",
+    "will-for-predictions", "Will and won't (predictions)");
+
+  /* 1eso: Be going to (Unit 8) */
+  aliasTopic("1eso", "will-predictions-1eso", "be-going-to-1eso",
+    "going-to", "Be going to (plans and predictions)");
+
+  /* ===================== 2º ESO ===================== */
+
+  /* 2eso: Will vs going to (Unit 4) */
+  aliasTopic("2eso", "going-to", "will-vs-going-to-2eso",
+    "will-vs-going-to", "Will vs going to");
+
+  /* 2eso: As … as / not as … as (Unit 5) */
+  aliasTopic("2eso", "comparatives-superlatives", "as-as-2eso",
+    "as-as-comparisons", "Comparing with as … as");
+
+  /* 2eso: Present perfect: ever and never (Unit 6) */
+  aliasTopic("2eso", "as-as-2eso", "present-perfect-ever-never-2eso",
+    "present-perfect-ever-never", "Present perfect: ever and never");
+
+  /* 2eso: First conditional (Unit 3) */
+  aliasTopic("2eso", "will-for-predictions", "first-conditional-2eso",
+    "first-conditional", "First conditional");
+
+  /* ===================== 3º ESO ===================== */
+
+  /* 3eso: Past simple review (Unit 1) */
+  aliasTopic("3eso", "past-simple-time-clauses", "past-simple-3eso",
+    "past-simple", "Past simple: regular and irregular verbs");
+
+  /* 3eso: Past perfect (Unit 8) */
+  aliasTopic("3eso", "present-perfect-vs-past-simple-intro", "past-perfect-3eso",
+    "past-perfect-simple", "Past perfect simple (had + past participle)");
+
+  /* 3eso: Future with present simple and present continuous (Unit 5) */
+  var FUT_PRES = NB([
+    ["The concert ___ at 8 o'clock tonight. It's on the timetable.", "starts", "will start", "is starting", "We use present simple for timetabled/scheduled events: concerts, trains, films, etc."],
+    ["I ___ my sister for lunch tomorrow. We booked a table.", "am meeting", "will meet", "meet", "We use present continuous for personal arrangements (a fixed plan with someone else).", ["meet"]],
+    ["The flight ___ from Terminal 2 at 6:30 am.", "departs", "will depart", "is departing", "Present simple for timetabled transport departures and arrivals."],
+    ["They ___ to Paris next Friday. They've got their train tickets.", "are travelling", "travel", "will travel", "Present continuous = fixed personal arrangement made in advance.", ["are going to travel"]],
+    ["The new episode ___ at 9 pm on Thursday.", "comes out", "is coming out", "will come out", "Present simple for scheduled/published programme times."],
+    ["We ___ at the hotel on Saturday. The reservation is confirmed.", "are arriving", "arrive", "will arrive", "Present continuous = confirmed personal arrangement.", ["are going to arrive"]],
+    ["The library ___ at five o'clock today. Check the sign.", "closes", "is closing", "will close", "Present simple for official opening/closing times."],
+    ["She ___ her driving test next Tuesday. She's very nervous.", "is taking", "takes", "will take", "Present continuous = a personal arrangement / booked appointment.", ["is going to take"]],
+    ["The match ___ at half past seven. The schedule is fixed.", "starts", "is starting", "will start", "Present simple for published sporting schedules."],
+    ["We ___ a barbecue in the garden on Sunday. Come and join us!", "are having", "have", "will have", "Present continuous = a personal arrangement, confirmed plan.", ["are going to have"]]
+  ]);
+  GRAMMAR_GEN["future-present-tenses-3eso"] = gensFromBank(FUT_PRES,
+    "Complete with the present simple or present continuous.",
+    "Choose the correct tense.",
+    TF_GRAM);
+  addTopicAfter("3eso", "will-vs-going-to", {
+    id:"future-present-tenses-3eso", title:"Future: present simple and present continuous",
+    formula:"present simple (timetables) | present continuous (arrangements)",
+    rules:[
+      "Use the <strong>present simple</strong> for fixed, official schedules and timetables (trains, planes, concerts, TV programmes): \"The train leaves at 9 am.\" \"The film starts at 8.\"",
+      "Use the <strong>present continuous</strong> for personal arrangements — plans made with other people and confirmed in advance: \"I'm meeting Sara tonight.\" \"We're flying to Rome on Friday.\"",
+      "Both forms refer to the future, but the present simple talks about external timetables while the present continuous talks about your own diary.",
+      "A future time expression (tomorrow, next week, on Friday) is usually needed to make the future meaning clear."
+    ],
+    examples:["The bus leaves at half past seven.","I'm seeing the dentist tomorrow afternoon.","The match starts at 9 pm.","They're getting married next June."]
+  });
+
+  /* 3eso: Comparatives and superlatives (Unit 3) */
+  aliasTopic("3eso", "as-as-comparisons", "comparatives-superlatives-3eso",
+    "comparatives-superlatives", "Comparatives and superlatives");
+
+  /* 3eso: Can, could, be able to (Unit 4) */
+  aliasTopic("3eso", "must-have-to-should", "can-could-ability-3eso",
+    "can-cant", "Can, could and be able to (ability and permission)");
+
+  /* 3eso: Modals of deduction (present) (Unit 4) */
+  aliasTopic("3eso", "can-could-ability-3eso", "modals-deduction-3eso",
+    "modals-of-deduction-present", "Modals of deduction (present): must, might, can't");
+
+  /* ===================== 4º ESO ===================== */
+
+  /* 4eso: Future continuous (Unit 3) */
+  aliasTopic("4eso", "future-forms-review", "future-continuous-4eso",
+    "future-continuous", "Future continuous (will be + -ing)");
+
+  /* 4eso: Zero conditional + unless (Unit 5) */
+  aliasTopic("4eso", "first-second-conditional", "zero-conditional-unless-4eso",
+    "zero-conditional", "Zero conditional and unless");
+
+  /* 4eso: Wish and if only (Unit 5) */
+  aliasTopic("4eso", "third-conditional-intro", "wishes-if-only-4eso",
+    "wishes-regrets-intro", "Wish and if only");
+
+  /* 4eso: Reported questions, requests and commands (Unit 6) */
+  aliasTopic("4eso", "reported-speech-statements", "reported-questions-4eso",
+    "reported-questions-commands", "Reported questions, requests and commands");
+
+  /* 4eso: Passive: future forms (Unit 7) */
+  aliasTopic("4eso", "passive-present-past", "passive-future-4eso",
+    "passive-all-tenses", "Passive voice: present, past and future");
+
+  /* 4eso: Non-defining relative clauses (Unit 8) */
+  aliasTopic("4eso", "relative-clauses", "non-defining-relative-clauses-4eso",
+    "non-defining-relative-clauses", "Non-defining relative clauses");
+
+  /* 4eso: Quantifiers — too much / many, (a) few / (a) little, enough, plenty of (Unit 7) */
+  var QUANT_ADV = NB([
+    ["There's ___ sugar in this coffee. I can't drink it.", "too much", "too many", "enough", "Too much + uncountable noun (sugar is uncountable)."],
+    ["There are ___ people in this café. We won't find a seat.", "too many", "too much", "enough", "Too many + countable plural noun (people)."],
+    ["I don't have ___ money to buy a new phone.", "enough", "too much", "few", "Enough = the right amount (or the minimum needed). Comes before the noun.", ["sufficient"]],
+    ["Only ___ students passed the test — fewer than five.", "a few", "few", "a little", "A few = some (small positive number). Few without 'a' = almost none (negative idea).", ["some"]],
+    ["She speaks very ___ French — just a couple of words.", "little", "a little", "few", "Little (without 'a') = almost none — negative idea. For uncountable nouns."],
+    ["There are ___ seats left. Hurry up and book one!", "a few", "few", "a little", "A few = some, enough to matter. Positive idea."],
+    ["There's ___ milk left in the fridge — maybe half a glass.", "a little", "little", "few", "A little = some (small positive amount). For uncountable nouns.", ["some"]],
+    ["We have ___ time to finish, so work quickly!", "little", "a little", "few", "Little (no 'a') = almost no time — negative / warning idea."],
+    ["There are ___ parking spaces here. The town needs a car park.", "few", "a few", "little", "Few (no 'a') = almost none — not enough. Negative meaning."],
+    ["We have ___ apples — at least a dozen. No need to buy more.", "plenty of", "few", "little", "Plenty of = more than enough. Used with both countable and uncountable nouns.", ["enough"]],
+    ["Don't rush — there's ___ time before the meeting starts.", "plenty of", "little", "few", "Plenty of time = more than enough time. Positive, reassuring.", ["enough"]],
+    ["She put ___ salt on the chips — they taste terrible.", "too much", "too many", "enough", "Too much + uncountable noun (salt)."]
+  ]);
+  GRAMMAR_GEN["quantifiers-too-much-few-little-4eso"] = gensFromBank(QUANT_ADV,
+    "Complete with the correct quantifier.",
+    "Choose the correct quantifier.",
+    TF_GRAM);
+  addTopicAfter("4eso", "discourse-markers-basic", {
+    id:"quantifiers-too-much-few-little-4eso",
+    title:"Quantifiers: too much/many, (a) few/(a) little, enough, plenty of",
+    formula:"too much/many | (a) few / (a) little | enough | plenty of",
+    rules:[
+      "<strong>Too much</strong> + uncountable noun / <strong>too many</strong> + countable plural noun: \"too much noise\", \"too many cars\". Both express excess.",
+      "<strong>Enough</strong> + noun = the right amount: \"I have enough time.\" It comes <em>before</em> a noun but <em>after</em> an adjective: \"fast enough.\"",
+      "<strong>A few</strong> (countable) / <strong>a little</strong> (uncountable) = some, a small positive amount: \"a few friends\", \"a little sugar\". <em>Positive idea.</em>",
+      "<strong>Few</strong> (countable) / <strong>little</strong> (uncountable) = almost none, not enough: \"few options\", \"little time\". <em>Negative idea.</em>",
+      "<strong>Plenty of</strong> + noun = more than enough: \"plenty of food\", \"plenty of seats\". Used with both countable and uncountable nouns."
+    ],
+    examples:["There's too much traffic today.","I only have a little money left.","Very few people know the answer.","There's plenty of food — help yourself!"]
+  });
+
+  /* 4eso: Determiners (Unit 8) */
+  var DETERMINERS = NB([
+    ["___ student in the class got full marks — not one exception.", "Every", "Each", "All", "Every + singular noun emphasises ALL members of a group with no exceptions.", ["All"]],
+    ["___ of the contestants answered five questions.", "Each", "Every", "Neither", "Each is used when thinking about members of a group individually. It can be followed by 'of'."],
+    ["I've read ___ the books on the reading list.", "all", "every", "each", "All + plural noun (no 'of') or all of the + plural: no singular noun here."],
+    ["We tried ___ solution but nothing worked.", "every", "each", "all", "Every + singular noun = all members, often emphasising thoroughness.", ["each"]],
+    ["___ of the two films was worth watching. They were both terrible.", "Neither", "Either", "Both", "Neither = not one nor the other (negative). Followed by 'of' + plural or 'of the' + plural."],
+    ["You can take ___ road — they both lead to the city centre.", "either", "neither", "both", "Either = one or the other (it doesn't matter which). Positive option."],
+    ["___ restaurants we tried were excellent.", "Both", "Either", "Neither", "Both = the two together. Both + plural noun, or both of the + plural."],
+    ["___ team deserves to win — they are equally good.", "Either", "Neither", "Both", "Either can express 'one or the other' — used when both options are equally valid."],
+    ["___ of her parents speaks English.", "Neither", "Either", "Both", "Neither = not one of the two (negative meaning). Singular verb follows."],
+    ["We've checked ___ possibility and can't find an error.", "every", "all", "each", "Every + singular noun = all without exception.", ["each"]]
+  ]);
+  GRAMMAR_GEN["determiners-4eso"] = gensFromBank(DETERMINERS,
+    "Complete with the correct determiner.",
+    "Choose the correct determiner.",
+    TF_GRAM);
+  addTopicAfter("4eso", "quantifiers-too-much-few-little-4eso", {
+    id:"determiners-4eso",
+    title:"Determiners: each, every, all, both, either, neither",
+    formula:"each / every + singular | all + plural | both / either / neither (two things)",
+    rules:[
+      "<strong>Each</strong> = thinking about group members one by one: \"Each student has a book.\" Can be followed by of: \"each of them.\"",
+      "<strong>Every</strong> = all members as a whole, no exceptions: \"Every seat was taken.\" NOT followed by of; always takes a singular noun.",
+      "<strong>All</strong> = the whole group (more than two): \"All students passed.\" / \"All of the students passed.\"",
+      "<strong>Both</strong> = the two together (positive): \"Both options are good.\"",
+      "<strong>Either</strong> = one or the other of two (positive choice): \"Take either bus — they both go there.\"",
+      "<strong>Neither</strong> = not one of the two (negative): \"Neither answer is correct.\" Takes a singular verb."
+    ],
+    examples:["Every student must hand in the assignment.","Both parents came to the meeting.","Neither of them knew the answer.","Each of the questions has a different answer."]
+  });
+
+
+/* =================== TOPIC REORDER (q7_reorder.js) =================== */
+/* Reorders topics within each level to match the school unit sequence.  */
+/* Runs after all q6* addition files, before q9_post.js.                */
+
+(function(){
+  function reorderLevel(levelId, orderedIds){
+    var L = findLevel(levelId);
+    if(!L){ return; }
+    var map = {};
+    L.topics.forEach(function(t){ map[t.id] = t; });
+    var ordered = [];
+    orderedIds.forEach(function(id){
+      if(map[id]){ ordered.push(map[id]); delete map[id]; }
+    });
+    /* Append any topic not in the order list at the end (safety net) */
+    Object.keys(map).forEach(function(id){ ordered.push(map[id]); });
+    L.topics = ordered;
+  }
+
+  /* ── 1º ESO ──────────────────────────────────────────────────────── */
+  /* U1: to be · have got · possessives · there is/are                 */
+  /* U2: present simple · adverbs of freq · likes + -ing               */
+  /* U3: comparatives / superlatives                                   */
+  /* U4: present continuous · pres-vs-cont · imperatives               */
+  /* U5: can · must/mustn't · countable · how much/many                */
+  /* U6: was/were · there was/were · past simple                       */
+  /* U7: past simple neg + questions                                   */
+  /* U8: will · going to                                               */
+  /* General: articles, prepositions, demonstratives, would-like,      */
+  /*          prepositions of movement, indefinite pronouns, wh        */
+  reorderLevel("1eso", [
+    "to-be",
+    "have-got",
+    "possessives-object-pronouns",
+    "there-is-are",
+    "presente-simple",
+    "adverbs-of-frequency",
+    "like-love-hate-ing",
+    "articles-plurals",
+    "prepositions",
+    "comparatives-superlatives-1eso",
+    "present-continuous",
+    "present-simple-vs-continuous-1eso",
+    "imperatives",
+    "demonstratives",
+    "would-like-requests",
+    "can-ability-permission",
+    "must-mustnt-1eso",
+    "countable-uncountable-1eso",
+    "how-much-how-many-questions",
+    "prepositions-of-movement",
+    "was-were-past-of-be",
+    "there-was-there-were",
+    "past-simple-intro",
+    "past-simple-neg-questions",
+    "indefinite-pronouns-something-anyone-nobody",
+    "wh-questions",
+    "will-predictions-1eso",
+    "be-going-to-1eso"
+  ]);
+
+  /* ── 2º ESO ──────────────────────────────────────────────────────── */
+  /* U1: past simple                                                   */
+  /* U2: past continuous · past simple vs continuous                   */
+  /* U3: suggestions/offers · will predictions · 1st conditional       */
+  /* U4: going to · will vs going to                                   */
+  /* U5: can/can't · comparatives · as…as                              */
+  /* U6: present perfect (ever/never)                                  */
+  /* U7: must / have to / should                                       */
+  /* General: adj order, adverbs manner, pres-simple-cont,             */
+  /*          countable, quantifiers, possessives, verb+prep,           */
+  /*          each/every/all, reflexive, gerunds/infinitives            */
+  reorderLevel("2eso", [
+    "basic-adjective-order",
+    "adverbs-of-manner",
+    "past-simple",
+    "past-continuous-intro",
+    "past-simple-vs-continuous-intro",
+    "present-simple-continuous",
+    "suggestions-offers",
+    "will-for-predictions",
+    "first-conditional-2eso",
+    "going-to",
+    "will-vs-going-to-2eso",
+    "can-cant",
+    "comparatives-superlatives",
+    "as-as-2eso",
+    "present-perfect-ever-never-2eso",
+    "must-have-to-should-intro",
+    "countable-uncountable",
+    "quantifiers-a-lot-few-little",
+    "possessive-pronouns",
+    "verb-plus-preposition-basic",
+    "each-every-all",
+    "reflexive-pronouns",
+    "gerunds-infinitives-basic-verbs"
+  ]);
+
+  /* ── 3º ESO ──────────────────────────────────────────────────────── */
+  /* U1: past simple · past-simple-vs-past-cont · time clauses         */
+  /*     · past continuous · used to                                   */
+  /* U2: present perfect (ever/never) · PP for/since                   */
+  /* U3: PP vs past simple · comparatives · as…as                      */
+  /* U4: can/could ability · must/have to/should · modals deduction     */
+  /* U5: will vs going to · future tenses · might/may                  */
+  /* U6: zero cond · 1st cond · 2nd cond                               */
+  /* U7: passive (present/past)                                        */
+  /* U8: relative pronouns · past perfect                              */
+  /* General: adverbs, so/neither, too/enough, so/such, phrasal verbs,  */
+  /*          make/do, verb patterns, modals obligation past,           */
+  /*          reciprocal, linking words                                 */
+  reorderLevel("3eso", [
+    "past-simple-3eso",
+    "past-simple-vs-past-continuous",
+    "past-simple-time-clauses",
+    "past-continuous",
+    "used-to-intro",
+    "modals-obligation-past",
+    "present-perfect-ever-never",
+    "present-perfect-for-since-intro",
+    "present-perfect-vs-past-simple-intro",
+    "comparatives-superlatives-3eso",
+    "as-as-comparisons",
+    "can-could-ability-3eso",
+    "must-have-to-should",
+    "modals-deduction-3eso",
+    "will-vs-going-to",
+    "future-present-tenses-3eso",
+    "might-may-possibility",
+    "zero-conditional",
+    "first-conditional",
+    "second-conditional",
+    "passive-present-past-intro",
+    "relative-pronouns-who-which-that",
+    "past-perfect-3eso",
+    "adverbs-frequency-manner",
+    "so-neither",
+    "too-enough",
+    "so-such",
+    "phrasal-verbs-common",
+    "make-do-collocations",
+    "verb-patterns-basic",
+    "reciprocal-pronouns-each-other",
+    "linking-words-cause-contrast-basic"
+  ]);
+
+  /* ── 4º ESO ──────────────────────────────────────────────────────── */
+  /* U1: narrative tenses · used to                                    */
+  /* U2: PP for/since · PP simple/cont · PP vs past simple             */
+  /*     · subject/object questions · question tags                    */
+  /* U3: future review · future continuous                             */
+  /* U4: modals of deduction (present/past) · verb patterns            */
+  /* U5: conditionals (1+2 · zero+unless · 3rd) · wishes               */
+  /* U6: reported speech · reported questions                          */
+  /* U7: passive (present/past/future) · quantifiers                   */
+  /* U8: relative clauses (defining + non-def) · determiners           */
+  /*     · both/either/neither                                         */
+  /* General: articles adv, indirect questions, purpose, past perfect, */
+  /*          phrasal verbs ×2, comparing, would rather, discourse     */
+  reorderLevel("4eso", [
+    "mixed-tenses-narrative",
+    "used-to",
+    "present-perfect-for-since",
+    "present-perfect-simple-continuous",
+    "present-perfect-vs-past-simple",
+    "subject-object-questions",
+    "question-tags",
+    "future-forms-review",
+    "future-continuous-4eso",
+    "modals-of-deduction-present",
+    "modals-of-deduction-past",
+    "verb-patterns-intermediate",
+    "first-second-conditional",
+    "zero-conditional-unless-4eso",
+    "third-conditional-intro",
+    "wishes-if-only-4eso",
+    "reported-speech-statements",
+    "reported-questions-4eso",
+    "passive-present-past",
+    "passive-future-4eso",
+    "quantifiers-too-much-few-little-4eso",
+    "relative-clauses",
+    "non-defining-relative-clauses-4eso",
+    "both-either-neither",
+    "determiners-4eso",
+    "articles-advanced-usage",
+    "indirect-questions",
+    "purpose-clauses",
+    "past-perfect-simple",
+    "phrasal-verbs-intermediate",
+    "comparing-similar-different",
+    "phrasal-verbs-separable-inseparable",
+    "would-rather-had-better",
+    "discourse-markers-basic"
+  ]);
+
+  /* ── 1º BACH ─────────────────────────────────────────────────────── */
+  /* U1: causative · non-defining relative clauses                     */
+  /* U2: emphatic do/does/did · future perfect · future continuous     */
+  /* U3: 3rd conditional · conditional connectors · wishes/regrets     */
+  /* U4: passive all tenses · reported questions/commands              */
+  /*     · modals of deduction                                         */
+  /* U5: PP continuous · past perfect continuous · gerund vs infinitive */
+  /* U6: be/get used to · linking contrast · future in the past        */
+  /* General: collocations, concession/purpose, verb patterns adv,     */
+  /*          modal perfect forms                                      */
+  reorderLevel("1bach", [
+    "causative",
+    "non-defining-relative-clauses",
+    "emphasis-with-do-does-did",
+    "future-perfect-simple",
+    "future-continuous",
+    "third-conditional",
+    "conditional-connectors",
+    "wishes-regrets-intro",
+    "passive-all-tenses",
+    "reported-questions-commands",
+    "modals-deduction",
+    "present-perfect-continuous",
+    "past-perfect-continuous",
+    "gerund-infinitive",
+    "be-get-used-to",
+    "linking-contrast",
+    "future-in-the-past",
+    "collocations-with-prepositions",
+    "adverbial-clauses-concession-purpose",
+    "verb-patterns-advanced",
+    "modal-perfect-forms"
+  ]);
+
+  /* ── 2º BACH ─────────────────────────────────────────────────────── */
+  /* U1: reporting verb patterns                                       */
+  /* U2: reduced relative clauses · non-defining participle            */
+  /* U3: passive reporting · passive advanced                          */
+  /* U4: mixed conditionals · wish/if only · conditionals without if   */
+  /* U5: advanced modals                                               */
+  /* U6: participle clauses (adverbial)                                */
+  /* General: correlative conj, discourse markers, double comp,        */
+  /*          inversion, cleft sentences, future perf cont,            */
+  /*          hypothetical past, academic collocations                 */
+  reorderLevel("2bach", [
+    "reporting-verb-patterns",
+    "reduced-relative-clauses-intro",
+    "non-defining-participle",
+    "passive-reporting-structures",
+    "passive-advanced",
+    "mixed-conditionals",
+    "wish-if-only",
+    "conditionals-without-if",
+    "advanced-modals",
+    "participle-clauses-adverbial",
+    "correlative-conjunctions",
+    "discourse-markers-advanced",
+    "double-comparatives",
+    "inversion-negative-adverbials",
+    "cleft-sentences",
+    "future-perfect-continuous",
+    "hypothetical-past-structures",
+    "academic-collocations-advanced"
+  ]);
+
+})();
+
   /* ---- post-processing: capitalise options/answers when the blank opens the sentence ---- */
   (function(){
     function capFirst(s){ return (typeof s==="string" && s.length) ? s.charAt(0).toUpperCase()+s.slice(1) : s; }
