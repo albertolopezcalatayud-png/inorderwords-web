@@ -5618,11 +5618,11 @@ GRAMMAR_GEN["extraposition-it-subject"] = [
       var sing = rnd(["a park near my house","a bank in the high street","an apple on the table","a chair in the corner","a library in my town","a clock on the wall"]);
       var plur = rnd(["chairs in this room","books on the shelf","students in the classroom","cars in the car park","pictures on the wall","shops in my street"]);
       var mode = rnd(["singAff","plAff","singNeg","plNeg","q"]);
-      if(mode==="singAff") return ex1("gap","Complete with there is/are.","___ "+sing+".","There is",["There's"],"There is + singular noun.");
-      if(mode==="plAff") return ex1("gap","Complete with there is/are.","___ "+plur+".","There are",[],"There are + plural noun.");
-      if(mode==="singNeg") return ex1("gap","Complete the negative form.","___ any "+rnd(["milk in the fridge","sugar in the cupboard","water in the bottle","juice in the jug"])+".","There isn't",["There is not"],"Negative with an uncountable noun: there isn't.");
-      if(mode==="plNeg") return ex1("gap","Complete the negative form.","___ any "+rnd(["chairs in this room","books on the shelf","students in the classroom","cars in the car park"])+".","There aren't",["There are not"],"Negative plural: there aren't.");
-      return ex1("gap","Complete the question.",rnd(["___ a bank near here?","___ a supermarket in your town?","___ a clock in the classroom?"]),"Is there",[],"Questions: Is there...? / Are there...?");
+      if(mode==="singAff") return ex1("gap","Write 'There is' or 'There are' to complete the sentence.","___ "+sing+".","There is",["There's"],"There is + singular noun. Use 'There is' (or 'There's') with singular and uncountable nouns.");
+      if(mode==="plAff") return ex1("gap","Write 'There is' or 'There are' to complete the sentence.","___ "+plur+".","There are",[],"There are + plural noun. Use 'There are' with plural nouns.");
+      if(mode==="singNeg") return ex1("gap","Write the negative: 'There isn't' or 'There aren't'.","___ any "+rnd(["milk in the fridge","sugar in the cupboard","water in the bottle","juice in the jug"])+".","There isn't",["There is not","There isn't any","There is not any"],"Negative with an uncountable noun: There isn't any...");
+      if(mode==="plNeg") return ex1("gap","Write the negative: 'There isn't' or 'There aren't'.","___ any "+rnd(["chairs in this room","books on the shelf","students in the classroom","cars in the car park"])+".","There aren't",["There are not","There aren't any","There are not any"],"Negative plural: There aren't any...");
+      return ex1("gap","Write 'Is there' or 'Are there' to complete the question.",rnd(["___ a bank near here?","___ a supermarket in your town?","___ a clock in the classroom?"]),"Is there",["Are there"],"Questions: Is there...? (singular) / Are there...? (plural)");
     },
     function(){
       var bank = [
@@ -5679,7 +5679,7 @@ GRAMMAR_GEN["extraposition-it-subject"] = [
       var subj = rnd(SUBJECTS), isSg3 = subj.person==="3sg";
       var form = isSg3 ? "has got" : "have got", neg = isSg3 ? "hasn't got" : "haven't got";
       var obj = rnd(["a new phone","a car","a lot of homework","a sister","a garden","two cats"]);
-      return ex1("transform","Rewrite the sentence in the negative.",cap(subj.text)+" "+form+" "+obj+".",cap(subj.text)+" "+neg+" "+obj+".",[cap(subj.text)+" "+(isSg3?"has not got":"have not got")+" "+obj+"."],"The negative of have got is haven't got (for I/you/we/they) or hasn't got (for he/she/it).");
+      return ex1("transform","Rewrite in the negative. Keep all the words — only change the verb.",cap(subj.text)+" "+form+" "+obj+".",cap(subj.text)+" "+neg+" "+obj+".",[cap(subj.text)+" "+(isSg3?"has not got":"have not got")+" "+obj+"."],"The negative of have got is haven't got (for I/you/we/they) or hasn't got (for he/she/it). Only the verb changes — everything else stays the same.");
     }
   ];
 
