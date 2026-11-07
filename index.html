@@ -335,6 +335,8 @@
   .culture .cu-fact{color:var(--text-sub); font-size:13px; text-align:center;}
   .culture .cu-fact b{color:var(--text); font-weight:700;}
 </style>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
 </head>
 <body>
 <canvas id="stars" width="1440" height="2610"></canvas>
@@ -1067,4 +1069,9 @@
 
 <script src="helper-bot.js" defer></script>
 <script src="theme-switcher.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));
+  }
+</script>
 </body></html>
