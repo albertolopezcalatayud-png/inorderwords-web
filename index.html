@@ -334,6 +334,99 @@
   }
   .culture .cu-fact{color:var(--text-sub); font-size:13px; text-align:center;}
   .culture .cu-fact b{color:var(--text); font-weight:700;}
+
+  /* ===== 2026 redesign: task-first homepage ===== */
+  .hero{padding:56px 0 34px;}
+  .tagline{max-width:620px;}
+  .steps{display:flex; flex-direction:column; gap:18px; max-width:860px; margin:30px auto 0; text-align:left;}
+  .step{background:linear-gradient(135deg,var(--bg-panel-2),var(--bg-panel)); border:1px solid var(--line); border-radius:22px; padding:18px 20px 20px; display:flex; flex-direction:column; gap:12px;}
+  .step-t{font-family:'Unbounded',sans-serif; font-weight:700; font-size:clamp(16px,2.4vw,19px); display:flex; align-items:center; gap:10px;}
+  .step-n{flex:none; width:28px; height:28px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:700; color:#1a1300; background:var(--gold);}
+  .step-hint{font-size:13px; font-weight:700; color:var(--text-sub); align-self:flex-start;}
+  .step-hint:hover{color:var(--gold);}
+  .gchip{font-size:14px; padding:9px 16px;}
+  .gchip.ghost{border-style:dashed;}
+  body:not(.has-grade) #gradeChips .gchip:not(.ghost){box-shadow:0 0 0 0 rgba(255,204,102,0.5); animation:chipPulse 2.4s ease-out 1;}
+  @keyframes chipPulse{0%{box-shadow:0 0 0 0 rgba(255,204,102,0.45);} 70%{box-shadow:0 0 0 5px rgba(255,204,102,0);} 100%{box-shadow:0 0 0 0 rgba(255,204,102,0);}}
+
+  .doors{display:grid; grid-template-columns:repeat(3,1fr); gap:12px;}
+  @media (max-width:700px){ .doors{grid-template-columns:1fr;} }
+  .door{position:relative; overflow:hidden; display:grid; grid-template-columns:auto 1fr; grid-template-rows:auto auto; column-gap:14px; align-items:center;
+    padding:16px 18px; border-radius:18px; background:var(--bg-panel); border:1px solid var(--line); transition:transform .2s ease, border-color .2s ease;}
+  .door::before{content:''; position:absolute; inset:auto -30% -60% auto; width:70%; height:120%; border-radius:50%; filter:blur(40px); opacity:0.3; background:var(--glow);}
+  .door > *{position:relative;}
+  .door:hover{transform:translateY(-3px); border-color:var(--glow);}
+  .door:focus-visible{outline:2px solid var(--glow); outline-offset:2px;}
+  .door-ic{grid-row:1 / span 2; font-size:30px; line-height:1;}
+  .door-t{font-family:'Unbounded',sans-serif; font-weight:800; font-size:17px;}
+  .door-d{font-size:12.5px; color:var(--text-sub); font-weight:600;}
+
+  .sticky-nav{position:fixed; left:50%; top:calc(env(safe-area-inset-top, 0px) + 10px); transform:translate(-50%,-140%); z-index:50;
+    display:flex; gap:4px; padding:5px; border-radius:99px; background:rgba(11,14,26,0.88); border:1px solid var(--line);
+    backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); transition:transform .25s ease; max-width:calc(100% - 24px);}
+  .sticky-nav.show{transform:translate(-50%,0);}
+  .sticky-nav a{display:inline-flex; align-items:center; gap:6px; padding:7px 12px; border-radius:99px; font-size:13px; font-weight:800; color:var(--text); white-space:nowrap;}
+  .sticky-nav a:hover{background:rgba(255,255,255,0.08);}
+  .sticky-nav .sn-grade{background:var(--gold); color:#1a1300;}
+  @media (max-width:520px){ .sticky-nav a:not(.sn-grade) span{display:none;} .sticky-nav a{padding:7px 11px; font-size:15px;} .sticky-nav .sn-grade{font-size:12.5px;} }
+  @media (prefers-reduced-motion:reduce){ .sticky-nav,.door,.pcard{transition:none;} body:not(.has-grade) #gradeChips .gchip{animation:none;} }
+
+  .anchor-alias{display:block; position:relative; top:-20px;}
+  .zone{scroll-margin-top:70px; margin:0 0 64px;}
+  .zone-head{margin:0 0 22px; display:flex; flex-direction:column; gap:8px;}
+  .zone-head h2{font-family:'Unbounded',sans-serif; font-weight:800; font-size:clamp(22px,3.4vw,30px); display:flex; align-items:center; gap:12px;}
+  .zone-head h2::after{content:''; flex:1; height:1px; background:var(--line);}
+  .zone-sub{color:var(--text-sub); font-size:14.5px; max-width:640px;}
+  .zone-sub b{color:var(--text);}
+  .zone .filter-foot{margin-top:6px;}
+  .group{scroll-margin-top:70px;}
+
+  .course-grid{display:grid; grid-template-columns:2fr 1fr; gap:16px; align-items:start;}
+  @media (max-width:900px){ .course-grid{grid-template-columns:1fr;} }
+  body.has-grade .course-grid .grade-grid{grid-template-columns:1fr;}
+  .levlup-card{min-height:0;}
+
+  .pgrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:16px;}
+  @media (max-width:640px){ .pgrid{grid-template-columns:1fr;} }
+  .pcard{position:relative; overflow:hidden; display:flex; flex-direction:column; gap:10px; padding:20px 20px 16px;
+    background:var(--bg-panel); border:1px solid var(--line); border-radius:20px; transition:transform .2s ease, border-color .2s ease;}
+  .pcard::before{content:''; position:absolute; top:-45%; right:-30%; width:70%; height:70%; border-radius:50%; filter:blur(50px); opacity:0.3; background:var(--glow);}
+  .pcard > *{position:relative; z-index:1;}
+  a.pcard:hover{transform:translateY(-4px); border-color:var(--glow);}
+  a.pcard:focus-visible{outline:2px solid var(--glow); outline-offset:2px;}
+  .pc-top{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+  .pc-skill{font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--glow);}
+  .pc-what{font-family:'Unbounded',sans-serif; font-weight:800; font-size:20px; line-height:1.15; letter-spacing:-0.01em; text-wrap:balance;}
+  .pc-eg{font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--text); background:rgba(255,255,255,0.05); border:1px dashed rgba(255,255,255,0.16);
+    border-radius:10px; padding:8px 11px; overflow-wrap:anywhere;}
+  .pc-eg b{color:var(--glow); font-weight:700;}
+  .pc-eg s{opacity:0.7; text-decoration-thickness:2px; text-decoration-color:var(--trap);}
+  .pc-how{font-size:14px; color:var(--text-sub); flex:1;}
+  .pc-meta{display:flex; flex-wrap:wrap; gap:6px;}
+  .pc-chip{font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700; color:var(--text-sub); background:rgba(255,255,255,0.05); border:1px solid var(--line); border-radius:99px; padding:4px 9px;}
+  .pc-game{display:flex; align-items:center; gap:9px; padding-top:11px; border-top:1px solid var(--line); margin-top:2px;}
+  .pc-glyph{font-size:20px; line-height:1; filter:drop-shadow(0 0 10px var(--glow));}
+  .pc-name{font-weight:700; font-size:13.5px; color:var(--text-sub); flex:1; min-width:0;}
+  .pc-cta{font-weight:800; font-size:14px; color:var(--glow); white-space:nowrap;}
+  .pc-cta span{display:inline-block; transition:transform .2s ease;}
+  a.pcard:hover .pc-cta span{transform:translateX(4px);}
+
+  .multi .pc-how{flex:none;}
+  .pm-list{display:flex; flex-direction:column; gap:7px; margin-top:2px;}
+  .pm-row{display:flex; align-items:center; gap:7px;}
+  .pm-link{flex:1; min-width:0; display:flex; align-items:center; gap:11px; padding:9px 12px; border-radius:13px;
+    background:rgba(255,255,255,0.04); border:1px solid var(--line); transition:border-color .15s ease, background .15s ease;}
+  .pm-link:hover{border-color:var(--glow); background:rgba(255,255,255,0.07);}
+  .pm-link:focus-visible{outline:2px solid var(--glow); outline-offset:2px;}
+  .pm-glyph{font-size:19px; line-height:1; flex:none;}
+  .pm-txt{display:flex; flex-direction:column; min-width:0; flex:1;}
+  .pm-txt b{font-size:14px; font-weight:800;}
+  .pm-txt small{font-size:11.5px; color:var(--text-sub); font-weight:600;}
+  .pm-go{color:var(--glow); font-weight:800;}
+
+  .daily .capsule-row{margin-bottom:16px;}
+  .daily .culture{margin-bottom:0;}
+  @media (max-width:520px){ .wrap{padding:0 16px;} .step{padding:16px;} .pcard{padding:18px 16px 14px;} }
 </style>
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="/icons/icon-192.png">
@@ -342,13 +435,457 @@
 <canvas id="stars" width="1440" height="2610"></canvas>
 <div class="wrap">
 
-  <section class="hero">
+
+  <section class="hero" id="top">
     <span class="eyebrow">Mission Control · English</span>
     <h1 class="title">INORDERWORDS</h1>
-    <p class="tagline">Games, tools and boss battles, one mission: <b>level up your English</b>. Pick your grade below and we'll show you what fits.</p>
-    <a href="start.html" style="display:inline-flex; align-items:center; gap:8px; margin-top:22px; font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--bg); background:linear-gradient(120deg,var(--gold),var(--coral)); padding:12px 22px; border-radius:99px;">🧭 New here? Take the 3-minute level test <span>→</span></a>
+    <p class="tagline">Free English games and practice <b>for your class</b>.</p>
+
+    <div class="steps">
+      <div class="step" role="group" aria-labelledby="stepGradeT">
+        <div class="step-t" id="stepGradeT"><span class="step-n">1</span> What grade are you in?</div>
+        <div class="filter-chips" id="gradeChips"><button type="button" class="gchip" data-g="1">1º ESO</button><button type="button" class="gchip" data-g="2">2º ESO</button><button type="button" class="gchip" data-g="3">3º ESO</button><button type="button" class="gchip" data-g="4">4º ESO</button><button type="button" class="gchip" data-g="b">Bachillerato</button><button type="button" class="gchip ghost" data-g="all">Show all</button></div>
+        <a class="step-hint" href="start.html">Not sure? Take the 3-minute level test →</a>
+      </div>
+
+      <div class="step" role="group" aria-labelledby="stepDoT">
+        <div class="step-t" id="stepDoT"><span class="step-n">2</span> What do you want to do?</div>
+        <nav class="doors" aria-label="Main sections">
+          <a class="door" href="#units" style="--glow:var(--coral)">
+            <span class="door-ic" aria-hidden="true">📚</span>
+            <span class="door-t">My course</span>
+            <span class="door-d">Your book, unit by unit</span>
+          </a>
+          <a class="door" href="#practice" style="--glow:var(--teal)">
+            <span class="door-ic" aria-hidden="true">🎯</span>
+            <span class="door-t">Practice</span>
+            <span class="door-d">Grammar · Vocabulary · Listening</span>
+          </a>
+          <a class="door" href="#test" style="--glow:var(--gold)">
+            <span class="door-ic" aria-hidden="true">🏆</span>
+            <span class="door-t">Test yourself</span>
+            <span class="door-d">Boss battle · My progress</span>
+          </a>
+        </nav>
+      </div>
+    </div>
   </section>
 
+  <div class="sticky-nav" id="stickyNav" aria-label="Quick navigation">
+    <a href="#top" class="sn-grade" id="snGrade" title="Change grade">🎒 <span>All grades</span></a>
+    <a href="#units">📚 <span>My course</span></a>
+    <a href="#practice">🎯 <span>Practice</span></a>
+    <a href="#test">🏆 <span>Test</span></a>
+  </div>
+
+  <span id="explore" class="anchor-alias" aria-hidden="true"></span>
+
+  <section class="zone" id="units" aria-labelledby="unitsT">
+    <div class="zone-head">
+      <h2 id="unitsT"><span aria-hidden="true">📚</span> My course</h2>
+      <p class="zone-sub">The units from your class book. <b>Start here</b> when your teacher says “Unit 2”.</p>
+    </div>
+    <div class="course-grid">
+      <div class="grade-grid">
+      <div class="grade-card" id="grade-1eso">
+        <div class="grade-head">
+          <span class="grade-badge">🌟</span>
+          <div>
+            <div class="grade-name">1º ESO</div>
+            <div class="grade-book">Inspo 1</div>
+            <div class="grade-cefr">CEFR A1–A2</div>
+          </div>
+        </div>
+        <div class="grade-units">
+          <div class="unit-row-wrap">
+            <a class="unit-row" href="unit0-1eso.html" target="_blank" rel="noopener">
+              <span>Unit 0 · Welcome</span><span class="go">→</span>
+            </a>
+            <button class="card-assign" onclick="shareToClassroom('unit0-1eso.html','Unit 0 · Welcome — 1º ESO')" title="Assign in Google Classroom">📋</button>
+          </div>
+          <div class="unit-row-wrap">
+            <a class="unit-row" href="unit1-1eso.html" target="_blank" rel="noopener">
+              <span>Unit 1 · All about me</span><span class="go">&#8594;</span>
+            </a>
+            <button class="card-assign" onclick="shareToClassroom('unit1-1eso.html','Unit 1 · All about me &#8212; 1º ESO')" title="Assign in Google Classroom">&#128203;</button>
+          </div>
+          <div class="unit-row-wrap">
+            <a class="unit-row" href="unit2-1eso.html" target="_blank" rel="noopener">
+              <span>Unit 2 · School life</span><span class="go">&#8594;</span>
+            </a>
+            <button class="card-assign" onclick="shareToClassroom('unit2-1eso.html','Unit 2 · School life &#8212; 1º ESO')" title="Assign in Google Classroom">&#128203;</button>
+          </div>
+          <div class="unit-row-wrap">
+            <a class="unit-row vocab-row" href="vocab-rush.html?course=1eso" target="_blank" rel="noopener">
+              <span>🧠 Vocab Rush · Units 1–8</span><span class="go">→</span>
+            </a>
+            <button class="card-assign" onclick="shareToClassroom('vocab-rush.html?course=1eso','Vocab Rush · Units 1–8 — 1º ESO')" title="Assign in Google Classroom">📋</button>
+          </div>
+          <span class="unit-row locked">Units 3–8 · Coming soon</span>
+        </div>
+      </div>
+
+      <div class="grade-card" id="grade-2eso">
+        <div class="grade-head">
+          <span class="grade-badge">🚀</span>
+          <div>
+            <div class="grade-name">2º ESO</div>
+            <div class="grade-book">Synchronize 2</div>
+            <div class="grade-cefr">CEFR A2–A2+</div>
+          </div>
+        </div>
+        <div class="grade-units">
+          <div class="unit-row-wrap">
+            <a class="unit-row" href="unit0-2eso.html" target="_blank" rel="noopener">
+              <span>Unit 0 · Welcome</span><span class="go">→</span>
+            </a>
+            <button class="card-assign" onclick="shareToClassroom('unit0-2eso.html','Unit 0 · Welcome — 2º ESO')" title="Assign in Google Classroom">📋</button>
+          </div>
+          <div class="unit-row-wrap">
+            <a class="unit-row" href="unit1-2eso.html" target="_blank" rel="noopener">
+              <span>Unit 1 · Then and Now</span><span class="go">&#8594;</span>
+            </a>
+            <button class="card-assign" onclick="shareToClassroom('unit1-2eso.html','Unit 1 · Then and Now &#8212; 2º ESO')" title="Assign in Google Classroom">&#128203;</button>
+          </div>
+          <div class="unit-row-wrap">
+            <a class="unit-row" href="unit2-2eso.html" target="_blank" rel="noopener">
+              <span>Unit 2 · Art and design</span><span class="go">&#8594;</span>
+            </a>
+            <button class="card-assign" onclick="shareToClassroom('unit2-2eso.html','Unit 2 · Art and design &#8212; 2º ESO')" title="Assign in Google Classroom">&#128203;</button>
+          </div>
+          <div class="unit-row-wrap">
+            <a class="unit-row vocab-row" href="vocab-rush.html?course=2eso" target="_blank" rel="noopener">
+              <span>🧠 Vocab Rush · Units 1–7</span><span class="go">→</span>
+            </a>
+            <button class="card-assign" onclick="shareToClassroom('vocab-rush.html?course=2eso','Vocab Rush — 2º ESO')" title="Assign in Google Classroom">📋</button>
+          </div>
+          <span class="unit-row locked">Units 3–7 · Coming soon</span>
+        </div>
+      </div>
+
+      <div class="grade-card" id="grade-3eso">
+        <div class="grade-head">
+          <span class="grade-badge">⚡</span>
+          <div>
+            <div class="grade-name">3º ESO</div>
+            <div class="grade-book">Inspo 3</div>
+            <div class="grade-cefr">CEFR A2–B1</div>
+          </div>
+        </div>
+        <div class="grade-units">
+          <div class="unit-row-wrap">
+            <a class="unit-row" href="unit0-3eso.html" target="_blank" rel="noopener">
+              <span>Unit 0 · Welcome</span><span class="go">→</span>
+            </a>
+            <button class="card-assign" onclick="shareToClassroom('unit0-3eso.html','Unit 0 · Welcome — 3º ESO')" title="Assign in Google Classroom">📋</button>
+          </div>
+          <div class="unit-row-wrap">
+            <a class="unit-row" href="unit1-3eso.html" target="_blank" rel="noopener">
+              <span>Unit 1</span><span class="go">&#8594;</span>
+            </a>
+            <button class="card-assign" onclick="shareToClassroom('unit1-3eso.html','Unit 1 &#8212; 3º ESO')" title="Assign in Google Classroom">&#128203;</button>
+          </div>
+          <div class="unit-row-wrap">
+            <a class="unit-row" href="unit2-3eso.html" target="_blank" rel="noopener">
+              <span>Unit 2</span><span class="go">&#8594;</span>
+            </a>
+            <button class="card-assign" onclick="shareToClassroom('unit2-3eso.html','Unit 2 &#8212; 3º ESO')" title="Assign in Google Classroom">&#128203;</button>
+          </div>
+          <div class="unit-row-wrap">
+            <a class="unit-row vocab-row" href="vocab-rush.html?course=3eso" target="_blank" rel="noopener">
+              <span>🧠 Vocab Rush · Units 1–8</span><span class="go">→</span>
+            </a>
+            <button class="card-assign" onclick="shareToClassroom('vocab-rush.html?course=3eso','Vocab Rush — 3º ESO')" title="Assign in Google Classroom">📋</button>
+          </div>
+          <span class="unit-row locked">Units 3–8 · Coming soon</span>
+        </div>
+      </div>
+
+      <div class="grade-card" id="grade-4eso">
+        <div class="grade-head">
+          <span class="grade-badge">🎓</span>
+          <div>
+            <div class="grade-name">4º ESO</div>
+            <div class="grade-book">Synchronize 4</div>
+            <div class="grade-cefr">CEFR B1–B1+</div>
+          </div>
+        </div>
+        <div class="grade-units">
+          <div class="unit-row-wrap">
+            <a class="unit-row" href="unit0-4eso.html" target="_blank" rel="noopener">
+              <span>Unit 0 · Welcome</span><span class="go">→</span>
+            </a>
+            <button class="card-assign" onclick="shareToClassroom('unit0-4eso.html','Unit 0 · Welcome — 4º ESO')" title="Assign in Google Classroom">📋</button>
+          </div>
+          <div class="unit-row-wrap">
+            <a class="unit-row" href="unit1-4eso.html" target="_blank" rel="noopener">
+              <span>Unit 1</span><span class="go">&#8594;</span>
+            </a>
+            <button class="card-assign" onclick="shareToClassroom('unit1-4eso.html','Unit 1 &#8212; 4º ESO')" title="Assign in Google Classroom">&#128203;</button>
+          </div>
+          <div class="unit-row-wrap">
+            <a class="unit-row" href="unit2-4eso.html" target="_blank" rel="noopener">
+              <span>Unit 2</span><span class="go">&#8594;</span>
+            </a>
+            <button class="card-assign" onclick="shareToClassroom('unit2-4eso.html','Unit 2 &#8212; 4º ESO')" title="Assign in Google Classroom">&#128203;</button>
+          </div>
+          <div class="unit-row-wrap">
+            <a class="unit-row vocab-row" href="vocab-rush.html?course=4eso" target="_blank" rel="noopener">
+              <span>🧠 Vocab Rush · Units 1–8</span><span class="go">→</span>
+            </a>
+            <button class="card-assign" onclick="shareToClassroom('vocab-rush.html?course=4eso','Vocab Rush — 4º ESO')" title="Assign in Google Classroom">📋</button>
+          </div>
+          <span class="unit-row locked">Units 3–8 · Coming soon</span>
+        </div>
+      </div>
+
+      <div class="grade-card" id="grade-bach">
+        <div class="grade-head">
+          <span class="grade-badge">🎓</span>
+          <div>
+            <div class="grade-name">Bachillerato</div>
+            <div class="grade-book">PAU / EBAU</div>
+          </div>
+        </div>
+        <div class="grade-units">
+          <div class="unit-row-wrap">
+            <a class="unit-row vocab-row" href="vocabulary-sheets.html" target="_blank" rel="noopener">
+              <span>🎓 PAU vocabulary · 8 topics</span><span class="go">→</span>
+            </a>
+            <button class="card-assign" type="button" onclick="shareToClassroom('vocabulary-sheets.html','Vocabulary Sheets — Bachillerato')" title="Assign in Google Classroom">📋</button>
+          </div>
+          <span class="unit-row locked">Units · Coming soon</span>
+        </div>
+      </div>
+      </div>
+      <a class="pcard levlup-card" href="levlup.html" target="_blank" rel="noopener" data-grades="1 2 3 4 b" style="--glow:var(--gold)">
+        <div class="pc-top"><span class="pc-skill">Study &amp; revise</span><span class="top-row-right"><span class="level all">1º ESO → 2º Bach</span><button class="card-assign" type="button" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('levlup.html','Levlup')" title="Assign in Google Classroom" aria-label="Assign Levlup in Google Classroom">📋</button></span></div>
+        <h3 class="pc-what">Revise for your exams</h3>
+        <div class="pc-eg">📖 Grammar · 🔤 Vocabulary · 📄 Reading · ✍️ Writing · 🎧 Listening</div>
+        <p class="pc-how">Explanations and exercises for every unit, all in one place.</p>
+        <div class="pc-game"><span class="pc-glyph" aria-hidden="true">🧭</span><span class="pc-name">Levlup</span><span class="pc-cta">Open <span aria-hidden="true">→</span></span></div>
+      </a>
+    </div>
+  </section>
+
+  <section class="zone" id="practice" aria-labelledby="practiceT">
+    <div class="zone-head">
+      <h2 id="practiceT"><span aria-hidden="true">🎯</span> Practice</h2>
+      <p class="zone-sub">Games to practise one thing. <b>Big title</b> = what you practise. <b>Bottom line</b> = the game.</p>
+      <div class="filter-foot">
+        <nav class="jump" aria-label="Jump to a skill"><a href="#g-grammar">⚙️ Grammar</a><a href="#g-words">🔤 Vocabulary</a><a href="#g-listen">🎧 Listening</a></nav>
+        <span class="filter-note" id="filterNote" role="status" aria-live="polite"></span>
+      </div>
+    </div>
+
+    <div class="group" id="g-grammar" data-filterable>
+      <div class="group-label"><span aria-hidden="true">⚙️</span> Grammar <span class="n">5</span></div>
+      <p class="group-desc">Verbs, tenses, questions and mistakes.</p>
+      <div class="pgrid">
+      <div class="pcard multi" data-grades="1 2 3 4 b" style="--glow:var(--striker)">
+        <div class="pc-top"><span class="pc-skill">Grammar</span><span class="top-row-right"><span class="level all">All levels</span></span></div>
+        <h3 class="pc-what">Irregular verbs</h3>
+        <div class="pc-eg" aria-label="Example">go → went → gone</div>
+        <p class="pc-how">Learn the past and the past participle. Choose how to play:</p>
+        <div class="pm-list" role="list" aria-label="Ways to play">
+          <div class="pm-row" data-grades="1 2 3 4 b">
+            <a class="pm-link" href="verb-striker.html" target="_blank" rel="noopener">
+              <span class="pm-glyph" aria-hidden="true">🚀</span>
+              <span class="pm-txt"><b>Shoot the ships</b><small>Verb Striker · timer or chill mode</small></span>
+              <span class="pm-go" aria-hidden="true">→</span>
+            </a><button class="card-assign" type="button" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('verb-striker.html','Verb Striker')" title="Assign in Google Classroom" aria-label="Assign Verb Striker in Google Classroom">📋</button>
+          </div>
+          <div class="pm-row" data-grades="1 2">
+            <a class="pm-link" href="docking-sequence.html" target="_blank" rel="noopener">
+              <span class="pm-glyph" aria-hidden="true">🧩</span>
+              <span class="pm-txt"><b>Memory match</b><small>Docking Sequence · no timer · 1º–2º ESO</small></span>
+              <span class="pm-go" aria-hidden="true">→</span>
+            </a><button class="card-assign" type="button" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('docking-sequence.html','Docking Sequence')" title="Assign in Google Classroom" aria-label="Assign Docking Sequence in Google Classroom">📋</button>
+          </div>
+        </div>
+      </div>
+      <div class="pcard multi" data-grades="1 2 3 4 b" style="--glow:var(--quest-2)">
+        <div class="pc-top"><span class="pc-skill">Grammar</span><span class="top-row-right"><span class="level all">All levels</span></span></div>
+        <h3 class="pc-what">Verb tenses</h3>
+        <div class="pc-eg" aria-label="Example">Yesterday I ___ football. → <b>played</b></div>
+        <p class="pc-how">Present, past, perfect, future: choose the right tense.</p>
+        <div class="pm-list" role="list" aria-label="Ways to play">
+          <div class="pm-row" data-grades="1 2 3 4 b">
+            <a class="pm-link" href="tense-control.html" target="_blank" rel="noopener">
+              <span class="pm-glyph" aria-hidden="true">🎯</span>
+              <span class="pm-txt"><b>Practise</b><small>Tense Control · 7 tense pairs · timer or chill</small></span>
+              <span class="pm-go" aria-hidden="true">→</span>
+            </a><button class="card-assign" type="button" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('tense-control.html','Tense Control')" title="Assign in Google Classroom" aria-label="Assign Tense Control in Google Classroom">📋</button>
+          </div>
+          <div class="pm-row" data-grades="1 2 3 4 b">
+            <a class="pm-link" href="tense-sprint.html" target="_blank" rel="noopener">
+              <span class="pm-glyph" aria-hidden="true">⚡</span>
+              <span class="pm-txt"><b>Speed run</b><small>Tense Sprint · 5 seconds per sentence</small></span>
+              <span class="pm-go" aria-hidden="true">→</span>
+            </a><button class="card-assign" type="button" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('tense-sprint.html','Tense Sprint')" title="Assign in Google Classroom" aria-label="Assign Tense Sprint in Google Classroom">📋</button>
+          </div>
+          <div class="pm-row" data-grades="1 2 3 4 b">
+            <a class="pm-link" href="tense-duel.html" target="_blank" rel="noopener">
+              <span class="pm-glyph" aria-hidden="true">⚔️</span>
+              <span class="pm-txt"><b>1 v 1 with a friend</b><small>Tense Duel · live · share a code</small></span>
+              <span class="pm-go" aria-hidden="true">→</span>
+            </a><button class="card-assign" type="button" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('tense-duel.html','Tense Duel')" title="Assign in Google Classroom" aria-label="Assign Tense Duel in Google Classroom">📋</button>
+          </div>
+          <div class="pm-row" data-grades="b">
+            <a class="pm-link" href="verb-tense-challenge.html" target="_blank" rel="noopener">
+              <span class="pm-glyph" aria-hidden="true">🐦</span>
+              <span class="pm-txt"><b>Spot tenses in tweets</b><small>Verb Tense Challenge · 20 tenses · Bachillerato</small></span>
+              <span class="pm-go" aria-hidden="true">→</span>
+            </a><button class="card-assign" type="button" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('verb-tense-challenge.html','Verb Tense Challenge')" title="Assign in Google Classroom" aria-label="Assign Verb Tense Challenge in Google Classroom">📋</button>
+          </div>
+        </div>
+      </div>
+      <a class="pcard" href="question-control.html" target="_blank" rel="noopener" data-grades="1 2 3 4" style="--glow:var(--quest)">
+        <div class="pc-top"><span class="pc-skill">Grammar</span><span class="top-row-right"><span class="level ">1º–4º ESO</span><button class="card-assign" type="button" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('question-control.html','Question Control')" title="Assign in Google Classroom" aria-label="Assign Question Control in Google Classroom">📋</button></span></div>
+        <h3 class="pc-what">Make questions</h3>
+        <div class="pc-eg" aria-label="Example">She lives in Paris. → <b>Where does she live?</b></div>
+        <p class="pc-how">You see the answer. You write the question.</p>
+        <div class="pc-meta"><span class="pc-chip">⏱ Timer</span><span class="pc-chip">🧘 Chill mode</span><span class="pc-chip">👤 Solo</span></div>
+        <div class="pc-game"><span class="pc-glyph" aria-hidden="true">🎛️</span><span class="pc-name">Question Control</span><span class="pc-cta">Play <span aria-hidden="true">→</span></span></div>
+      </a>
+      <a class="pcard" href="debug-transmission.html" target="_blank" rel="noopener" data-grades="1 2 3 4 b" style="--glow:var(--debug)">
+        <div class="pc-top"><span class="pc-skill">Grammar</span><span class="top-row-right"><span class="level all">All levels</span><button class="card-assign" type="button" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('debug-transmission.html','Debug the Transmission')" title="Assign in Google Classroom" aria-label="Assign Debug the Transmission in Google Classroom">📋</button></span></div>
+        <h3 class="pc-what">Find the mistakes</h3>
+        <div class="pc-eg" aria-label="Example">He <s>don't</s> like pizza. → <b>doesn't</b></div>
+        <p class="pc-how">Read a text, click the mistakes and fix them.</p>
+        <div class="pc-meta"><span class="pc-chip">🧘 No timer</span><span class="pc-chip">👤 Solo</span></div>
+        <div class="pc-game"><span class="pc-glyph" aria-hidden="true">🐛</span><span class="pc-name">Debug the Transmission</span><span class="pc-cta">Play <span aria-hidden="true">→</span></span></div>
+      </a>
+      <a class="pcard" href="word-muncher.html" target="_blank" rel="noopener" data-grades="1 2 3 4 b" style="--glow:#ffd60a">
+        <div class="pc-top"><span class="pc-skill">Exam practice</span><span class="top-row-right"><span class="level all">A2–C1</span><button class="card-assign" type="button" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('word-muncher.html','Word Muncher')" title="Assign in Google Classroom" aria-label="Assign Word Muncher in Google Classroom">📋</button></span></div>
+        <h3 class="pc-what">Grammar for exams</h3>
+        <div class="pc-eg" aria-label="Example">Pick your level: A2 · B1 · B2 · C1</div>
+        <p class="pc-how">A maze game with Cambridge-style Use of English questions.</p>
+        <div class="pc-meta"><span class="pc-chip">👾 Arcade</span><span class="pc-chip">👤 Solo</span></div>
+        <div class="pc-game"><span class="pc-glyph" aria-hidden="true">🟡</span><span class="pc-name">Word Muncher</span><span class="pc-cta">Play <span aria-hidden="true">→</span></span></div>
+      </a>
+      </div>
+    </div>
+
+    <div class="group" id="g-words" data-filterable>
+      <div class="group-label"><span aria-hidden="true">🔤</span> Vocabulary <span class="n">6</span></div>
+      <p class="group-desc">Word partners, phrasal verbs, prepositions, idioms.</p>
+      <div class="pgrid">
+      <a class="pcard" href="collocation-match.html" target="_blank" rel="noopener" data-grades="1 2 3 4 b" style="--glow:var(--collo)">
+        <div class="pc-top"><span class="pc-skill">Vocabulary</span><span class="top-row-right"><span class="level all">All levels</span><button class="card-assign" type="button" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('collocation-match.html','Collocation Match')" title="Assign in Google Classroom" aria-label="Assign Collocation Match in Google Classroom">📋</button></span></div>
+        <h3 class="pc-what">Word partners: make or do?</h3>
+        <div class="pc-eg" aria-label="Example"><b>make</b> a decision · <b>do</b> homework</div>
+        <p class="pc-how">Pick the verb that goes with the word.</p>
+        <div class="pc-meta"><span class="pc-chip">⏱ Timer</span><span class="pc-chip">🧘 Chill mode</span><span class="pc-chip">👤 Solo</span></div>
+        <div class="pc-game"><span class="pc-glyph" aria-hidden="true">🔗</span><span class="pc-name">Collocation Match</span><span class="pc-cta">Play <span aria-hidden="true">→</span></span></div>
+      </a>
+      <a class="pcard" href="phrasal-command.html" target="_blank" rel="noopener" data-grades="3 4 b" style="--glow:var(--quest-2)">
+        <div class="pc-top"><span class="pc-skill">Vocabulary</span><span class="top-row-right"><span class="level ">3º ESO → Bach</span><button class="card-assign" type="button" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('phrasal-command.html','Phrasal Command')" title="Assign in Google Classroom" aria-label="Assign Phrasal Command in Google Classroom">📋</button></span></div>
+        <h3 class="pc-what">Phrasal verbs</h3>
+        <div class="pc-eg" aria-label="Example">give ___ = stop trying → <b>up</b></div>
+        <p class="pc-how">Write the missing word, then use the verb in a sentence.</p>
+        <div class="pc-meta"><span class="pc-chip">⏱ Timer</span><span class="pc-chip">🧘 Chill mode</span><span class="pc-chip">👤 Solo</span></div>
+        <div class="pc-game"><span class="pc-glyph" aria-hidden="true">🕹️</span><span class="pc-name">Phrasal Command</span><span class="pc-cta">Play <span aria-hidden="true">→</span></span></div>
+      </a>
+      <a class="pcard" href="preposition-blaster.html" target="_blank" rel="noopener" data-grades="1 2 3 4 b" style="--glow:var(--striker-2)">
+        <div class="pc-top"><span class="pc-skill">Vocabulary</span><span class="top-row-right"><span class="level all">All levels</span><button class="card-assign" type="button" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('preposition-blaster.html','Preposition Blaster')" title="Assign in Google Classroom" aria-label="Assign Preposition Blaster in Google Classroom">📋</button></span></div>
+        <h3 class="pc-what">Prepositions</h3>
+        <div class="pc-eg" aria-label="Example"><b>on</b> Monday · <b>at</b> night · <b>in</b> July</div>
+        <p class="pc-how">Choose in, on, at… before your shield breaks.</p>
+        <div class="pc-meta"><span class="pc-chip">⏱ Timer</span><span class="pc-chip">🧘 Chill mode</span><span class="pc-chip">👤 Solo</span></div>
+        <div class="pc-game"><span class="pc-glyph" aria-hidden="true">💥</span><span class="pc-name">Preposition Blaster</span><span class="pc-cta">Play <span aria-hidden="true">→</span></span></div>
+      </a>
+      <a class="pcard" href="idiom-detective.html" target="_blank" rel="noopener" data-grades="3 4 b" style="--glow:var(--idiom)">
+        <div class="pc-top"><span class="pc-skill">Vocabulary</span><span class="top-row-right"><span class="level ">3º ESO → Bach</span><button class="card-assign" type="button" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('idiom-detective.html','Idiom Detective')" title="Assign in Google Classroom" aria-label="Assign Idiom Detective in Google Classroom">📋</button></span></div>
+        <h3 class="pc-what">Idioms</h3>
+        <div class="pc-eg" aria-label="Example">a piece of cake = <b>very easy</b></div>
+        <p class="pc-how">Find out what 30 idioms really mean.</p>
+        <div class="pc-meta"><span class="pc-chip">🧘 No timer</span><span class="pc-chip">👤 Solo</span></div>
+        <div class="pc-game"><span class="pc-glyph" aria-hidden="true">🕵️</span><span class="pc-name">Idiom Detective</span><span class="pc-cta">Open <span aria-hidden="true">→</span></span></div>
+      </a>
+      <a class="pcard" href="trap-zone.html" target="_blank" rel="noopener" data-grades="1 2 3 4 b" style="--glow:var(--trap)">
+        <div class="pc-top"><span class="pc-skill">Vocabulary</span><span class="top-row-right"><span class="level all">All levels</span><button class="card-assign" type="button" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('trap-zone.html','Trap Zone')" title="Assign in Google Classroom" aria-label="Assign Trap Zone in Google Classroom">📋</button></span></div>
+        <h3 class="pc-what">False friends</h3>
+        <div class="pc-eg" aria-label="Example">embarrassed ≠ pregnant 🤰</div>
+        <p class="pc-how">Words that look easy but trick you in exams. Flip the cards.</p>
+        <div class="pc-meta"><span class="pc-chip">🃏 Cards</span><span class="pc-chip">🧘 No timer</span></div>
+        <div class="pc-game"><span class="pc-glyph" aria-hidden="true">⚠️</span><span class="pc-name">Trap Zone</span><span class="pc-cta">Open <span aria-hidden="true">→</span></span></div>
+      </a>
+      <a class="pcard" href="vocabulary-sheets.html" target="_blank" rel="noopener" data-grades="b" style="--glow:var(--vocab)">
+        <div class="pc-top"><span class="pc-skill">Exam practice</span><span class="top-row-right"><span class="level bach">2º Bach · PAU</span><button class="card-assign" type="button" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('vocabulary-sheets.html','Vocabulary Sheets')" title="Assign in Google Classroom" aria-label="Assign Vocabulary Sheets in Google Classroom">📋</button></span></div>
+        <h3 class="pc-what">PAU vocabulary</h3>
+        <div class="pc-eg" aria-label="Example">technology · environment · health · media…</div>
+        <p class="pc-how">Vocabulary for the PAU exam: 8 topics.</p>
+        <div class="pc-meta"><span class="pc-chip">📄 8 topics</span><span class="pc-chip">🧘 No timer</span></div>
+        <div class="pc-game"><span class="pc-glyph" aria-hidden="true">🎓</span><span class="pc-name">Vocabulary Sheets</span><span class="pc-cta">Open <span aria-hidden="true">→</span></span></div>
+      </a>
+      </div>
+    </div>
+
+    <div class="group" id="g-listen" data-filterable>
+      <div class="group-label"><span aria-hidden="true">🎧</span> Listening &amp; sounds <span class="n">2</span></div>
+      <p class="group-desc">Train your ear.</p>
+      <div class="pgrid">
+      <a class="pcard" href="missing-signal.html" target="_blank" rel="noopener" data-grades="1 2 3 4 b" style="--glow:var(--signal)">
+        <div class="pc-top"><span class="pc-skill">Listening</span><span class="top-row-right"><span class="level all">All levels</span><button class="card-assign" type="button" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('missing-signal.html','Missing Signal')" title="Assign in Google Classroom" aria-label="Assign Missing Signal in Google Classroom">📋</button></span></div>
+        <h3 class="pc-what">Listen and complete</h3>
+        <div class="pc-eg" aria-label="Example">I go to school 🔊 ▢▢▢ bus. → <b>by</b></div>
+        <p class="pc-how">Listen. One word is a beep. Write the missing word.</p>
+        <div class="pc-meta"><span class="pc-chip">🎧 Audio</span><span class="pc-chip">🧘 No timer</span></div>
+        <div class="pc-game"><span class="pc-glyph" aria-hidden="true">📻</span><span class="pc-name">Missing Signal</span><span class="pc-cta">Play <span aria-hidden="true">→</span></span></div>
+      </a>
+      <a class="pcard" href="phonetics-lab.html" target="_blank" rel="noopener" data-grades="1 2 3 4 b" style="--glow:var(--teal)">
+        <div class="pc-top"><span class="pc-skill">Pronunciation</span><span class="top-row-right"><span class="level all">All levels</span><button class="card-assign" type="button" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('phonetics-lab.html','Phonetics Lab')" title="Assign in Google Classroom" aria-label="Assign Phonetics Lab in Google Classroom">📋</button></span></div>
+        <h3 class="pc-what">English sounds</h3>
+        <div class="pc-eg" aria-label="Example">/θ/ <b>th</b>ink · ship ≠ sheep</div>
+        <p class="pc-how">Hear every sound of English, in UK and US accents.</p>
+        <div class="pc-meta"><span class="pc-chip">🎧 Audio</span><span class="pc-chip">🇬🇧 🇺🇸</span></div>
+        <div class="pc-game"><span class="pc-glyph" aria-hidden="true">🔊</span><span class="pc-name">Phonetics Lab</span><span class="pc-cta">Open <span aria-hidden="true">→</span></span></div>
+      </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="zone" id="test" aria-labelledby="testT">
+    <div class="zone-head">
+      <h2 id="testT"><span aria-hidden="true">🏆</span> Test yourself</h2>
+      <p class="zone-sub">Finished a unit? Check what you know and see your badges.</p>
+    </div>
+
+    <div class="group" id="g-test" data-filterable>
+      <div class="group-label"><span aria-hidden="true">🏆</span> Tests &amp; progress <span class="n">3</span></div>
+      <p class="group-desc">Boss battles, your progress and the level test.</p>
+      <div class="pgrid">
+      <a class="pcard" href="boss-checkpoint.html" target="_blank" rel="noopener" data-grades="1 2 3 4" style="--glow:var(--boss)">
+        <div class="pc-top"><span class="pc-skill">Test</span><span class="top-row-right"><span class="level ">1º–4º ESO</span><button class="card-assign" type="button" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('boss-checkpoint.html','Boss Checkpoint')" title="Assign in Google Classroom" aria-label="Assign Boss Checkpoint in Google Classroom">📋</button></span></div>
+        <h3 class="pc-what">Beat the boss</h3>
+        <div class="pc-eg" aria-label="Example">10 hits = 🏅 badge</div>
+        <p class="pc-how">A mixed test for your grade: grammar, words and listening.</p>
+        <div class="pc-meta"><span class="pc-chip">🧘 No timer</span><span class="pc-chip">👤 Solo</span></div>
+        <div class="pc-game"><span class="pc-glyph" aria-hidden="true">👾</span><span class="pc-name">Boss Checkpoint</span><span class="pc-cta">Play <span aria-hidden="true">→</span></span></div>
+      </a>
+      <a class="pcard" href="mission-log.html" target="_blank" rel="noopener" data-grades="1 2 3 4 b" style="--glow:var(--mission)">
+        <div class="pc-top"><span class="pc-skill">Progress</span><span class="top-row-right"><span class="level all">All levels</span></span></div>
+        <h3 class="pc-what">My progress</h3>
+        <div class="pc-eg" aria-label="Example">🏅 badges · ⭐ scores · ✅ units</div>
+        <p class="pc-how">See what you have done. Saved on this device.</p>
+        <div class="pc-meta"><span class="pc-chip">📈 Stats</span></div>
+        <div class="pc-game"><span class="pc-glyph" aria-hidden="true">🛰️</span><span class="pc-name">Mission Log</span><span class="pc-cta">Open <span aria-hidden="true">→</span></span></div>
+      </a>
+      <a class="pcard" href="start.html" target="_blank" rel="noopener" data-grades="1 2 3 4 b" style="--glow:var(--gold)">
+        <div class="pc-top"><span class="pc-skill">Level</span><span class="top-row-right"><span class="level all">All levels</span></span></div>
+        <h3 class="pc-what">Find your level</h3>
+        <div class="pc-eg" aria-label="Example">3 minutes → your grade</div>
+        <p class="pc-how">Not sure where to start? Answer a few questions.</p>
+        <div class="pc-meta"><span class="pc-chip">⏱ 3 min</span><span class="pc-chip">👤 Solo</span></div>
+        <div class="pc-game"><span class="pc-glyph" aria-hidden="true">🧭</span><span class="pc-name">Level test</span><span class="pc-cta">Start <span aria-hidden="true">→</span></span></div>
+      </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="zone daily" id="daily" aria-labelledby="dailyT">
+    <div class="zone-head"><h2 id="dailyT"><span aria-hidden="true">☀️</span> Daily English</h2></div>
   <div class="capsule-row">
     <div class="capsule" id="capsuleWord" style="--cap-glow:var(--teal)">
       <div class="cap-label">📖 Word of the day</div>
@@ -370,503 +907,7 @@
     <span class="cu-label">🎬 Did you know?</span>
     <span class="cu-fact" id="cultureFact">British and American English disagree on hundreds of everyday words: <b>lift/elevator</b>, <b>flat/apartment</b>, <b>queue/line</b> — both are correct English.</span>
   </div>
-
-  <div class="section-label" id="explore">Choose your world</div>
-
-  <div class="filter-bar" role="group" aria-label="Filter activities by grade">
-    <span class="filter-label">Show me activities for</span>
-    <div class="filter-chips">
-      <button type="button" class="gchip" data-g="all">Everything</button>
-      <button type="button" class="gchip" data-g="1">1º ESO</button>
-      <button type="button" class="gchip" data-g="2">2º ESO</button>
-      <button type="button" class="gchip" data-g="3">3º ESO</button>
-      <button type="button" class="gchip" data-g="4">4º ESO</button>
-      <button type="button" class="gchip" data-g="b">Bachillerato</button>
-    </div>
-    <div class="filter-foot">
-      <span class="filter-note" id="filterNote" role="status" aria-live="polite"></span>
-      <nav class="jump" aria-label="Jump to section">
-        <a href="#g-grammar">Grammar</a><a href="#g-words">Words</a><a href="#g-listen">Listening</a><a href="#units">Units</a>
-      </nav>
-    </div>
-  </div>
-
-  <div class="group" id="g-base" data-filterable>
-    <div class="group-label">🧭 Your base <span class="n">3</span></div>
-    <p class="group-desc">Your course, your progress and the end-of-level boss battles.</p>
-    <div class="portals">
-      <a class="card levlup" href="levlup.html" target="_blank" rel="noopener" data-grades="1 2 3 4 b">
-        <div class="top-row">
-          <span class="kicker">Full course</span>
-          <span class="top-row-right">
-            <span class="level all">1º ESO → 2º Bach</span>
-            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('levlup.html','Levlup')" title="Asignar en Google Classroom">📋</button>
-          </span>
-        </div>
-        <span class="glyph">🧭</span>
-        <h3>Levlup</h3>
-        <p>Everything you need to pass: grammar, vocabulary, reading, writing and listening in one evolving hub that grows with you, unit by unit, from 1º ESO all the way to 2º Bachillerato.</p>
-        <span class="cta">Enter Levlup <span>→</span></span>
-      </a>
-
-      <a class="card boss" href="boss-checkpoint.html" target="_blank" rel="noopener" data-grades="1 2 3 4">
-        <div class="top-row">
-          <span class="kicker">End-of-level battle</span>
-          <span class="top-row-right">
-            <span class="level">1º–4º ESO</span>
-            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('boss-checkpoint.html','Boss Checkpoint')" title="Asignar en Google Classroom">📋</button>
-          </span>
-        </div>
-        <span class="glyph">👾</span>
-        <h3>Boss Checkpoint</h3>
-        <span class="mode">🏅 Win a badge · no timer</span>
-        <p>Grammar, vocabulary and listening in one boss fight for your grade. Land 10 hits before your shields run out to win the level badge.</p>
-        <span class="cta">Face the boss <span>→</span></span>
-      </a>
-
-      <a class="card mission" href="mission-log.html" target="_blank" rel="noopener" data-grades="1 2 3 4 b">
-        <div class="top-row">
-          <span class="kicker">Progress tracker</span>
-          <span class="level all">All levels</span>
-        </div>
-        <span class="glyph">🛰️</span>
-        <h3>Mission Log</h3>
-        <p>Your personal dashboard: boss badges, game scores, Trap Zone mastery and unit checklists, all saved on this device so you can see how far you've come.</p>
-        <span class="cta">Open your log <span>→</span></span>
-      </a>
-    </div>
-  </div>
-
-  <div class="group" id="g-grammar" data-filterable>
-    <div class="group-label">⚙️ Grammar <span class="n">5</span></div>
-    <p class="group-desc">Verb forms, tenses, questions and spotting mistakes.</p>
-    <div class="portals">
-      <a class="card striker" href="verb-striker.html" target="_blank" rel="noopener" data-grades="1 2 3 4 b">
-        <div class="top-row">
-          <span class="kicker">Space arcade</span>
-          <span class="top-row-right">
-            <span class="level all">All levels</span>
-            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('verb-striker.html','Verb Striker: Galaxy Showdown')" title="Asignar en Google Classroom">📋</button>
-          </span>
-        </div>
-        <span class="glyph">🚀</span>
-        <h3>Verb Striker: Galaxy Showdown</h3>
-        <span class="mode">⏱ Timed · 🧘 chill mode available</span>
-        <p>Shoot down ships by typing the past simple and past participle before time runs out.</p>
-        <span class="cta">Play now <span>→</span></span>
-      </a>
-
-      <a class="card dock" href="docking-sequence.html" target="_blank" rel="noopener" data-grades="1 2">
-        <div class="top-row">
-          <span class="kicker">Memory game</span>
-          <span class="top-row-right">
-            <span class="level eso12">1º–2º ESO ideal</span>
-            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('docking-sequence.html','Docking Sequence')" title="Asignar en Google Classroom">📋</button>
-          </span>
-        </div>
-        <span class="glyph">🧩</span>
-        <h3>Docking Sequence</h3>
-        <span class="mode">🧘 No timer</span>
-        <p>Match base, past and past participle to dock each irregular verb — a calm, untimed memory game to lock in the forms that trip everyone up.</p>
-        <span class="cta">Start docking <span>→</span></span>
-      </a>
-
-      <a class="card qcontrol" href="question-control.html" target="_blank" rel="noopener" data-grades="1 2 3 4">
-        <div class="top-row">
-          <span class="kicker">Build the question</span>
-          <span class="top-row-right">
-            <span class="level">1º–4º ESO</span>
-            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('question-control.html','Question Control')" title="Asignar en Google Classroom">📋</button>
-          </span>
-        </div>
-        <span class="glyph">🎛️</span>
-        <h3>Question Control</h3>
-        <span class="mode">⏱ Timed · 🧘 chill mode available</span>
-        <p>You get the answer, you write the question: do, does, did and have/has — plus the subject-question traps (<i>Who broke the window?</i>).</p>
-        <span class="cta">Start transmitting <span>→</span></span>
-      </a>
-
-      <a class="card tense" href="tense-control.html" target="_blank" rel="noopener" data-grades="1 2 3 4 b">
-        <div class="top-row">
-          <span class="kicker">Choose the tense</span>
-          <span class="top-row-right">
-            <span class="level all">All levels</span>
-            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('tense-control.html','Tense Control')" title="Asignar en Google Classroom">📋</button>
-          </span>
-        </div>
-        <span class="glyph">⏳</span>
-        <h3>Tense Control</h3>
-        <span class="mode">⏱ Timed · 🧘 chill mode available</span>
-        <p>Seven tense duels in one game: present simple vs continuous, the past tenses, used to vs would, present perfect, and will vs going to — plus a mixed mode.</p>
-        <span class="cta">Pick the right tense <span>→</span></span>
-      </a>
-
-      <a class="card duel" href="tense-duel.html" target="_blank" rel="noopener" data-grades="1 2 3 4 b">
-        <div class="top-row">
-          <span class="kicker">1v1 live</span>
-          <span class="top-row-right">
-            <span class="level all">All levels</span>
-            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('tense-duel.html','Tense Duel')" title="Asignar en Google Classroom">📋</button>
-          </span>
-        </div>
-        <span class="glyph">⚔️</span>
-        <h3>Tense Duel</h3>
-        <span class="mode">👥 Real-time duel · 🏆 most correct wins</span>
-        <p>Challenge a classmate in real time: create a room, share the code, and race through ten tense questions head-to-head. Live scoreboard and rematch.</p>
-        <span class="cta">Challenge a friend <span>→</span></span>
-      </a>
-
-      <a class="card sprint" href="tense-sprint.html" target="_blank" rel="noopener" data-grades="1 2 3 4 b">
-        <div class="top-row">
-          <span class="kicker">Speed challenge</span>
-          <span class="top-row-right">
-            <span class="level all">All levels</span>
-            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('tense-sprint.html','Tense Sprint')" title="Asignar en Google Classroom">📋</button>
-          </span>
-        </div>
-        <span class="glyph">⚡</span>
-        <h3>Tense Sprint</h3>
-        <span class="mode">⏱ 5 s per sentence · 🏆 points for speed</span>
-        <p>Fifteen tense sentences against the clock: five seconds each, and the faster you answer, the more points. Keep a streak going for bonus points.</p>
-        <span class="cta">Beat the clock <span>→</span></span>
-      </a>
-
-      <a class="card muncher" href="word-muncher.html" target="_blank" rel="noopener" data-grades="1 2 3 4 b">
-        <div class="top-row">
-          <span class="kicker">Use of English · maze</span>
-          <span class="top-row-right">
-            <span class="level all">A2–C1</span>
-            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('word-muncher.html','Word Muncher')" title="Asignar en Google Classroom">📋</button>
-          </span>
-        </div>
-        <span class="glyph">🟡</span>
-        <h3>Word Muncher</h3>
-        <span class="mode">👾 Catch = question · 🏆 Cambridge levels</span>
-        <p>Munch the words through the maze and dodge the grammar bugs. Get caught and you face a Cambridge-style Use of English question &mdash; answer right to zap the bug, wrong and you lose a life. Pick A2, B1, B2 or C1.</p>
-        <span class="cta">Start munching <span>&rarr;</span></span>
-      </a>
-
-      <a class="card debug" href="debug-transmission.html" target="_blank" rel="noopener" data-grades="1 2 3 4 b">
-        <div class="top-row">
-          <span class="kicker">Proofreading</span>
-          <span class="top-row-right">
-            <span class="level all">All levels</span>
-            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('debug-transmission.html','Debug the Transmission')" title="Asignar en Google Classroom">📋</button>
-          </span>
-        </div>
-        <span class="glyph">🐛</span>
-        <h3>Debug the Transmission</h3>
-        <span class="mode">🧘 No timer</span>
-        <p>A corrupted message has reached mission control. Click the grammar bugs hidden in each paragraph and choose the fix — without triggering false alarms.</p>
-        <span class="cta">Start debugging <span>→</span></span>
-      </a>
-
-      <a class="card tweet" href="verb-tense-challenge.html" target="_blank" rel="noopener" data-grades="b">
-        <div class="top-row">
-          <span class="kicker">Tweets · 20 tenses</span>
-          <span class="top-row-right">
-            <span class="level bach">Bachillerato only</span>
-            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('verb-tense-challenge.html','Verb Tense Challenge')" title="Asignar en Google Classroom">📋</button>
-          </span>
-        </div>
-        <span class="glyph">🐦</span>
-        <h3>Verb Tense Challenge</h3>
-        <span class="mode">🧘 No timer</span>
-        <p>Spot the verb tense hiding in 100 realistic tweets, then reveal the grammar note to check your answer.</p>
-        <span class="cta">Play now <span>→</span></span>
-      </a>
-    </div>
-  </div>
-
-  <div class="group" id="g-words" data-filterable>
-    <div class="group-label">🔤 Words &amp; expressions <span class="n">6</span></div>
-    <p class="group-desc">Collocations, phrasal verbs, prepositions, idioms and false friends.</p>
-    <div class="portals">
-      <a class="card collo" href="collocation-match.html" target="_blank" rel="noopener" data-grades="1 2 3 4 b">
-        <div class="top-row">
-          <span class="kicker">Pick the verb</span>
-          <span class="top-row-right">
-            <span class="level all">All levels</span>
-            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('collocation-match.html','Collocation Match')" title="Asignar en Google Classroom">📋</button>
-          </span>
-        </div>
-        <span class="glyph">🔗</span>
-        <h3>Collocation Match</h3>
-        <span class="mode">⏱ Timed · 🧘 chill mode available</span>
-        <p>Make a decision or do a decision? Pick the verb that really goes with the word — make/do, take/have/get and the collocations examiners love.</p>
-        <span class="cta">Match them <span>→</span></span>
-      </a>
-
-      <a class="card phrasal" href="phrasal-command.html" target="_blank" rel="noopener" data-grades="3 4 b">
-        <div class="top-row">
-          <span class="kicker">Phrasal verbs</span>
-          <span class="top-row-right">
-            <span class="level">3º ESO → Bach</span>
-            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('phrasal-command.html','Phrasal Command')" title="Asignar en Google Classroom">📋</button>
-          </span>
-        </div>
-        <span class="glyph">🕹️</span>
-        <h3>Phrasal Command</h3>
-        <span class="mode">⏱ Timed · 🧘 chill mode available</span>
-        <p>Turn on, give up, look forward to… Type the missing particle to complete 48 exam-favourite phrasal verbs, then use them in context for bonus points.</p>
-        <span class="cta">Take command <span>→</span></span>
-      </a>
-
-      <a class="card blaster" href="preposition-blaster.html" target="_blank" rel="noopener" data-grades="1 2 3 4 b">
-        <div class="top-row">
-          <span class="kicker">Space arcade</span>
-          <span class="top-row-right">
-            <span class="level all">All levels</span>
-            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('preposition-blaster.html','Preposition Blaster')" title="Asignar en Google Classroom">📋</button>
-          </span>
-        </div>
-        <span class="glyph">💥</span>
-        <h3>Preposition Blaster</h3>
-        <span class="mode">⏱ Timed · 🧘 chill mode available</span>
-        <p>Lock onto the right preposition before your shield runs out — time, place, and the verb/adjective combos that trip everyone up.</p>
-        <span class="cta">Play now <span>→</span></span>
-      </a>
-
-      <a class="card idiom" href="idiom-detective.html" target="_blank" rel="noopener" data-grades="3 4 b">
-        <div class="top-row">
-          <span class="kicker">Case files</span>
-          <span class="top-row-right">
-            <span class="level">3º ESO → Bach</span>
-            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('idiom-detective.html','Idiom Detective')" title="Asignar en Google Classroom">📋</button>
-          </span>
-        </div>
-        <span class="glyph">🕵️</span>
-        <h3>Idiom Detective</h3>
-        <span class="mode">🧘 No timer</span>
-        <p>30 idioms, including every Idiom of the week: work out what they really mean and rebuild the word that's gone missing from the evidence.</p>
-        <span class="cta">Open the case <span>→</span></span>
-      </a>
-
-      <a class="card trap" href="trap-zone.html" target="_blank" rel="noopener" data-grades="1 2 3 4 b">
-        <div class="top-row">
-          <span class="kicker">False friends</span>
-          <span class="top-row-right">
-            <span class="level all">All levels</span>
-            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('trap-zone.html','Trap Zone')" title="Asignar en Google Classroom">📋</button>
-          </span>
-        </div>
-        <span class="glyph">⚠️</span>
-        <h3>Trap Zone</h3>
-        <span class="mode">🧘 No timer</span>
-        <p>The false friends and literal-translation mistakes that show up again and again in exams — flip each card, then mark it mastered or review it again.</p>
-        <span class="cta">Enter the zone <span>→</span></span>
-      </a>
-
-      <a class="card vocab" href="vocabulary-sheets.html" target="_blank" rel="noopener" data-grades="b">
-        <div class="top-row">
-          <span class="kicker">PAU/EBAU · 8 topics</span>
-          <span class="top-row-right">
-            <span class="level bach">2º Bach · PAU/EBAU</span>
-            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('vocabulary-sheets.html','Vocabulary Sheets')" title="Asignar en Google Classroom">📋</button>
-          </span>
-        </div>
-        <span class="glyph">🎓</span>
-        <h3>Vocabulary Sheets</h3>
-        <p>Interactive vocabulary decks for the Comunitat Valenciana PAU/EBAU exam: technology, environment, education, work, health, immigration, equality and media.</p>
-        <span class="cta">Explore <span>→</span></span>
-      </a>
-    </div>
-  </div>
-
-  <div class="group" id="g-listen" data-filterable>
-    <div class="group-label">🎧 Listening &amp; pronunciation <span class="n">2</span></div>
-    <p class="group-desc">Train your ear with real sentences and every sound of English.</p>
-    <div class="portals">
-      <a class="card signal" href="missing-signal.html" target="_blank" rel="noopener" data-grades="1 2 3 4 b">
-        <div class="top-row">
-          <span class="kicker">Listening cloze</span>
-          <span class="top-row-right">
-            <span class="level all">All levels</span>
-            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('missing-signal.html','Missing Signal')" title="Asignar en Google Classroom">📋</button>
-          </span>
-        </div>
-        <span class="glyph">📻</span>
-        <h3>Missing Signal</h3>
-        <span class="mode">🧘 No timer</span>
-        <p>Listen to the transmission: one word has been replaced by a beep. Use everything around it to work out what's missing.</p>
-        <span class="cta">Tune in <span>→</span></span>
-      </a>
-
-      <a class="card lab" href="phonetics-lab.html" target="_blank" rel="noopener" data-grades="1 2 3 4 b">
-        <div class="top-row">
-          <span class="kicker">Sound lab · IPA &amp; TTS</span>
-          <span class="top-row-right">
-            <span class="level all">All levels</span>
-            <button class="card-assign" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('phonetics-lab.html','Phonetics Lab')" title="Asignar en Google Classroom">📋</button>
-          </span>
-        </div>
-        <span class="glyph">🔊</span>
-        <h3>Phonetics Lab</h3>
-        <p>Train your ear and your mouth: the full IPA sound chart, minimal pairs, word stress and -ed endings, with UK/US audio for every word.</p>
-        <span class="cta">Start listening <span>→</span></span>
-      </a>
-    </div>
-  </div>
-
-  <div class="unidades" id="units">
-    <div class="txt">
-      <h3>📚 Course Units <span class="soon">More coming soon</span></h3>
-      <p>Pick your grade below. Each card is labeled so you always know exactly which course and unit you're opening — <b>Unit 0 · Welcome</b> is live for every grade, with icebreakers, rules, survival phrases and materials. The rest of the units are being built one by one.</p>
-    </div>
-    <div class="grade-grid">
-      <div class="grade-card" id="grade-1eso">
-        <div class="grade-head">
-          <span class="grade-badge">🌟</span>
-          <div>
-            <div class="grade-name">1º ESO</div>
-            <div class="grade-book">Inspo 1</div>
-            <div class="grade-cefr">CEFR A1–A2</div>
-          </div>
-        </div>
-        <div class="grade-units">
-          <div class="unit-row-wrap">
-            <a class="unit-row" href="unit0-1eso.html" target="_blank" rel="noopener">
-              <span>Unit 0 · Welcome</span><span class="go">→</span>
-            </a>
-            <button class="card-assign" onclick="shareToClassroom('unit0-1eso.html','Unit 0 · Welcome — 1º ESO')" title="Asignar en Google Classroom">📋</button>
-          </div>
-          <div class="unit-row-wrap">
-            <a class="unit-row" href="unit1-1eso.html" target="_blank" rel="noopener">
-              <span>Unit 1 · All about me</span><span class="go">&#8594;</span>
-            </a>
-            <button class="card-assign" onclick="shareToClassroom('unit1-1eso.html','Unit 1 · All about me &#8212; 1º ESO')" title="Asignar en Google Classroom">&#128203;</button>
-          </div>
-          <div class="unit-row-wrap">
-            <a class="unit-row" href="unit2-1eso.html" target="_blank" rel="noopener">
-              <span>Unit 2 · School life</span><span class="go">&#8594;</span>
-            </a>
-            <button class="card-assign" onclick="shareToClassroom('unit2-1eso.html','Unit 2 · School life &#8212; 1º ESO')" title="Asignar en Google Classroom">&#128203;</button>
-          </div>
-          <div class="unit-row-wrap">
-            <a class="unit-row vocab-row" href="vocab-rush.html?course=1eso" target="_blank" rel="noopener">
-              <span>🧠 Vocab Rush · Units 1–8</span><span class="go">→</span>
-            </a>
-            <button class="card-assign" onclick="shareToClassroom('vocab-rush.html?course=1eso','Vocab Rush · Units 1–8 — 1º ESO')" title="Asignar en Google Classroom">📋</button>
-          </div>
-          <span class="unit-row locked">Units 3–8 · Coming soon</span>
-        </div>
-      </div>
-
-      <div class="grade-card" id="grade-2eso">
-        <div class="grade-head">
-          <span class="grade-badge">🚀</span>
-          <div>
-            <div class="grade-name">2º ESO</div>
-            <div class="grade-book">Synchronize 2</div>
-            <div class="grade-cefr">CEFR A2–A2+</div>
-          </div>
-        </div>
-        <div class="grade-units">
-          <div class="unit-row-wrap">
-            <a class="unit-row" href="unit0-2eso.html" target="_blank" rel="noopener">
-              <span>Unit 0 · Welcome</span><span class="go">→</span>
-            </a>
-            <button class="card-assign" onclick="shareToClassroom('unit0-2eso.html','Unit 0 · Welcome — 2º ESO')" title="Asignar en Google Classroom">📋</button>
-          </div>
-          <div class="unit-row-wrap">
-            <a class="unit-row" href="unit1-2eso.html" target="_blank" rel="noopener">
-              <span>Unit 1 · Then and Now</span><span class="go">&#8594;</span>
-            </a>
-            <button class="card-assign" onclick="shareToClassroom('unit1-2eso.html','Unit 1 · Then and Now &#8212; 2º ESO')" title="Asignar en Google Classroom">&#128203;</button>
-          </div>
-          <div class="unit-row-wrap">
-            <a class="unit-row" href="unit2-2eso.html" target="_blank" rel="noopener">
-              <span>Unit 2 · Art and design</span><span class="go">&#8594;</span>
-            </a>
-            <button class="card-assign" onclick="shareToClassroom('unit2-2eso.html','Unit 2 · Art and design &#8212; 2º ESO')" title="Asignar en Google Classroom">&#128203;</button>
-          </div>
-          <div class="unit-row-wrap">
-            <a class="unit-row vocab-row" href="vocab-rush.html?course=2eso" target="_blank" rel="noopener">
-              <span>🧠 Vocab Rush · Units 1–7</span><span class="go">→</span>
-            </a>
-            <button class="card-assign" onclick="shareToClassroom('vocab-rush.html?course=2eso','Vocab Rush — 2º ESO')" title="Asignar en Google Classroom">📋</button>
-          </div>
-          <span class="unit-row locked">Units 3–7 · Coming soon</span>
-        </div>
-      </div>
-
-      <div class="grade-card" id="grade-3eso">
-        <div class="grade-head">
-          <span class="grade-badge">⚡</span>
-          <div>
-            <div class="grade-name">3º ESO</div>
-            <div class="grade-book">Inspo 3</div>
-            <div class="grade-cefr">CEFR A2–B1</div>
-          </div>
-        </div>
-        <div class="grade-units">
-          <div class="unit-row-wrap">
-            <a class="unit-row" href="unit0-3eso.html" target="_blank" rel="noopener">
-              <span>Unit 0 · Welcome</span><span class="go">→</span>
-            </a>
-            <button class="card-assign" onclick="shareToClassroom('unit0-3eso.html','Unit 0 · Welcome — 3º ESO')" title="Asignar en Google Classroom">📋</button>
-          </div>
-          <div class="unit-row-wrap">
-            <a class="unit-row" href="unit1-3eso.html" target="_blank" rel="noopener">
-              <span>Unit 1</span><span class="go">&#8594;</span>
-            </a>
-            <button class="card-assign" onclick="shareToClassroom('unit1-3eso.html','Unit 1 &#8212; 3º ESO')" title="Asignar en Google Classroom">&#128203;</button>
-          </div>
-          <div class="unit-row-wrap">
-            <a class="unit-row" href="unit2-3eso.html" target="_blank" rel="noopener">
-              <span>Unit 2</span><span class="go">&#8594;</span>
-            </a>
-            <button class="card-assign" onclick="shareToClassroom('unit2-3eso.html','Unit 2 &#8212; 3º ESO')" title="Asignar en Google Classroom">&#128203;</button>
-          </div>
-          <div class="unit-row-wrap">
-            <a class="unit-row vocab-row" href="vocab-rush.html?course=3eso" target="_blank" rel="noopener">
-              <span>🧠 Vocab Rush · Units 1–8</span><span class="go">→</span>
-            </a>
-            <button class="card-assign" onclick="shareToClassroom('vocab-rush.html?course=3eso','Vocab Rush — 3º ESO')" title="Asignar en Google Classroom">📋</button>
-          </div>
-          <span class="unit-row locked">Units 3–8 · Coming soon</span>
-        </div>
-      </div>
-
-      <div class="grade-card" id="grade-4eso">
-        <div class="grade-head">
-          <span class="grade-badge">🎓</span>
-          <div>
-            <div class="grade-name">4º ESO</div>
-            <div class="grade-book">Synchronize 4</div>
-            <div class="grade-cefr">CEFR B1–B1+</div>
-          </div>
-        </div>
-        <div class="grade-units">
-          <div class="unit-row-wrap">
-            <a class="unit-row" href="unit0-4eso.html" target="_blank" rel="noopener">
-              <span>Unit 0 · Welcome</span><span class="go">→</span>
-            </a>
-            <button class="card-assign" onclick="shareToClassroom('unit0-4eso.html','Unit 0 · Welcome — 4º ESO')" title="Asignar en Google Classroom">📋</button>
-          </div>
-          <div class="unit-row-wrap">
-            <a class="unit-row" href="unit1-4eso.html" target="_blank" rel="noopener">
-              <span>Unit 1</span><span class="go">&#8594;</span>
-            </a>
-            <button class="card-assign" onclick="shareToClassroom('unit1-4eso.html','Unit 1 &#8212; 4º ESO')" title="Asignar en Google Classroom">&#128203;</button>
-          </div>
-          <div class="unit-row-wrap">
-            <a class="unit-row" href="unit2-4eso.html" target="_blank" rel="noopener">
-              <span>Unit 2</span><span class="go">&#8594;</span>
-            </a>
-            <button class="card-assign" onclick="shareToClassroom('unit2-4eso.html','Unit 2 &#8212; 4º ESO')" title="Asignar en Google Classroom">&#128203;</button>
-          </div>
-          <div class="unit-row-wrap">
-            <a class="unit-row vocab-row" href="vocab-rush.html?course=4eso" target="_blank" rel="noopener">
-              <span>🧠 Vocab Rush · Units 1–8</span><span class="go">→</span>
-            </a>
-            <button class="card-assign" onclick="shareToClassroom('vocab-rush.html?course=4eso','Vocab Rush — 4º ESO')" title="Asignar en Google Classroom">📋</button>
-          </div>
-          <span class="unit-row locked">Units 3–8 · Coming soon</span>
-        </div>
-      </div>
-    </div>
-  </div>
+  </section>
 
   <footer>Made by <b>Alberto López</b> & <b>Yaiza Tormo</b> · Inorderwords · A living space, always under construction 🚧<br><a href="class-results.html" style="display:inline-block; margin-top:10px; color:var(--gold); font-family:'JetBrains Mono',monospace; font-size:11.5px; font-weight:700; border:1px solid rgba(255,204,102,0.4); border-radius:99px; padding:6px 12px;">👩‍🏫 Teachers: class rankings, game by game →</a></footer>
 </div>
@@ -916,31 +957,34 @@
     }
   }
 
-  /* GRADE FILTER — shows only the activities recommended for the chosen grade */
+  /* GRADE FILTER — remembers the student's grade and shows only what fits */
   (function(){
     var chips = document.querySelectorAll('.gchip');
-    var NAMES = {all:'everyone', '1':'1º ESO', '2':'2º ESO', '3':'3º ESO', '4':'4º ESO', b:'Bachillerato'};
-    var UNIT = {'1':'grade-1eso', '2':'grade-2eso', '3':'grade-3eso', '4':'grade-4eso'};
+    var NAMES = {all:'All grades', '1':'1º ESO', '2':'2º ESO', '3':'3º ESO', '4':'4º ESO', b:'Bachillerato'};
+    var UNIT = {'1':'grade-1eso', '2':'grade-2eso', '3':'grade-3eso', '4':'grade-4eso', b:'grade-bach'};
+    function fits(el, g){ return g === 'all' || (el.getAttribute('data-grades') || '').split(' ').indexOf(g) !== -1; }
     function apply(g){
       if(!NAMES[g]) g = 'all';
       var total = 0;
       chips.forEach(function(c){ var on = c.getAttribute('data-g') === g; c.classList.toggle('active', on); c.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+      document.querySelectorAll('.pm-row[data-grades]').forEach(function(r){ r.hidden = !fits(r, g); });
       document.querySelectorAll('.group[data-filterable]').forEach(function(gr){
         var n = 0;
-        gr.querySelectorAll('.card[data-grades]').forEach(function(c){
-          var ok = g === 'all' || c.getAttribute('data-grades').split(' ').indexOf(g) !== -1;
+        gr.querySelectorAll('.pcard[data-grades]').forEach(function(c){
+          var ok = fits(c, g);
+          if(ok && c.classList.contains('multi')) ok = !!c.querySelector('.pm-row:not([hidden])');
           c.hidden = !ok; if(ok) n++;
         });
         gr.hidden = n === 0;
         gr.querySelector('.group-label .n').textContent = n;
-        total += n;
+        if(gr.closest('#practice')) total += n;
       });
       document.querySelectorAll('.grade-card').forEach(function(gc){ gc.hidden = !(g === 'all' || UNIT[g] === gc.id); });
-      document.getElementById('units').hidden = g === 'b';
-      document.querySelectorAll('.jump a[href="#units"]').forEach(function(a){ a.hidden = g === 'b'; });
+      document.body.classList.toggle('has-grade', g !== 'all');
       document.getElementById('filterNote').textContent = g === 'all'
-        ? 'Showing all ' + total + ' activities.'
-        : 'Showing the ' + total + ' activities that fit ' + NAMES[g] + '.';
+        ? total + ' activities · all grades'
+        : total + ' activities for ' + NAMES[g];
+      var sg = document.querySelector('#snGrade span'); if(sg) sg.textContent = NAMES[g];
       try{ localStorage.setItem('owGradeFilter', g); }catch(e){}
     }
     chips.forEach(function(c){ c.addEventListener('click', function(){ apply(c.getAttribute('data-g')); }); });
@@ -949,6 +993,12 @@
     var FROM_HASH = {'#grade-1eso':'1', '#grade-2eso':'2', '#grade-3eso':'3', '#grade-4eso':'4', '#grade-bach':'b'};
     if(FROM_HASH[location.hash]) init = FROM_HASH[location.hash];
     apply(init);
+
+    /* Compact navigation bar once the big "What do you want to do?" doors scroll away */
+    var nav = document.getElementById('stickyNav'), doors = document.querySelector('.doors');
+    if(nav && doors && 'IntersectionObserver' in window){
+      new IntersectionObserver(function(es){ nav.classList.toggle('show', !es[0].isIntersecting && es[0].boundingClientRect.top < 0); }).observe(doors);
+    }
   })();
 
   /* WORD OF THE DAY / IDIOM OF THE WEEK / CULTURE CORNER */
