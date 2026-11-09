@@ -427,6 +427,29 @@
   .daily .capsule-row{margin-bottom:16px;}
   .daily .culture{margin-bottom:0;}
   @media (max-width:520px){ .wrap{padding:0 16px;} .step{padding:16px;} .pcard{padding:18px 16px 14px;} }
+
+  /* Level test teaser: separate, visual, for the curious */
+  .lvl-test{position:relative; overflow:hidden; display:grid; grid-template-columns:1.15fr 1fr; gap:28px; align-items:center; max-width:860px; margin:0 auto 64px; padding:24px 28px;
+    border-radius:24px; background:linear-gradient(135deg,rgba(255,204,102,0.16),rgba(255,107,74,0.12)), var(--bg-panel); border:1px solid rgba(255,204,102,0.45); transition:transform .2s ease, border-color .2s ease;}
+  .lvl-test:hover{transform:translateY(-3px); border-color:var(--gold);}
+  .lvl-test:focus-visible{outline:2px solid var(--gold); outline-offset:3px;}
+  .lt-txt{display:flex; flex-direction:column; gap:6px; align-items:flex-start;}
+  .lt-eye{font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold);}
+  .lt-h{font-family:'Unbounded',sans-serif; font-weight:800; font-size:clamp(20px,3vw,26px); line-height:1.15; text-wrap:balance;}
+  .lt-d{font-size:14px; color:var(--text-sub); font-weight:600;}
+  .lt-cta{margin-top:8px; display:inline-flex; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase;
+    color:var(--bg); background:linear-gradient(120deg,var(--gold),var(--coral)); padding:11px 20px; border-radius:99px;}
+  .lt-cta span{display:inline-block; transition:transform .2s ease;}
+  .lvl-test:hover .lt-cta span{transform:translateX(4px);}
+  .lt-ladder{position:relative; height:140px; display:grid; grid-template-columns:repeat(6,1fr); grid-template-rows:1fr; gap:8px; align-items:end; padding-top:38px;}
+  .lt-bar{height:var(--h); border-radius:10px 10px 4px 4px; background:linear-gradient(180deg,rgba(255,204,102,0.6),rgba(255,107,74,0.22)); border:1px solid rgba(255,204,102,0.4);
+    display:flex; align-items:flex-end; justify-content:center; padding-bottom:5px; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; color:var(--text);}
+  .lt-pin{position:absolute; top:0; left:0; width:calc((100% - 40px) / 6); display:flex; justify-content:center; animation:ltHop 7s ease-in-out infinite;}
+  .lt-pin b{width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--text); color:var(--bg);
+    font-family:'Unbounded',sans-serif; font-weight:800; font-size:15px; box-shadow:0 4px 14px rgba(0,0,0,0.45);}
+  @keyframes ltHop{0%,100%{transform:translateX(0);} 18%{transform:translateX(calc(100% + 8px));} 36%{transform:translateX(calc(200% + 16px));} 54%{transform:translateX(calc(300% + 24px));} 72%{transform:translateX(calc(400% + 32px));} 86%{transform:translateX(calc(200% + 16px));}}
+  @media (max-width:700px){ .lvl-test{grid-template-columns:1fr; gap:18px; padding:20px;} .lt-ladder{height:120px;} }
+  @media (prefers-reduced-motion:reduce){ .lt-pin{animation:none; transform:translateX(calc(200% + 16px));} .lvl-test{transition:none;} }
 </style>
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="/icons/icon-192.png">
@@ -445,7 +468,6 @@
       <div class="step" role="group" aria-labelledby="stepGradeT">
         <div class="step-t" id="stepGradeT"><span class="step-n">1</span> What grade are you in?</div>
         <div class="filter-chips" id="gradeChips"><button type="button" class="gchip" data-g="1">1º ESO</button><button type="button" class="gchip" data-g="2">2º ESO</button><button type="button" class="gchip" data-g="3">3º ESO</button><button type="button" class="gchip" data-g="4">4º ESO</button><button type="button" class="gchip" data-g="b">Bachillerato</button><button type="button" class="gchip ghost" data-g="all">Show all</button></div>
-        <a class="step-hint" href="start.html">Not sure? Take the 3-minute level test →</a>
       </div>
 
       <div class="step" role="group" aria-labelledby="stepDoT">
@@ -470,6 +492,19 @@
       </div>
     </div>
   </section>
+
+  <a class="lvl-test" id="level-test" href="start.html" aria-label="Level test: 20 questions, 3 minutes">
+    <span class="lt-txt">
+      <span class="lt-eye">🧭 Just curious?</span>
+      <span class="lt-h">What's your English level?</span>
+      <span class="lt-d">20 quick questions · 3 minutes · no login</span>
+      <span class="lt-cta">Find my level <span aria-hidden="true">→</span></span>
+    </span>
+    <span class="lt-ladder" aria-hidden="true">
+      <span class="lt-bar" style="--h:30%">A1</span><span class="lt-bar" style="--h:44%">A2</span><span class="lt-bar" style="--h:58%">B1</span><span class="lt-bar" style="--h:72%">B2</span><span class="lt-bar" style="--h:86%">C1</span><span class="lt-bar" style="--h:100%">C2</span>
+      <span class="lt-pin"><b>?</b></span>
+    </span>
+  </a>
 
   <div class="sticky-nav" id="stickyNav" aria-label="Quick navigation">
     <a href="#top" class="sn-grade" id="snGrade" title="Change grade">🎒 <span>All grades</span></a>
@@ -853,8 +888,8 @@
     </div>
 
     <div class="group" id="g-test" data-filterable>
-      <div class="group-label"><span aria-hidden="true">🏆</span> Tests &amp; progress <span class="n">3</span></div>
-      <p class="group-desc">Boss battles, your progress and the level test.</p>
+      <div class="group-label"><span aria-hidden="true">🏆</span> Tests &amp; progress <span class="n">2</span></div>
+      <p class="group-desc">Boss battles and your progress.</p>
       <div class="pgrid">
       <a class="pcard" href="boss-checkpoint.html" target="_blank" rel="noopener" data-grades="1 2 3 4" style="--glow:var(--boss)">
         <div class="pc-top"><span class="pc-skill">Test</span><span class="top-row-right"><span class="level ">1º–4º ESO</span><button class="card-assign" type="button" onclick="event.preventDefault(); event.stopPropagation(); shareToClassroom('boss-checkpoint.html','Boss Checkpoint')" title="Assign in Google Classroom" aria-label="Assign Boss Checkpoint in Google Classroom">📋</button></span></div>
@@ -871,14 +906,6 @@
         <p class="pc-how">See what you have done. Saved on this device.</p>
         <div class="pc-meta"><span class="pc-chip">📈 Stats</span></div>
         <div class="pc-game"><span class="pc-glyph" aria-hidden="true">🛰️</span><span class="pc-name">Mission Log</span><span class="pc-cta">Open <span aria-hidden="true">→</span></span></div>
-      </a>
-      <a class="pcard" href="start.html" target="_blank" rel="noopener" data-grades="1 2 3 4 b" style="--glow:var(--gold)">
-        <div class="pc-top"><span class="pc-skill">Level</span><span class="top-row-right"><span class="level all">All levels</span></span></div>
-        <h3 class="pc-what">Find your level</h3>
-        <div class="pc-eg" aria-label="Example">3 minutes → your grade</div>
-        <p class="pc-how">Not sure where to start? Answer a few questions.</p>
-        <div class="pc-meta"><span class="pc-chip">⏱ 3 min</span><span class="pc-chip">👤 Solo</span></div>
-        <div class="pc-game"><span class="pc-glyph" aria-hidden="true">🧭</span><span class="pc-name">Level test</span><span class="pc-cta">Start <span aria-hidden="true">→</span></span></div>
       </a>
       </div>
     </div>
