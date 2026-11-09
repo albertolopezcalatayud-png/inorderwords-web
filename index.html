@@ -450,6 +450,27 @@
   @keyframes ltHop{0%,100%{transform:translateX(0);} 18%{transform:translateX(calc(100% + 8px));} 36%{transform:translateX(calc(200% + 16px));} 54%{transform:translateX(calc(300% + 24px));} 72%{transform:translateX(calc(400% + 32px));} 86%{transform:translateX(calc(200% + 16px));}}
   @media (max-width:700px){ .lvl-test{grid-template-columns:1fr; gap:18px; padding:20px;} .lt-ladder{height:120px;} }
   @media (prefers-reduced-motion:reduce){ .lt-pin{animation:none; transform:translateX(calc(200% + 16px));} .lvl-test{transition:none;} }
+
+  /* Today in English: daily word, weekly idiom and a fact, right under the title */
+  .today{max-width:860px; margin:26px auto 0; text-align:left;}
+  .today-head{display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; margin:0 0 12px;}
+  .today-head h2{font-family:'Unbounded',sans-serif; font-weight:800; font-size:clamp(17px,2.6vw,21px); display:flex; align-items:center; gap:10px;}
+  .today-date{font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#1a1300; background:var(--gold); border-radius:99px; padding:4px 10px;}
+  .today-swipe{display:none; margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; color:var(--text-sub);}
+  .today-row{display:grid; grid-template-columns:repeat(3,1fr); gap:12px;}
+  .today .capsule{display:flex; flex-direction:column; gap:2px; padding:18px 18px 16px; border:1px solid rgba(255,255,255,0.14); box-shadow:0 18px 40px -24px var(--cap-glow);}
+  .today .capsule::before{opacity:0.45;}
+  .today .cap-label{font-size:11px;}
+  .today .cap-word{font-size:clamp(1.35rem,2.6vw,1.65rem); line-height:1.15;}
+  .today .cap-example{font-size:13px;}
+  .today .cu-fact{font-size:14px; color:var(--text); line-height:1.5;}
+  .today .cu-fact b{color:var(--gold);}
+  @media (max-width:760px){
+    .today-swipe{display:inline;}
+    .today-row{display:flex; overflow-x:auto; scroll-snap-type:x mandatory; scroll-padding-inline:16px; gap:10px; margin:0 -16px; padding:0 16px 8px; scrollbar-width:none;}
+    .today-row::-webkit-scrollbar{display:none;}
+    .today-row > .capsule{flex:0 0 84%; scroll-snap-align:start;}
+  }
 </style>
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="/icons/icon-192.png">
@@ -463,6 +484,31 @@
     <span class="eyebrow">Mission Control · English</span>
     <h1 class="title">INORDERWORDS</h1>
     <p class="tagline">Free English games and practice <b>for your class</b>.</p>
+
+    <section class="today" id="daily" aria-labelledby="dailyT">
+      <div class="today-head"><h2 id="dailyT"><span aria-hidden="true">☀️</span> Today in English</h2><span class="today-date" id="todayDate">New every day</span><span class="today-swipe" aria-hidden="true">swipe →</span></div>
+      <div class="today-row">
+    <div class="capsule" id="capsuleWord" style="--cap-glow:var(--teal)">
+      <div class="cap-label">📖 Word of the day</div>
+      <div class="cap-word" id="wordText">worthwhile</div>
+      <div class="cap-phon"><span class="cap-ipa" id="wordIpa">/ˌwɜːθˈwaɪl/</span><button type="button" class="cap-speak" id="wordSpeak" title="Listen" aria-label="Listen to the word" hidden>🔊</button></div>
+      <div class="cap-es" id="wordEs">que vale la pena</div>
+      <div class="cap-example" id="wordExample">"Learning irregular verbs is worthwhile in the long run."</div>
+    </div>
+    <div class="capsule" id="capsuleIdiom" style="--cap-glow:var(--gold)">
+      <div class="cap-label">💬 Idiom of the week</div>
+      <div class="cap-word" id="idiomText" style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;"><span id="idiomWordTxt">call it a day</span><button type="button" class="cap-speak" id="idiomSpeak" title="Listen" aria-label="Listen to the idiom" hidden>🔊</button></div>
+      <div class="cap-es" id="idiomEs">dejarlo por hoy</div>
+      <div class="cap-example" id="idiomExample">"We've done enough revision — let's call it a day."</div>
+      <a class="cap-link" href="idiom-detective.html" target="_blank" rel="noopener">🕵️ Crack more idioms in Idiom Detective →</a>
+    </div>
+    <div class="capsule culture-cap" id="cultureStrip" style="--cap-glow:var(--vocab)">
+      <div class="cap-label">🎬 Did you know?</div>
+      <div class="cu-fact" id="cultureFact">British and American English disagree on hundreds of everyday words: <b>lift/elevator</b>, <b>flat/apartment</b>, <b>queue/line</b> — both are correct English.</div>
+    </div>
+      </div>
+      <script>try{document.getElementById('todayDate').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});}catch(e){}</script>
+    </section>
 
     <div class="steps">
       <div class="step" role="group" aria-labelledby="stepGradeT">
@@ -909,31 +955,6 @@
       </a>
       </div>
     </div>
-  </section>
-
-  <section class="zone daily" id="daily" aria-labelledby="dailyT">
-    <div class="zone-head"><h2 id="dailyT"><span aria-hidden="true">☀️</span> Daily English</h2></div>
-  <div class="capsule-row">
-    <div class="capsule" id="capsuleWord" style="--cap-glow:var(--teal)">
-      <div class="cap-label">📖 Word of the day</div>
-      <div class="cap-word" id="wordText">worthwhile</div>
-      <div class="cap-phon"><span class="cap-ipa" id="wordIpa">/ˌwɜːθˈwaɪl/</span><button type="button" class="cap-speak" id="wordSpeak" title="Listen" aria-label="Listen to the word" hidden>🔊</button></div>
-      <div class="cap-es" id="wordEs">que vale la pena</div>
-      <div class="cap-example" id="wordExample">"Learning irregular verbs is worthwhile in the long run."</div>
-    </div>
-    <div class="capsule" id="capsuleIdiom" style="--cap-glow:var(--gold)">
-      <div class="cap-label">💬 Idiom of the week</div>
-      <div class="cap-word" id="idiomText" style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;"><span id="idiomWordTxt">call it a day</span><button type="button" class="cap-speak" id="idiomSpeak" title="Listen" aria-label="Listen to the idiom" hidden>🔊</button></div>
-      <div class="cap-es" id="idiomEs">dejarlo por hoy</div>
-      <div class="cap-example" id="idiomExample">"We've done enough revision — let's call it a day."</div>
-      <a class="cap-link" href="idiom-detective.html" target="_blank" rel="noopener">🕵️ Crack more idioms in Idiom Detective →</a>
-    </div>
-  </div>
-
-  <div class="culture" id="cultureStrip">
-    <span class="cu-label">🎬 Did you know?</span>
-    <span class="cu-fact" id="cultureFact">British and American English disagree on hundreds of everyday words: <b>lift/elevator</b>, <b>flat/apartment</b>, <b>queue/line</b> — both are correct English.</span>
-  </div>
   </section>
 
   <footer>Made by <b>Alberto López</b> & <b>Yaiza Tormo</b> · Inorderwords · A living space, always under construction 🚧<br><a href="class-results.html" style="display:inline-block; margin-top:10px; color:var(--gold); font-family:'JetBrains Mono',monospace; font-size:11.5px; font-weight:700; border:1px solid rgba(255,204,102,0.4); border-radius:99px; padding:6px 12px;">👩‍🏫 Teachers: class rankings, game by game →</a></footer>
