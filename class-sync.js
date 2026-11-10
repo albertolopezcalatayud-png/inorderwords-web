@@ -49,7 +49,23 @@
     try{ syncAvatar(); }catch(e){}
   }
 
+  // Someone signed in to several Google accounts (e.g. a teacher with a personal Gmail + the school account)
+  // gets an error page from the normal address: Google routes the call to the wrong account. The school-domain
+  // address answers them, and it also works signed-out. Students keep using the normal address; we only switch
+  // after the normal one is refused, and remember it for this tab.
+  var BACKEND_ALT = BACKEND.replace('/macros/s/', '/a/macros/pcsantaana.com/s/');
+  var useAlt = false;
+  try{ useAlt = sessionStorage.getItem('iow_backend_alt') === '1'; }catch(e){}
   function jsonp(params, timeoutMs){
+    return jsonpOnce(params, timeoutMs, useAlt).then(function(r){
+      if(r !== null || useAlt || jsonp.lastFail !== 'blocked') return r;
+      return jsonpOnce(params, timeoutMs, true).then(function(r2){
+        if(r2 !== null){ useAlt = true; try{ sessionStorage.setItem('iow_backend_alt', '1'); }catch(e){} }
+        return r2;
+      });
+    });
+  }
+  function jsonpOnce(params, timeoutMs, alt){
     return new Promise(function(resolve){
       var cb = '__iow' + Date.now() + '_' + Math.floor(Math.random() * 1e6), done = false;
       var s = document.createElement('script');
@@ -57,7 +73,7 @@
       window[cb] = function(d){ finish(d); };
       s.onerror = function(){ finish(null, 'blocked'); };   // script could not load: offline, filtered by a network/extension, or the server answered with an error page
       var q = new URLSearchParams(params); q.set('callback', cb);
-      s.src = BACKEND + '?' + q.toString();
+      s.src = (alt ? BACKEND_ALT : BACKEND) + '?' + q.toString();
       setTimeout(function(){ finish(null, 'timeout'); }, timeoutMs || 8000);
       document.head.appendChild(s);
     });
