@@ -1,6 +1,7 @@
 <!doctype html><html translate="no"><head>
 <script src="iow-audio-fix.js"></script>
-<meta name="google" content="notranslate"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<meta name="google" content="notranslate"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><style>.ex-answer-row textarea.wide-answer{width:100%;max-width:100%;box-sizing:border-box;font:inherit;font-weight:700;padding:12px 16px;border-radius:14px;border:2px solid rgba(255,255,255,0.18);background:rgba(0,0,0,0.25);color:inherit;resize:vertical;min-height:3.2em;line-height:1.35;}.ex-answer-row textarea.wide-answer:focus{outline:none;border-color:#2dd4bf;}</style>
+</head><body>
 <style>
 .ow-home-fab{
   position:fixed; top:14px; left:14px; z-index:999999;
@@ -796,6 +797,7 @@
   <p class="footnote">Levlup · An English study resource for ESL students, from 1st ESO to 2nd Bachillerato · Grammar practice is generated instantly in your browser — no account or login needed</p>
 </div>
 
+<script src="levlup-bank.js"></script>
 <script src="class-sync.js"></script>
 <script>
 (function(){
@@ -8067,7 +8069,43 @@ GRAMMAR_GEN["extraposition-it-subject"] = [
 
   /* ===== QUALITY LAYER END ===== */
 
-  function buildLocalGrammarSet(topic){
+  /* ---- Hand-written practice banks (levlup-bank.js) ----
+     A set = 10 items: ~30% basic, ~40% standard, ~30% tricky, mixing the four exercise types,
+     easiest first. Items already seen on this device are skipped until the whole bank has been used. */
+  function bankOf(id){ var B = window.LV_BANK || {}; return B[id]; }
+  function hasBank(id){ var b = bankOf(id); return !!(b && b.length); }
+  function bankSeenGet(id){ try{ return JSON.parse(localStorage.getItem("lvSeen:"+id) || "[]"); }catch(e){ return []; } }
+  function bankSeenSet(id, arr){ try{ localStorage.setItem("lvSeen:"+id, JSON.stringify(arr)); }catch(e){} }
+  function bankToExercise(it){
+    return { type: it.t, instruction: it.i, prompt: it.p, options: it.o ? shuffleCopy(it.o) : undefined,
+      answer: it.a, acceptableAnswers: it.alt || [], explanation: it.e || "", start: it.s || "" };
+  }
+  function buildBankSet(topic, opts){
+    opts = opts || {};
+    var bank = bankOf(topic.id), size = Math.min(opts.size || 10, bank.length);
+    var all = bank.map(function(_, i){ return i; });
+    var seen = opts.exam ? [] : bankSeenGet(topic.id);
+    var fresh = all.filter(function(i){ return seen.indexOf(i) < 0; });
+    if(fresh.length < size){ seen = []; fresh = all.slice(); }
+    var d1 = opts.exam ? 0 : Math.round(size * 0.3), d3 = Math.round(size * (opts.exam ? 0.5 : 0.3));
+    var want = { 1: d1, 2: size - d1 - d3, 3: d3 };
+    var pool = shuffleCopy(fresh), picked = [], used = {};
+    [1, 2, 3].forEach(function(d){
+      for(var n = 0; n < want[d]; n++){
+        var c = pool.filter(function(i){ return bank[i].d === d && picked.indexOf(i) < 0; });
+        if(!c.length) break;
+        c.sort(function(a, b){ return (used[bank[a].t] || 0) - (used[bank[b].t] || 0); });
+        picked.push(c[0]); used[bank[c[0]].t] = (used[bank[c[0]].t] || 0) + 1;
+      }
+    });
+    pool.forEach(function(i){ if(picked.length < size && picked.indexOf(i) < 0) picked.push(i); });
+    picked.sort(function(a, b){ return bank[a].d - bank[b].d; });
+    if(!opts.exam) bankSeenSet(topic.id, seen.concat(picked));
+    return picked.map(function(i){ return bankToExercise(bank[i]); });
+  }
+
+  function buildLocalGrammarSet(topic, opts){
+    if(hasBank(topic.id)) return buildBankSet(topic, opts);
     var gens = GRAMMAR_GEN[topic.id];
     if(!gens || !gens.length){ return []; }
     var out = [], seenPrompts = {}, tries = 0;
@@ -21858,13 +21896,13 @@ GRAMMAR_GEN["extraposition-it-subject"] = [
 
   /* =========================== PRACTICE: RENDER EXERCISES =========================== */
   function normalizeAnswer(s){
-    return (s === undefined || s === null ? "" : String(s))
-      .toLowerCase().trim()
-      .replace(/^["'“”‘’]+|["'“”‘’]+$/g, "")
-      .replace(/[‘’`´]/g, "'")
-      .replace(/[.!?]+$/g, "")
-      .replace(/\s+/g, " ")
-      .trim();
+    s = (s === undefined || s === null ? "" : String(s)).toLowerCase()
+      .replace(/[‘’`´]/g, "'").replace(/[“”]/g, '"');
+    s = s.replace(/\bwon't\b/g, "will not").replace(/\bcan't\b/g, "cannot").replace(/\bshan't\b/g, "shall not")
+      .replace(/\bain't\b/g, "is not").replace(/n't\b/g, " not").replace(/\bcan not\b/g, "cannot")
+      .replace(/'m\b/g, " am").replace(/'re\b/g, " are").replace(/'ve\b/g, " have").replace(/'ll\b/g, " will");
+    return s.replace(/"/g, "").trim().replace(/^'+|'+$/g, "")
+      .replace(/[,;:!?.]+/g, " ").replace(/\s+/g, " ").trim();
   }
 
   /* Shared, module-agnostic exercise renderer/checker.
@@ -21890,8 +21928,13 @@ GRAMMAR_GEN["extraposition-it-subject"] = [
         });
         html += '</fieldset>';
       } else {
+        var preset = ex.type === "fix" ? (ex.prompt || "") : (ex.type === "transform" && ex.start ? ex.start + " " : "");
         html += '<div class="ex-prompt">'+escapeHtml(ex.prompt||"")+'</div>';
-        html += '<div class="ex-answer-row"><input type="text" data-answer-index="'+i+'" autocomplete="off" spellcheck="false" placeholder="Type your answer" aria-label="Answer"></div>';
+        if(ex.type === "fix" || ex.type === "transform"){
+          html += '<div class="ex-answer-row"><textarea class="wide-answer" rows="2" data-answer-index="'+i+'" autocomplete="off" spellcheck="false" placeholder="Write the whole sentence" aria-label="Answer">'+escapeHtml(preset)+'</textarea></div>';
+        } else {
+          html += '<div class="ex-answer-row"><input type="text" data-answer-index="'+i+'" autocomplete="off" spellcheck="false" placeholder="Type your answer" aria-label="Answer"></div>';
+        }
       }
 
       html += '<div class="ex-feedback"><span class="fb-icon"></span><div><div class="fb-text"></div></div></div>';
@@ -21913,6 +21956,7 @@ GRAMMAR_GEN["extraposition-it-subject"] = [
     if(t === "choice") return "Multiple choice";
     if(t === "gap") return "Fill in the gap";
     if(t === "transform") return "Rewrite the sentence";
+    if(t === "fix") return "Find the mistake";
     if(t === "truefalse") return "True or false";
     if(t === "short") return "Short answer";
     return "Exercise";
@@ -21936,7 +21980,7 @@ GRAMMAR_GEN["extraposition-it-subject"] = [
         userVal = checked ? checked.value : "";
         exEl.querySelectorAll('input[type="radio"]').forEach(function(r){ r.disabled = true; });
       } else {
-        var input = exEl.querySelector('input[data-answer-index]');
+        var input = exEl.querySelector('[data-answer-index]');
         userVal = input ? input.value : "";
         if(input) input.disabled = true;
       }
@@ -22732,7 +22776,7 @@ GRAMMAR_GEN["extraposition-it-subject"] = [
         var checked = exEl.querySelector('input[type="radio"]:checked');
         section.answers[i] = checked ? checked.value : "";
       } else {
-        var input = exEl.querySelector("input[data-answer-index]");
+        var input = exEl.querySelector("[data-answer-index]");
         section.answers[i] = input ? input.value : "";
       }
     });
@@ -22747,7 +22791,7 @@ GRAMMAR_GEN["extraposition-it-subject"] = [
       if(ex.type === "choice" || ex.type === "truefalse"){
         exEl.querySelectorAll('input[type="radio"]').forEach(function(r){ if(r.value === val) r.checked = true; });
       } else {
-        var input = exEl.querySelector("input[data-answer-index]");
+        var input = exEl.querySelector("[data-answer-index]");
         if(input) input.value = val;
       }
     });
@@ -22821,11 +22865,11 @@ GRAMMAR_GEN["extraposition-it-subject"] = [
   }
 
   function pickExamGrammarSet(level){
-    var pool = shuffleCopy(level.topics.filter(function(t){ return GRAMMAR_GEN[t.id] && GRAMMAR_GEN[t.id].length; }));
+    var pool = shuffleCopy(level.topics.filter(function(t){ return hasBank(t.id) || (GRAMMAR_GEN[t.id] && GRAMMAR_GEN[t.id].length); }));
     var picked = pool.slice(0, Math.min(5, pool.length));
     var exercises = [];
     picked.forEach(function(topic){
-      var set = buildLocalGrammarSet(topic);
+      var set = buildLocalGrammarSet(topic, {exam: true, size: 2});
       pickN(set, Math.min(2, set.length)).forEach(function(ex){ exercises.push(ex); });
     });
     return { topics: picked, exercises: exercises };
